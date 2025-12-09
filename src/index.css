@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dream Trade Brand Colors */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Primary - Deep Blue */
+    --primary: 215 70% 25%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Light Blue */
+    --secondary: 205 85% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 45%;
+
+    /* Accent - Vibrant Blue */
+    --accent: 200 90% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 30% 90%;
+    --input: 214 30% 90%;
+    --ring: 215 70% 25%;
+
+    --radius: 0.75rem;
+
+    /* Custom Dream Colors */
+    --dream-navy: 215 70% 20%;
+    --dream-blue: 205 85% 55%;
+    --dream-light: 200 100% 97%;
+    --dream-gold: 45 90% 55%;
+    --dream-gray: 210 10% 60%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(215 70% 20%) 0%, hsl(205 85% 35%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(205 85% 55%) 0%, hsl(200 90% 50%) 100%);
+  }
+
+  .dark {
+    --background: 215 25% 10%;
+    --foreground: 210 20% 98%;
+
+    --card: 215 25% 13%;
+    --card-foreground: 210 20% 98%;
+
+    --popover: 215 25% 13%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 205 85% 55%;
+    --primary-foreground: 215 25% 10%;
+
+    --secondary: 215 30% 25%;
+    --secondary-foreground: 210 20% 98%;
+
+    --muted: 215 30% 20%;
+    --muted-foreground: 210 15% 65%;
+
+    --accent: 200 90% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 30% 20%;
+    --input: 215 30% 20%;
+    --ring: 205 85% 55%;
+
+    --dream-navy: 215 70% 15%;
+    --dream-blue: 205 85% 55%;
+    --dream-light: 215 25% 15%;
+    --dream-gold: 45 90% 55%;
+    --dream-gray: 210 10% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-background text-foreground font-tajawal antialiased;
+  }
+}
+
+@layer utilities {
+  .font-tajawal {
+    font-family: 'Tajawal', sans-serif;
+    letter-spacing: 0.03em;
+    line-height: 1.9;
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--accent)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .curved-shape {
+    clip-path: ellipse(80% 100% at 80% 50%);
+  }
+
+  .curved-shape-left {
+    clip-path: ellipse(85% 100% at 15% 50%);
+  }
+}
+
+@layer components {
+  .btn-dream {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-8 py-3 text-base font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg;
+  }
+
+  .btn-dream-primary {
+    @apply btn-dream bg-secondary text-secondary-foreground hover:bg-accent;
+  }
+
+  .btn-dream-outline {
+    @apply btn-dream border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground;
+  }
+
+  .card-dream {
+    @apply rounded-2xl bg-card p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  .page-header {
+    @apply py-20 gradient-hero text-primary-foreground text-center relative overflow-hidden;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-foreground mb-4;
+  }
+}

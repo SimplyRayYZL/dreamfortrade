@@ -1,0 +1,7 @@
+project_id = "nnepwvkiwbkutfhyaogr"
+
+[functions.scrape-products]
+verify_jwt = false
+
+[functions.enhance-product-images]
+verify_jwt = false
