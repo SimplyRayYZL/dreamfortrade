@@ -6,7 +6,6 @@ import BrandsSection from "@/components/home/BrandsSection";
 import ProductsSection from "@/components/home/ProductsSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
-import CTASection from "@/components/home/CTASection";
 import PromoBanner from "@/components/home/PromoBanner";
 
 const Index = () => {
@@ -68,8 +67,7 @@ const Index = () => {
           <PromoBanner variant="quality" />
           <FeaturesSection />
           <TestimonialsSection />
-          <PromoBanner variant="support" />
-          <CTASection />
+          <PromoBanner variant="contact" />
         </main>
         <Footer />
       </div>
