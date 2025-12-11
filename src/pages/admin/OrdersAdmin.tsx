@@ -223,6 +223,12 @@ const OrdersAdmin = () => {
                                     المنتجات
                                 </Button>
                             </Link>
+                            <Link to="/admin/brands">
+                                <Button variant="outline" className="gap-2">
+                                    <Package className="w-4 h-4" />
+                                    الماركات
+                                </Button>
+                            </Link>
                             <Button onClick={() => refetch()} variant="outline" className="gap-2">
                                 <RefreshCw className="w-4 h-4" />
                                 تحديث

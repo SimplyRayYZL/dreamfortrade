@@ -302,6 +302,12 @@ const ProductsAdmin = () => {
                   الطلبات
                 </Button>
               </Link>
+              <Link to="/admin/brands">
+                <Button variant="outline" className="gap-2">
+                  <Package className="w-4 h-4" />
+                  الماركات
+                </Button>
+              </Link>
               <Link to="/admin/enhance-images">
                 <Button variant="outline" className="gap-2">
                   <Upload className="w-4 h-4" />
