@@ -139,11 +139,11 @@ const BrandBanners = () => {
                                     <div className="text-white text-center md:text-right">
                                         {/* Brand Logo */}
                                         <div className="flex justify-center md:justify-end mb-5">
-                                            <div className="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-3 border border-white/20">
+                                            <div className="bg-white rounded-xl px-4 py-2 shadow-lg">
                                                 <img
                                                     src={currentBanner.logo}
                                                     alt={currentBanner.brand}
-                                                    className="h-10 md:h-14 w-auto object-contain brightness-0 invert drop-shadow-lg"
+                                                    className="h-8 md:h-10 w-auto object-contain"
                                                 />
                                             </div>
                                         </div>
@@ -220,7 +220,7 @@ const BrandBanners = () => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 };
 
