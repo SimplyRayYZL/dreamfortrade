@@ -3,11 +3,18 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Zap, Thermometer, Wind, Wifi, Leaf, Shield, Snowflake, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// Import brand logos
+import carrierLogo from "@/assets/brands/carrier.png";
+import mideaLogo from "@/assets/brands/midea.png";
+import freshLogo from "@/assets/brands/fresh.png";
+import sharpLogo from "@/assets/brands/sharp.png";
+
 // Brand banner data with compelling copy
 const brandBanners = [
     {
         id: 1,
         brand: "Carrier",
+        logo: carrierLogo,
         image: "/banner-carrier.png",
         title: "تبريد فائق السرعة",
         subtitle: "وفر حتى 60% من استهلاك الكهرباء",
@@ -23,6 +30,7 @@ const brandBanners = [
     {
         id: 2,
         brand: "Midea",
+        logo: mideaLogo,
         image: "/banner-midea.png",
         title: "تقنية الإنفرتر الذكية",
         subtitle: "أداء ممتاز بأسعار منافسة",
@@ -38,6 +46,7 @@ const brandBanners = [
     {
         id: 3,
         brand: "Fresh",
+        logo: freshLogo,
         image: "/banner-fresh.png",
         title: "صناعة مصرية عالمية",
         subtitle: "قوة تحمل الأجواء الحارة",
@@ -53,6 +62,7 @@ const brandBanners = [
     {
         id: 4,
         brand: "Sharp",
+        logo: sharpLogo,
         image: "/banner-sharp.png",
         title: "تقنية البلازما كلاستر",
         subtitle: "هواء نقي خالي من البكتيريا",
@@ -127,6 +137,14 @@ const BrandBanners = () => {
                             <div className="container mx-auto px-6 md:px-12">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                     <div className="text-white text-center md:text-right">
+                                        {/* Brand Logo */}
+                                        <div className="flex justify-center md:justify-end mb-4">
+                                            <img
+                                                src={currentBanner.logo}
+                                                alt={currentBanner.brand}
+                                                className="h-12 md:h-16 w-auto object-contain drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]"
+                                            />
+                                        </div>
 
                                         {/* Tagline */}
                                         <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 mb-4">
