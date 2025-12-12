@@ -70,11 +70,11 @@ const brandBanners = [
 const BrandBanners = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Auto-slide every 5 seconds
+    // Auto-slide every 7 seconds
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % brandBanners.length);
-        }, 5000);
+        }, 7000);
         return () => clearInterval(timer);
     }, []);
 
@@ -126,8 +126,22 @@ const BrandBanners = () => {
                         <div className="relative z-10 h-full min-h-[320px] flex items-center">
                             <div className="container mx-auto px-6 md:px-12">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                    {/* Text Content */}
                                     <div className="text-white text-center md:text-right">
+                                        {/* Brand Logo */}
+                                        <div className="flex justify-center md:justify-end mb-4">
+                                            <div className="bg-white rounded-2xl px-6 py-3 shadow-xl">
+                                                <img
+                                                    src={`/brands/${currentBanner.brand.toLowerCase()}.png`}
+                                                    alt={currentBanner.brand}
+                                                    className="h-8 md:h-10 w-auto object-contain"
+                                                    onError={(e) => {
+                                                        e.currentTarget.style.display = 'none';
+                                                        e.currentTarget.parentElement!.innerHTML = `<span class="text-gray-800 font-bold text-xl">${currentBanner.brand}</span>`;
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+
                                         {/* Tagline */}
                                         <div className="inline-block bg-white/20 backdrop-blur-sm rounded-full px-4 py-1 mb-4">
                                             <span className="text-sm font-medium">{currentBanner.tagline}</span>
@@ -192,8 +206,8 @@ const BrandBanners = () => {
                                 key={idx}
                                 onClick={() => setCurrentIndex(idx)}
                                 className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex
-                                        ? "bg-primary w-8"
-                                        : "bg-primary/30 w-2 hover:bg-primary/50"
+                                    ? "bg-primary w-8"
+                                    : "bg-primary/30 w-2 hover:bg-primary/50"
                                     }`}
                             />
                         ))}
