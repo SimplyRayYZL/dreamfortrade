@@ -1152,6 +1152,59 @@ const SettingsAdmin = () => {
                                     />
                                 </div>
                             </div>
+
+                            <h3 className="text-lg font-semibold border-t pt-6">ملفات التحقق من Google</h3>
+                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                                <p className="text-blue-600 dark:text-blue-400 text-sm">
+                                    📁 ارفع ملف التحقق من Google Search Console هنا. الملف سيُضاف تلقائياً للموقع.
+                                </p>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>ملف التحقق (HTML)</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type="file"
+                                            accept=".html"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (event) => {
+                                                        const content = event.target?.result as string;
+                                                        handleChange("google_verification_file_name", file.name);
+                                                        handleChange("google_verification_file_content", content);
+                                                        toast.success(`تم تحميل الملف: ${file.name}`);
+                                                    };
+                                                    reader.readAsText(file);
+                                                }
+                                            }}
+                                            className="flex-1"
+                                        />
+                                    </div>
+                                    {formData.google_verification_file_name && (
+                                        <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                                            <span className="text-green-600 text-sm">✅ الملف المرفوع: {formData.google_verification_file_name}</span>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => {
+                                                    handleChange("google_verification_file_name", "");
+                                                    handleChange("google_verification_file_content", "");
+                                                    toast.info("تم حذف الملف");
+                                                }}
+                                                className="text-destructive hover:text-destructive"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <p className="text-xs text-muted-foreground">
+                                        💡 بعد الحفظ، الملف سيكون متاح على: /{formData.google_verification_file_name || "googleXXXXXX.html"}
+                                    </p>
+                                </div>
+                            </div>
                         </TabsContent>
 
                         {/* Database Tab */}

@@ -79,6 +79,8 @@ export interface SiteSettings {
     seo_author: string;
     structured_data_enabled: boolean;
     sitemap_enabled: boolean;
+    google_verification_file_name: string;
+    google_verification_file_content: string;
 
     // Content
     homepage_hero_title: string;
@@ -164,6 +166,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
     seo_author: "Dream For Trade",
     structured_data_enabled: true,
     sitemap_enabled: true,
+    google_verification_file_name: "",
+    google_verification_file_content: "",
 
     // Enhanced content
     homepage_hero_title: "تكييفات بأفضل الأسعار",
