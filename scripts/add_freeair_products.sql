@@ -7,8 +7,10 @@ INSERT INTO brands (name, name_ar, logo_url)
 SELECT 'FreeAir', 'فري إير', 'https://i.imgur.com/freeair-logo.png'
 WHERE NOT EXISTS (SELECT 1 FROM brands WHERE name = 'FreeAir' OR name = 'Free Air');
 
--- Delete existing FreeAir products
-DELETE FROM products WHERE brand_id IN (SELECT id FROM brands WHERE name = 'FreeAir' OR name = 'Free Air');
+-- Delete existing FreeAir products that are NOT in any orders (to avoid foreign key errors)
+DELETE FROM products 
+WHERE brand_id IN (SELECT id FROM brands WHERE name = 'FreeAir' OR name = 'Free Air')
+AND id NOT IN (SELECT DISTINCT product_id FROM order_items WHERE product_id IS NOT NULL);
 
 -- =====================================================
 -- AS Series (Inverter) - بارد/ساخن موفر للطاقة

@@ -2,8 +2,10 @@
 -- Based on 3b-shop.com data
 -- Run this in Supabase SQL Editor
 
--- Delete existing Tornado products (to avoid duplicates)
-DELETE FROM products WHERE brand_id IN (SELECT id FROM brands WHERE name = 'Tornado' OR name_ar = 'تورنيدو');
+-- Delete existing Tornado products that are NOT in any orders (to avoid foreign key errors)
+DELETE FROM products 
+WHERE brand_id IN (SELECT id FROM brands WHERE name = 'Tornado' OR name_ar = 'تورنيدو')
+AND id NOT IN (SELECT DISTINCT product_id FROM order_items WHERE product_id IS NOT NULL);
 
 -- =====================================================
 -- Tornado Air Conditioner Products

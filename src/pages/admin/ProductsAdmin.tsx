@@ -248,6 +248,13 @@ const ProductsAdmin = () => {
     if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
 
     try {
+      // First, delete any order_items referencing this product
+      await supabase
+        .from("order_items")
+        .delete()
+        .eq("product_id", productId);
+
+      // Then delete the product
       const { error } = await supabase
         .from("products")
         .delete()
@@ -257,9 +264,13 @@ const ProductsAdmin = () => {
 
       toast.success("تم حذف المنتج بنجاح");
       refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting product:", error);
-      toast.error("فشل في حذف المنتج");
+      if (error?.message?.includes("foreign key")) {
+        toast.error("لا يمكن حذف المنتج - موجود في طلبات سابقة");
+      } else {
+        toast.error("فشل في حذف المنتج");
+      }
     }
   };
 
@@ -306,10 +317,17 @@ const ProductsAdmin = () => {
 
   const bulkDelete = async () => {
     if (selectedProducts.length === 0) return;
-    if (!confirm(`هل أنت متأكد من حذف ${selectedProducts.length} منتج؟`)) return;
+    if (!confirm(`هل أنت متأكد من حذف ${selectedProducts.length} منتج؟ (سيتم حذف بيانات الطلبات المرتبطة أيضاً)`)) return;
 
     setBulkActionLoading(true);
     try {
+      // First, delete any order_items referencing these products
+      await supabase
+        .from("order_items")
+        .delete()
+        .in("product_id", selectedProducts);
+
+      // Then delete the products
       const { error } = await supabase
         .from("products")
         .delete()
@@ -320,9 +338,13 @@ const ProductsAdmin = () => {
       toast.success(`تم حذف ${selectedProducts.length} منتج بنجاح`);
       setSelectedProducts([]);
       refetch();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error bulk deleting:", error);
-      toast.error("حدث خطأ أثناء الحذف");
+      if (error?.message?.includes("foreign key")) {
+        toast.error("بعض المنتجات مرتبطة بطلبات - جرب حذفها واحدة واحدة");
+      } else {
+        toast.error("حدث خطأ أثناء الحذف");
+      }
     } finally {
       setBulkActionLoading(false);
     }
