@@ -3,18 +3,20 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Zap, Thermometer, Wind, Wifi, Leaf, Shield, Snowflake, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Import brand logos
-import carrierLogo from "@/assets/brands/carrier.png";
-import mideaLogo from "@/assets/brands/midea.png";
-import freshLogo from "@/assets/brands/fresh.png";
-import sharpLogo from "@/assets/brands/sharp.png";
+// Brand logo URLs (from database)
+const brandLogos = {
+    Carrier: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Logo_of_the_Carrier_Corporation.svg/330px-Logo_of_the_Carrier_Corporation.svg.png",
+    Midea: "https://images.seeklogo.com/logo-png/9/1/midea-logo-png_seeklogo-92432.png",
+    Fresh: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Fresh_Electric.jpg/960px-Fresh_Electric.jpg",
+    Sharp: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Logo_of_the_Sharp_Corporation.svg",
+};
 
 // Brand banner data with compelling copy
 const brandBanners = [
     {
         id: 1,
         brand: "Carrier",
-        logo: carrierLogo,
+        logo: brandLogos.Carrier,
         image: "/banner-carrier.png",
         title: "راحة لا مثيل لها",
         subtitle: "تكييفات كاريير الأمريكية - الاختيار الأمثل",
@@ -30,7 +32,7 @@ const brandBanners = [
     {
         id: 2,
         brand: "Midea",
-        logo: mideaLogo,
+        logo: brandLogos.Midea,
         image: "/banner-midea.png",
         title: "تكنولوجيا متطورة",
         subtitle: "أفضل أسعار تكييفات ميديا في مصر",
@@ -46,7 +48,7 @@ const brandBanners = [
     {
         id: 3,
         brand: "Fresh",
-        logo: freshLogo,
+        logo: brandLogos.Fresh,
         image: "/banner-fresh.png",
         title: "صنع في مصر",
         subtitle: "تكييفات فريش - جودة عالية بسعر مناسب",
@@ -62,7 +64,7 @@ const brandBanners = [
     {
         id: 4,
         brand: "Sharp",
-        logo: sharpLogo,
+        logo: brandLogos.Sharp,
         image: "/banner-sharp.png",
         title: "الجودة اليابانية",
         subtitle: "تكييفات شارب - تقنية بلازما كلاستر",
