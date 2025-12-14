@@ -7,62 +7,67 @@ import {
     Settings,
     BarChart3,
     Users,
-    Star,
-    Image,
     LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-const adminPages = [
-    {
-        title: "إدارة المنتجات",
-        description: "إضافة، تعديل، وحذف المنتجات",
-        icon: Package,
-        href: "/admin/products",
-        color: "bg-blue-500",
-    },
-    {
-        title: "إدارة الطلبات",
-        description: "عرض ومتابعة طلبات العملاء",
-        icon: ShoppingCart,
-        href: "/admin/orders",
-        color: "bg-green-500",
-    },
-    {
-        title: "إدارة الماركات",
-        description: "إضافة وتعديل ماركات التكييفات",
-        icon: Tags,
-        href: "/admin/brands",
-        color: "bg-purple-500",
-    },
-    {
-        title: "إعدادات الموقع",
-        description: "إعدادات المتجر، السوشيال، الشحن، SEO",
-        icon: Settings,
-        href: "/admin/settings",
-        color: "bg-orange-500",
-    },
-    {
-        title: "تحسين الصور",
-        description: "أدوات تحسين صور المنتجات",
-        icon: Image,
-        href: "/admin/enhance-images",
-        color: "bg-pink-500",
-    },
-];
-
 const AdminDashboard = () => {
-    const { logout } = useAdminAuth();
+    const { logout, username, role, canAccessSettings } = useAdminAuth();
     const navigate = useNavigate();
+
+    // Filter pages based on role
+    const adminPages = [
+        {
+            title: "إدارة المنتجات",
+            description: "إضافة، تعديل، وحذف المنتجات",
+            icon: Package,
+            href: "/admin/products",
+            color: "bg-blue-500",
+            allowed: true,
+        },
+        {
+            title: "إدارة الطلبات",
+            description: "عرض ومتابعة طلبات العملاء",
+            icon: ShoppingCart,
+            href: "/admin/orders",
+            color: "bg-green-500",
+            allowed: true,
+        },
+        {
+            title: "إدارة الماركات",
+            description: "إضافة وتعديل ماركات التكييفات",
+            icon: Tags,
+            href: "/admin/brands",
+            color: "bg-purple-500",
+            allowed: true,
+        },
+        {
+            title: "إعدادات الموقع",
+            description: "إعدادات المتجر، السوشيال، الشحن، SEO",
+            icon: Settings,
+            href: "/admin/settings",
+            color: "bg-orange-500",
+            allowed: canAccessSettings(),
+        },
+    ].filter(page => page.allowed);
 
     const handleSignOut = () => {
         logout();
         toast.success("تم تسجيل الخروج");
         navigate("/admin/login");
     };
+
+    const getRoleBadge = () => {
+        if (role === 'admin') return { text: 'مدير كامل', variant: 'default' as const };
+        if (role === 'editor') return { text: 'محرر', variant: 'secondary' as const };
+        return { text: 'عارض', variant: 'outline' as const };
+    };
+
+    const roleBadge = getRoleBadge();
 
     return (
         <>
@@ -85,6 +90,9 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
+                                <Badge variant={roleBadge.variant} className="hidden sm:flex">
+                                    {username} - {roleBadge.text}
+                                </Badge>
                                 <Link to="/">
                                     <Button variant="outline" size="sm">
                                         زيارة الموقع
@@ -108,9 +116,11 @@ const AdminDashboard = () => {
                 <main className="container mx-auto px-4 py-8">
                     {/* Welcome */}
                     <div className="bg-gradient-to-r from-secondary to-primary rounded-2xl p-8 text-white mb-8">
-                        <h2 className="text-2xl font-bold mb-2">مرحباً بك في لوحة التحكم 👋</h2>
+                        <h2 className="text-2xl font-bold mb-2">مرحباً بك {username} في لوحة التحكم 👋</h2>
                         <p className="text-white/80">
-                            من هنا يمكنك إدارة جميع جوانب متجرك
+                            {role === 'admin'
+                                ? 'من هنا يمكنك إدارة جميع جوانب متجرك'
+                                : 'يمكنك إدارة المنتجات والطلبات والماركات من هنا'}
                         </p>
                     </div>
 
