@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 interface OrderItem {
     id: string;
@@ -77,6 +78,7 @@ const OrdersAdmin = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
     const [lastOrderCount, setLastOrderCount] = useState<number>(0);
+    const { canEdit, role } = useAdminAuth();
 
     const { data: orders, isLoading, refetch } = useQuery({
         queryKey: ["admin-orders"],
@@ -233,6 +235,13 @@ const OrdersAdmin = () => {
                                 <RefreshCw className="w-4 h-4" />
                                 تحديث
                             </Button>
+                            {/* Show role badge for viewer */}
+                            {role === 'viewer' && (
+                                <Badge variant="secondary" className="h-9 px-3 flex items-center gap-1">
+                                    <Eye className="w-4 h-4" />
+                                    عرض فقط
+                                </Badge>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -376,7 +385,7 @@ const OrdersAdmin = () => {
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     {getStatusBadge(order.status)}
-                                                    {order.status !== "cancelled" && (
+                                                    {canEdit() && order.status !== "cancelled" && (
                                                         <Button
                                                             variant="destructive"
                                                             size="sm"

@@ -43,10 +43,12 @@ import {
   Square,
   ToggleLeft,
   ToggleRight,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 interface ProductFormData {
   name: string;
@@ -79,6 +81,7 @@ const initialFormData: ProductFormData = {
 const ProductsAdmin = () => {
   const { data: products, isLoading, refetch } = useAllProducts();
   const { data: brands } = useBrands();
+  const { canEdit, canDelete, role } = useAdminAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrand, setSelectedBrand] = useState<string>("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -437,229 +440,239 @@ const ProductsAdmin = () => {
                 <RefreshCw className="w-4 h-4" />
                 تحديث
               </Button>
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button onClick={openAddDialog} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    إضافة منتج
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingProduct ? "تعديل المنتج" : "إضافة منتج جديد"}
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                    {/* Image Upload */}
-                    <div className="space-y-2">
-                      <Label>صورة المنتج</Label>
-                      <div className="flex items-center gap-4">
-                        {previewUrl && (
-                          <img
-                            src={previewUrl}
-                            alt="Preview"
-                            className="w-24 h-24 object-contain rounded-lg border bg-muted"
-                          />
-                        )}
-                        <div className="flex-1">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageSelect}
-                            className="cursor-pointer"
-                          />
+              {/* Show role badge */}
+              {role === 'viewer' && (
+                <Badge variant="secondary" className="h-9 px-3 flex items-center gap-1">
+                  <Eye className="w-4 h-4" />
+                  عرض فقط
+                </Badge>
+              )}
+              {/* Only show Add Product button for admin */}
+              {canEdit() && (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button onClick={openAddDialog} className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      إضافة منتج
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>
+                        {editingProduct ? "تعديل المنتج" : "إضافة منتج جديد"}
+                      </DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                      {/* Image Upload */}
+                      <div className="space-y-2">
+                        <Label>صورة المنتج</Label>
+                        <div className="flex items-center gap-4">
+                          {previewUrl && (
+                            <img
+                              src={previewUrl}
+                              alt="Preview"
+                              className="w-24 h-24 object-contain rounded-lg border bg-muted"
+                            />
+                          )}
+                          <div className="flex-1">
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageSelect}
+                              className="cursor-pointer"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Name */}
-                    <div className="space-y-2">
-                      <Label htmlFor="name">اسم المنتج *</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({ ...formData, name: e.target.value })
-                        }
-                        required
-                      />
-                    </div>
-
-                    {/* Brand */}
-                    <div className="space-y-2">
-                      <Label htmlFor="brand">العلامة التجارية</Label>
-                      <Select
-                        value={formData.brand_id}
-                        onValueChange={(value) =>
-                          setFormData({ ...formData, brand_id: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="اختر العلامة التجارية" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {brands?.map((brand) => (
-                            <SelectItem key={brand.id} value={brand.id}>
-                              {brand.name_ar || brand.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Price */}
-                    <div className="grid grid-cols-2 gap-4">
+                      {/* Name */}
                       <div className="space-y-2">
-                        <Label htmlFor="price">السعر (جنيه) *</Label>
+                        <Label htmlFor="name">اسم المنتج *</Label>
                         <Input
-                          id="price"
-                          type="number"
-                          step="0.01"
-                          value={formData.price}
+                          id="name"
+                          value={formData.name}
                           onChange={(e) =>
-                            setFormData({ ...formData, price: e.target.value })
+                            setFormData({ ...formData, name: e.target.value })
                           }
                           required
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="old_price">السعر القديم</Label>
-                        <Input
-                          id="old_price"
-                          type="number"
-                          step="0.01"
-                          value={formData.old_price}
-                          onChange={(e) =>
-                            setFormData({ ...formData, old_price: e.target.value })
-                          }
-                        />
-                      </div>
-                    </div>
 
-                    {/* Capacity & Type */}
-                    <div className="grid grid-cols-2 gap-4">
+                      {/* Brand */}
                       <div className="space-y-2">
-                        <Label htmlFor="capacity">السعة (حصان)</Label>
-                        <Input
-                          id="capacity"
-                          value={formData.capacity}
-                          onChange={(e) =>
-                            setFormData({ ...formData, capacity: e.target.value })
-                          }
-                          placeholder="مثال: 1.5 حصان"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="type">النوع</Label>
+                        <Label htmlFor="brand">العلامة التجارية</Label>
                         <Select
-                          value={formData.type}
+                          value={formData.brand_id}
                           onValueChange={(value) =>
-                            setFormData({ ...formData, type: value })
+                            setFormData({ ...formData, brand_id: value })
                           }
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="اختر النوع" />
+                            <SelectValue placeholder="اختر العلامة التجارية" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="split">سبليت</SelectItem>
-                            <SelectItem value="window">شباك</SelectItem>
-                            <SelectItem value="portable">متنقل</SelectItem>
-                            <SelectItem value="central">مركزي</SelectItem>
+                            {brands?.map((brand) => (
+                              <SelectItem key={brand.id} value={brand.id}>
+                                {brand.name_ar || brand.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
 
-                    {/* Model */}
-                    <div className="space-y-2">
-                      <Label htmlFor="model">الموديل</Label>
-                      <Input
-                        id="model"
-                        value={formData.model}
-                        onChange={(e) =>
-                          setFormData({ ...formData, model: e.target.value })
-                        }
-                      />
-                    </div>
+                      {/* Price */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="price">السعر (جنيه) *</Label>
+                          <Input
+                            id="price"
+                            type="number"
+                            step="0.01"
+                            value={formData.price}
+                            onChange={(e) =>
+                              setFormData({ ...formData, price: e.target.value })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="old_price">السعر القديم</Label>
+                          <Input
+                            id="old_price"
+                            type="number"
+                            step="0.01"
+                            value={formData.old_price}
+                            onChange={(e) =>
+                              setFormData({ ...formData, old_price: e.target.value })
+                            }
+                          />
+                        </div>
+                      </div>
 
-                    {/* Stock */}
-                    <div className="space-y-2">
-                      <Label htmlFor="stock">المخزون المتاح</Label>
-                      <Input
-                        id="stock"
-                        type="number"
-                        min="0"
-                        value={formData.stock}
-                        onChange={(e) =>
-                          setFormData({ ...formData, stock: e.target.value })
-                        }
-                        placeholder="0"
-                      />
-                    </div>
+                      {/* Capacity & Type */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="capacity">السعة (حصان)</Label>
+                          <Input
+                            id="capacity"
+                            value={formData.capacity}
+                            onChange={(e) =>
+                              setFormData({ ...formData, capacity: e.target.value })
+                            }
+                            placeholder="مثال: 1.5 حصان"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="type">النوع</Label>
+                          <Select
+                            value={formData.type}
+                            onValueChange={(value) =>
+                              setFormData({ ...formData, type: value })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="اختر النوع" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="split">سبليت</SelectItem>
+                              <SelectItem value="window">شباك</SelectItem>
+                              <SelectItem value="portable">متنقل</SelectItem>
+                              <SelectItem value="central">مركزي</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
 
-                    {/* Description */}
-                    <div className="space-y-2">
-                      <Label htmlFor="description">الوصف</Label>
-                      <Textarea
-                        id="description"
-                        value={formData.description}
-                        onChange={(e) =>
-                          setFormData({ ...formData, description: e.target.value })
-                        }
-                        rows={3}
-                      />
-                    </div>
+                      {/* Model */}
+                      <div className="space-y-2">
+                        <Label htmlFor="model">الموديل</Label>
+                        <Input
+                          id="model"
+                          value={formData.model}
+                          onChange={(e) =>
+                            setFormData({ ...formData, model: e.target.value })
+                          }
+                        />
+                      </div>
 
-                    {/* Features */}
-                    <div className="space-y-2">
-                      <Label htmlFor="features">المميزات (سطر لكل ميزة)</Label>
-                      <Textarea
-                        id="features"
-                        value={formData.features}
-                        onChange={(e) =>
-                          setFormData({ ...formData, features: e.target.value })
-                        }
-                        rows={4}
-                        placeholder="تبريد سريع&#10;توفير الطاقة&#10;ضمان 5 سنوات"
-                      />
-                    </div>
+                      {/* Stock */}
+                      <div className="space-y-2">
+                        <Label htmlFor="stock">المخزون المتاح</Label>
+                        <Input
+                          id="stock"
+                          type="number"
+                          min="0"
+                          value={formData.stock}
+                          onChange={(e) =>
+                            setFormData({ ...formData, stock: e.target.value })
+                          }
+                          placeholder="0"
+                        />
+                      </div>
 
-                    {/* Active Status */}
-                    <div className="flex items-center gap-3">
-                      <Switch
-                        id="is_active"
-                        checked={formData.is_active}
-                        onCheckedChange={(checked) =>
-                          setFormData({ ...formData, is_active: checked })
-                        }
-                      />
-                      <Label htmlFor="is_active">المنتج نشط ومرئي</Label>
-                    </div>
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <Label htmlFor="description">الوصف</Label>
+                        <Textarea
+                          id="description"
+                          value={formData.description}
+                          onChange={(e) =>
+                            setFormData({ ...formData, description: e.target.value })
+                          }
+                          rows={3}
+                        />
+                      </div>
 
-                    {/* Submit */}
-                    <div className="flex gap-2 pt-4">
-                      <Button
-                        type="submit"
-                        disabled={saving || uploadingImage}
-                        className="flex-1"
-                      >
-                        {saving || uploadingImage ? (
-                          <Loader2 className="w-4 h-4 animate-spin ml-2" />
-                        ) : null}
-                        {editingProduct ? "حفظ التغييرات" : "إضافة المنتج"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => setIsDialogOpen(false)}
-                      >
-                        إلغاء
-                      </Button>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                      {/* Features */}
+                      <div className="space-y-2">
+                        <Label htmlFor="features">المميزات (سطر لكل ميزة)</Label>
+                        <Textarea
+                          id="features"
+                          value={formData.features}
+                          onChange={(e) =>
+                            setFormData({ ...formData, features: e.target.value })
+                          }
+                          rows={4}
+                          placeholder="تبريد سريع&#10;توفير الطاقة&#10;ضمان 5 سنوات"
+                        />
+                      </div>
+
+                      {/* Active Status */}
+                      <div className="flex items-center gap-3">
+                        <Switch
+                          id="is_active"
+                          checked={formData.is_active}
+                          onCheckedChange={(checked) =>
+                            setFormData({ ...formData, is_active: checked })
+                          }
+                        />
+                        <Label htmlFor="is_active">المنتج نشط ومرئي</Label>
+                      </div>
+
+                      {/* Submit */}
+                      <div className="flex gap-2 pt-4">
+                        <Button
+                          type="submit"
+                          disabled={saving || uploadingImage}
+                          className="flex-1"
+                        >
+                          {saving || uploadingImage ? (
+                            <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                          ) : null}
+                          {editingProduct ? "حفظ التغييرات" : "إضافة المنتج"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setIsDialogOpen(false)}
+                        >
+                          إلغاء
+                        </Button>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
@@ -766,36 +779,41 @@ const ProductsAdmin = () => {
                 <span className="text-sm font-medium px-2">
                   محدد: {selectedProducts.length} منتج
                 </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={bulkActivate}
-                  disabled={bulkActionLoading}
-                  className="gap-1"
-                >
-                  <ToggleRight className="w-4 h-4" />
-                  تفعيل
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={bulkDeactivate}
-                  disabled={bulkActionLoading}
-                  className="gap-1"
-                >
-                  <ToggleLeft className="w-4 h-4" />
-                  إخفاء
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={bulkDelete}
-                  disabled={bulkActionLoading}
-                  className="gap-1"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  حذف
-                </Button>
+                {/* Only show action buttons for admin */}
+                {canEdit() && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={bulkActivate}
+                      disabled={bulkActionLoading}
+                      className="gap-1"
+                    >
+                      <ToggleRight className="w-4 h-4" />
+                      تفعيل
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={bulkDeactivate}
+                      disabled={bulkActionLoading}
+                      className="gap-1"
+                    >
+                      <ToggleLeft className="w-4 h-4" />
+                      إخفاء
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={bulkDelete}
+                      disabled={bulkActionLoading}
+                      className="gap-1"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      حذف
+                    </Button>
+                  </>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -887,29 +905,42 @@ const ProductsAdmin = () => {
                       </TableCell>
                       <TableCell>{product.capacity || "-"}</TableCell>
                       <TableCell>
-                        <Switch
-                          checked={product.is_active}
-                          onCheckedChange={() => toggleProductStatus(product)}
-                        />
+                        {canEdit() ? (
+                          <Switch
+                            checked={product.is_active}
+                            onCheckedChange={() => toggleProductStatus(product)}
+                          />
+                        ) : (
+                          <Badge variant={product.is_active ? "secondary" : "outline"}>
+                            {product.is_active ? "نشط" : "مخفي"}
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => openEditDialog(product)}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(product.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                        {canEdit() ? (
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => openEditDialog(product)}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive hover:text-destructive"
+                              onClick={() => handleDelete(product.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Badge variant="outline" className="text-muted-foreground">
+                            <Eye className="w-3 h-3 mr-1" />
+                            عرض
+                          </Badge>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
