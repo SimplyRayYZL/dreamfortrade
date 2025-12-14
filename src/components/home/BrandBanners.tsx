@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Zap, Thermometer, Wind, Wifi, Leaf, Shield, Snowflake, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import freshLogo from "@/assets/brands/image.png";
+import mideaLogo from "@/assets/brands/c795d2a928508da084ae9d04ba266576.png";
 
 // Brand logo URLs (from database)
 const brandLogos = {
     Carrier: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Logo_of_the_Carrier_Corporation.svg/330px-Logo_of_the_Carrier_Corporation.svg.png",
-    Midea: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Midea_logo.svg/512px-Midea_logo.svg.png",
+    Midea: mideaLogo,
     Fresh: freshLogo,
     Sharp: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Logo_of_the_Sharp_Corporation.svg",
 };
@@ -35,7 +36,7 @@ const brandBanners = [
         id: 2,
         brand: "Midea",
         logo: brandLogos.Midea,
-        logoScale: 2,
+        logoScale: 1.15,
         image: "/banner-midea.png",
         title: "تكنولوجيا متطورة",
         subtitle: "أفضل أسعار تكييفات ميديا في مصر",
