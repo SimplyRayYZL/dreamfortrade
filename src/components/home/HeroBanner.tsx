@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Snowflake } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/banners/hero-banner.jpg";
+
+const heroImage = "https://images.pexels.com/photos/4270088/pexels-photo-4270088.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop";
 
 const HeroBanner = () => {
   return (
     <section className="relative min-h-[650px] lg:min-h-[750px] overflow-hidden">
       {/* Background Image with parallax effect */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-110 animate-[slow-zoom_20s_ease-in-out_infinite_alternate]"
         style={{ backgroundImage: `url(${heroImage})` }}
       />

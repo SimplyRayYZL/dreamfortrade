@@ -142,14 +142,14 @@ const Products = () => {
           </div>
 
           {/* Products Grid */}
-          <section className="py-12 bg-background">
-            <div className="container mx-auto px-4">
+          <section className="py-8 sm:py-12 bg-background">
+            <div className="container mx-auto px-3 sm:px-4">
               {isLoading ? (
                 <div className="flex items-center justify-center py-20">
                   <Loader2 className="h-10 w-10 animate-spin text-secondary" />
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                   {filteredProducts.map((product, index) => (
                     <ProductCard key={product.id} product={product} index={index} />
                   ))}
