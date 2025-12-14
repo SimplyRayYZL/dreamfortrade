@@ -24,7 +24,7 @@ const AdminLogin = () => {
 
         if (success) {
             toast.success("تم تسجيل الدخول بنجاح!");
-            navigate("/admin/orders");
+            navigate("/admin");
         } else {
             toast.error("اسم المستخدم أو كلمة المرور غير صحيحة");
         }
