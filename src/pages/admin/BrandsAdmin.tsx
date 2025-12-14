@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Plus, Trash2, Edit, Save, X, Package,
     ArrowRight, Image as ImageIcon, ToggleLeft, ToggleRight
@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 interface Brand {
     id: string;
@@ -52,6 +53,17 @@ interface Brand {
 }
 
 const BrandsAdmin = () => {
+    const navigate = useNavigate();
+    const { canAccessBrands } = useAdminAuth();
+
+    // Redirect if not authorized
+    useEffect(() => {
+        if (!canAccessBrands()) {
+            toast.error("غير مصرح لك بالوصول لهذه الصفحة");
+            navigate("/admin");
+        }
+    }, [canAccessBrands, navigate]);
+
     const queryClient = useQueryClient();
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingBrand, setEditingBrand] = useState<Brand | null>(null);

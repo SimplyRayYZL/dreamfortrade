@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Settings,
     Store,
@@ -36,6 +36,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSiteSettings, useUpdateSettings, SiteSettings, DEFAULT_SETTINGS, ShippingArea, Banner } from "@/hooks/useSettings";
 import { toast } from "sonner";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
 
 // SQL Script for initializing Supabase database
 const DATABASE_INIT_SQL = `-- =====================================================
@@ -48,6 +49,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- =====================================================
 -- PROFILES TABLE
+
 -- =====================================================
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
@@ -233,9 +235,19 @@ SELECT 'Database initialized successfully!' as message;
 `;
 
 const SettingsAdmin = () => {
+    const navigate = useNavigate();
+    const { canAccessSettings } = useAdminAuth();
     const { data: settings, isLoading } = useSiteSettings();
     const updateSettings = useUpdateSettings();
     const [formData, setFormData] = useState<SiteSettings>(DEFAULT_SETTINGS);
+
+    // Redirect if not authorized
+    useEffect(() => {
+        if (!canAccessSettings()) {
+            toast.error("غير مصرح لك بالوصول لهذه الصفحة");
+            navigate("/admin");
+        }
+    }, [canAccessSettings, navigate]);
 
     useEffect(() => {
         if (settings) {

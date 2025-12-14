@@ -430,12 +430,6 @@ const ProductsAdmin = () => {
                   الماركات
                 </Button>
               </Link>
-              <Link to="/admin/enhance-images">
-                <Button variant="outline" className="gap-2">
-                  <Upload className="w-4 h-4" />
-                  تحسين الصور
-                </Button>
-              </Link>
               <Button onClick={() => refetch()} variant="outline" className="gap-2">
                 <RefreshCw className="w-4 h-4" />
                 تحديث

@@ -26,7 +26,6 @@ const Checkout = lazy(() => import("./pages/Checkout"));
 const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Compare = lazy(() => import("./pages/Compare"));
-const AdminImageEnhancer = lazy(() => import("./pages/AdminImageEnhancer"));
 const ProductsAdmin = lazy(() => import("./pages/admin/ProductsAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const BrandsAdmin = lazy(() => import("./pages/admin/BrandsAdmin"));
@@ -95,7 +94,6 @@ const App = () => (
                           {/* Admin Routes */}
                           <Route path="/admin/login" element={<AdminLogin />} />
                           <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-                          <Route path="/admin/enhance-images" element={<ProtectedAdminRoute><AdminImageEnhancer /></ProtectedAdminRoute>} />
                           <Route path="/admin/products" element={<ProtectedAdminRoute><ProductsAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/orders" element={<ProtectedAdminRoute><OrdersAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/brands" element={<ProtectedAdminRoute><BrandsAdmin /></ProtectedAdminRoute>} />
