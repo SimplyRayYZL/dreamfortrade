@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 // Brand logo URLs (from database)
 const brandLogos = {
     Carrier: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Logo_of_the_Carrier_Corporation.svg/330px-Logo_of_the_Carrier_Corporation.svg.png",
-    Midea: "https://images.seeklogo.com/logo-png/9/1/midea-logo-png_seeklogo-92432.png",
+    Midea: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Midea_logo.svg/512px-Midea_logo.svg.png",
     Fresh: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Fresh_Electric.jpg/960px-Fresh_Electric.jpg",
     Sharp: "https://upload.wikimedia.org/wikipedia/commons/c/c8/Logo_of_the_Sharp_Corporation.svg",
 };
@@ -34,7 +34,7 @@ const brandBanners = [
         id: 2,
         brand: "Midea",
         logo: brandLogos.Midea,
-        logoScale: 1.6,
+        logoScale: 2,
         image: "/banner-midea.png",
         title: "تكنولوجيا متطورة",
         subtitle: "أفضل أسعار تكييفات ميديا في مصر",
