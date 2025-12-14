@@ -17,8 +17,11 @@ const ProductsSection = () => {
   const { data: products = [], isLoading } = useProducts();
   const { addToCart } = useCart();
 
-  // Get first 6 products for homepage
-  const featuredProducts = products.slice(0, 6);
+  // Get cheapest 6 products for homepage (exclusive offers)
+  const featuredProducts = [...products]
+    .filter(p => p.price > 0)
+    .sort((a, b) => a.price - b.price)
+    .slice(0, 6);
 
   const getProductImage = (product: typeof products[0], index: number) => {
     if (product.image_url) {
@@ -40,7 +43,7 @@ const ProductsSection = () => {
         <div className="flex flex-col md:flex-row items-center justify-between mb-8 sm:mb-12 opacity-0 animate-[slide-up_0.8s_ease-out_forwards]">
           <div className="text-center md:text-right mb-4 sm:mb-6 md:mb-0">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">
-              أحدث <span className="text-secondary">المنتجات</span>
+              عروض <span className="text-secondary">حصرية</span>
             </h2>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
               اكتشف مجموعتنا الواسعة من التكييفات العصرية بأفضل الأسعار
