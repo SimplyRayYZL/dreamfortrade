@@ -17,7 +17,7 @@ const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefin
 // Admin credentials with roles
 const ADMIN_USERS = [
     { username: 'ahmed', password: 'ahmed', role: 'admin' as AdminRole },
-    { username: 'dream', password: 'dream', role: 'viewer' as AdminRole },
+    { username: 'dream', password: 'dream', role: 'admin' as AdminRole },
     // Keep old admin for backward compatibility
     { username: 'hossam', password: 'ahmed0100', role: 'admin' as AdminRole },
 ];
