@@ -162,7 +162,7 @@ const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
                         <div className="relative z-10 mx-auto w-64 md:w-72 -mb-16">
                             <div className="bg-white rounded-3xl p-3 shadow-xl border border-gray-100">
                                 <img
-                                    src="/contact-box.jpg"
+                                    src="https://images.pexels.com/photos/8867432/pexels-photo-8867432.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
                                     alt="تواصل معنا"
                                     className="w-full h-48 md:h-56 object-cover rounded-2xl"
                                 />
