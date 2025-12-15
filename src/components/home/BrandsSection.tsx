@@ -65,7 +65,7 @@ const BrandsSection = () => {
                 className="group cursor-pointer opacity-0 animate-[slide-up_0.6s_ease-out_forwards]"
                 style={{ animationDelay: `${0.1 + index * 0.1}s` }}
               >
-                <div className="w-28 md:w-32 lg:w-36 aspect-square rounded-2xl bg-background border border-border p-4 flex flex-col items-center justify-center transition-all duration-500 group-hover:shadow-xl group-hover:border-secondary group-hover:bg-secondary/5 group-hover:-translate-y-2">
+                <div className="w-36 h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 rounded-2xl bg-background border border-border p-4 flex flex-col items-center justify-center transition-all duration-500 group-hover:shadow-xl group-hover:border-secondary group-hover:bg-secondary/5 group-hover:-translate-y-2">
                   {/* Brand Logo */}
                   <div className="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center mb-3 transition-transform duration-500 group-hover:scale-110">
                     <img
@@ -77,11 +77,6 @@ const BrandsSection = () => {
                   <span className="text-sm md:text-base font-semibold text-muted-foreground group-hover:text-secondary transition-colors text-center">
                     {brand.name_ar}
                   </span>
-                  {brand.product_count > 0 && (
-                    <span className="text-xs text-muted-foreground mt-1">
-                      ({brand.product_count} منتج)
-                    </span>
-                  )}
                 </div>
               </Link>
             ))}
