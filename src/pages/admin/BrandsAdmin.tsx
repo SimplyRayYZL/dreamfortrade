@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
     Plus, Trash2, Edit, Save, X, Package,
-    ArrowRight, Image as ImageIcon, ToggleLeft, ToggleRight
+    ArrowRight, Image as ImageIcon, ToggleLeft, ToggleRight, Upload, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,6 +60,35 @@ const BrandsAdmin = () => {
         name_ar: "",
         logo_url: "",
     });
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
+
+    // Upload logo to Supabase Storage
+    const uploadLogo = async (file: File, brandName: string): Promise<string | null> => {
+        try {
+            setUploading(true);
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${brandName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${fileExt}`;
+
+            const { data, error } = await supabase.storage
+                .from('brand-logos')
+                .upload(fileName, file, { upsert: true });
+
+            if (error) throw error;
+
+            const { data: urlData } = supabase.storage
+                .from('brand-logos')
+                .getPublicUrl(fileName);
+
+            return urlData.publicUrl;
+        } catch (error) {
+            console.error('Error uploading logo:', error);
+            toast.error('فشل رفع الصورة');
+            return null;
+        } finally {
+            setUploading(false);
+        }
+    };
 
     // Fetch brands with product count
     const { data: brands, isLoading } = useQuery({
@@ -177,18 +206,29 @@ const BrandsAdmin = () => {
 
     const resetForm = () => {
         setFormData({ name: "", name_ar: "", logo_url: "" });
+        setSelectedFile(null);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!formData.name || !formData.name_ar) {
             toast.error("يرجى ملء جميع الحقول المطلوبة");
             return;
         }
 
+        let logoUrl = formData.logo_url;
+
+        // Upload file if selected
+        if (selectedFile) {
+            const uploadedUrl = await uploadLogo(selectedFile, formData.name);
+            if (uploadedUrl) {
+                logoUrl = uploadedUrl;
+            }
+        }
+
         if (editingBrand) {
-            updateBrandMutation.mutate({ id: editingBrand.id, ...formData });
+            updateBrandMutation.mutate({ id: editingBrand.id, ...formData, logo_url: logoUrl });
         } else {
-            addBrandMutation.mutate(formData);
+            addBrandMutation.mutate({ ...formData, logo_url: logoUrl });
         }
     };
 
@@ -255,7 +295,19 @@ const BrandsAdmin = () => {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>رابط الشعار (اختياري)</Label>
+                                            <Label>رفع شعار الماركة</Label>
+                                            <div className="flex items-center gap-2">
+                                                <Input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                                    className="flex-1"
+                                                />
+                                                {selectedFile && (
+                                                    <span className="text-sm text-green-600">✓ {selectedFile.name}</span>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">أو أدخل رابط الصورة:</p>
                                             <Input
                                                 value={formData.logo_url}
                                                 onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
@@ -270,10 +322,12 @@ const BrandsAdmin = () => {
                                         </DialogClose>
                                         <Button
                                             onClick={handleSubmit}
-                                            disabled={addBrandMutation.isPending}
+                                            disabled={addBrandMutation.isPending || uploading}
                                             className="bg-secondary hover:bg-secondary/90"
                                         >
-                                            {addBrandMutation.isPending ? "جاري الإضافة..." : "إضافة"}
+                                            {uploading ? (
+                                                <><Loader2 className="h-4 w-4 animate-spin ml-2" />جاري الرفع...</>
+                                            ) : addBrandMutation.isPending ? "جاري الإضافة..." : "إضافة"}
                                         </Button>
                                     </DialogFooter>
                                 </DialogContent>
@@ -391,7 +445,19 @@ const BrandsAdmin = () => {
                                                                         />
                                                                     </div>
                                                                     <div className="space-y-2">
-                                                                        <Label>رابط الشعار</Label>
+                                                                        <Label>رفع شعار جديد</Label>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <Input
+                                                                                type="file"
+                                                                                accept="image/*"
+                                                                                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                                                                className="flex-1"
+                                                                            />
+                                                                            {selectedFile && (
+                                                                                <span className="text-sm text-green-600">✓ {selectedFile.name}</span>
+                                                                            )}
+                                                                        </div>
+                                                                        <p className="text-xs text-muted-foreground">أو أدخل رابط الصورة:</p>
                                                                         <Input
                                                                             value={formData.logo_url}
                                                                             onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
@@ -405,10 +471,12 @@ const BrandsAdmin = () => {
                                                                     </DialogClose>
                                                                     <Button
                                                                         onClick={handleSubmit}
-                                                                        disabled={updateBrandMutation.isPending}
+                                                                        disabled={updateBrandMutation.isPending || uploading}
                                                                         className="bg-secondary hover:bg-secondary/90"
                                                                     >
-                                                                        {updateBrandMutation.isPending ? "جاري الحفظ..." : "حفظ"}
+                                                                        {uploading ? (
+                                                                            <><Loader2 className="h-4 w-4 animate-spin ml-2" />جاري الرفع...</>
+                                                                        ) : updateBrandMutation.isPending ? "جاري الحفظ..." : "حفظ"}
                                                                     </Button>
                                                                 </DialogFooter>
                                                             </DialogContent>
