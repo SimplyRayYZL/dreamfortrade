@@ -29,9 +29,11 @@ const BrandsSection = () => {
   );
 
   const getBrandLogo = (brand: typeof brands[0]) => {
-    if (brand.logo_url && brand.logo_url.startsWith("http")) {
+    // Use logo_url from database if it exists (supports http, https, or relative paths)
+    if (brand.logo_url && brand.logo_url.trim() !== '') {
       return brand.logo_url;
     }
+    // Fallback to local logos
     return fallbackLogos[brand.name] || sharpLogo;
   };
 
