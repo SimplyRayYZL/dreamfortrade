@@ -1,4 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export interface ShippingArea {
     id: string;
@@ -193,8 +195,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
 
 const SETTINGS_KEY = "site_settings";
 
-// Get settings from localStorage
-const getStoredSettings = (): SiteSettings => {
+// Get settings from localStorage as fallback
+const getLocalSettings = (): SiteSettings => {
     try {
         const stored = localStorage.getItem(SETTINGS_KEY);
         if (stored) {
@@ -206,45 +208,84 @@ const getStoredSettings = (): SiteSettings => {
     }
 };
 
-// Save settings to localStorage
-const saveSettings = (settings: SiteSettings) => {
+// Save settings to localStorage as cache
+const cacheSettings = (settings: SiteSettings) => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 };
 
-// Fetch site settings
+// Fetch site settings from Supabase
 export const useSiteSettings = () => {
     return useQuery({
         queryKey: ["site-settings"],
         queryFn: async (): Promise<SiteSettings> => {
-            return getStoredSettings();
+            try {
+                const { data, error } = await (supabase
+                    .from("site_settings") as any)
+                    .select("settings")
+                    .eq("id", "main")
+                    .single();
+
+                if (error || !data) {
+                    // Fall back to localStorage if DB fails
+                    return getLocalSettings();
+                }
+
+                const dbSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+                cacheSettings(dbSettings); // Cache locally
+                return dbSettings;
+            } catch {
+                return getLocalSettings();
+            }
         },
+        staleTime: 1000 * 60 * 5, // 5 minutes
     });
 };
 
-// Update site settings
+// Update site settings in Supabase
 export const useUpdateSettings = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (settings: SiteSettings): Promise<SiteSettings> => {
-            saveSettings(settings);
+            // Save to localStorage as cache
+            cacheSettings(settings);
+
+            // Save to Supabase
+            const { error } = await (supabase
+                .from("site_settings") as any)
+                .upsert({
+                    id: "main",
+                    settings: settings,
+                    updated_at: new Date().toISOString()
+                });
+
+            if (error) {
+                console.error("Error saving settings:", error);
+                toast.error("فشل حفظ الإعدادات في قاعدة البيانات");
+                throw error;
+            }
+
+            toast.success("تم حفظ الإعدادات بنجاح");
             return settings;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["site-settings"] });
         },
+        onError: () => {
+            toast.error("حدث خطأ أثناء حفظ الإعدادات");
+        }
     });
 };
 
 // Get only active shipping areas
 export const getActiveShippingAreas = (): ShippingArea[] => {
-    const settings = getStoredSettings();
+    const settings = getLocalSettings();
     return settings.shipping_areas.filter((area) => area.isActive);
 };
 
 // Get only active banners
 export const getActiveBanners = (): Banner[] => {
-    const settings = getStoredSettings();
+    const settings = getLocalSettings();
     return settings.banners.filter((banner) => banner.isActive).sort((a, b) => a.order - b.order);
 };
 
