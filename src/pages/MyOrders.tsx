@@ -115,7 +115,7 @@ const MyOrders = () => {
             refetch();
         } catch (error) {
             console.error("Error cancelling order:", error);
-            toast.error("فشل في إلغاء الطلب");
+            toast.error(`فشل في إلغاء الطلب: ${(error as any).message || "خطأ غير معروف"}`);
         } finally {
             setCancellingOrderId(null);
         }
