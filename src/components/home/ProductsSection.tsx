@@ -92,7 +92,7 @@ const ProductsSection = () => {
                     <img
                       src={getProductImage(product, index)}
                       alt={product.name}
-                      className="absolute inset-0 w-full h-full object-contain p-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
+                      className="absolute inset-0 w-full h-full object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-1"
                       onError={(e) => {
                         e.currentTarget.src = fallbackImages[index % fallbackImages.length];
                       }}

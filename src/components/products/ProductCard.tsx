@@ -100,7 +100,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
           <img
             src={getProductImage()}
             alt={product.name}
-            className="absolute inset-0 w-full h-full object-contain p-2 sm:p-3 transition-all duration-500 group-hover:scale-110"
+            className="absolute inset-0 w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
             onError={(e) => {
               e.currentTarget.src = fallbackImages[index % fallbackImages.length];
             }}
