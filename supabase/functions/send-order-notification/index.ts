@@ -46,7 +46,7 @@ serve(async (req) => {
                 Authorization: `Bearer ${RESEND_API_KEY}`,
             },
             body: JSON.stringify({
-                from: "Target Air Conditioning <orders@targetaircool.com>",
+                from: "Target Air Conditioning <onboarding@resend.dev>",
                 to: [ADMIN_EMAIL],
                 subject: `🛒 طلب جديد #${orderData.orderId.slice(0, 8)}`,
                 html: `
