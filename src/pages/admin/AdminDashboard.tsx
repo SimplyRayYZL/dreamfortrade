@@ -46,6 +46,14 @@ const AdminDashboard = () => {
             allowed: true,
         },
         {
+            title: "إدارة البنرات",
+            description: "تعديل بنرات الماركات على الصفحة الرئيسية",
+            icon: Package,
+            href: "/admin/banners",
+            color: "bg-cyan-500",
+            allowed: true,
+        },
+        {
             title: "إعدادات الموقع",
             description: "إعدادات المتجر، السوشيال، الشحن، SEO",
             icon: Settings,

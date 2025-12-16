@@ -6,7 +6,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCompare } from "@/contexts/CompareContext";
 import { useAuth } from "@/contexts/AuthContext";
-import ThemeToggle from "@/components/ThemeToggle";
 import SearchDialog from "@/components/SearchDialog";
 import {
     DropdownMenu,
@@ -160,8 +159,6 @@ const Navbar = () => {
                                     )}
                                 </DropdownMenuContent>
                             </DropdownMenu>
-
-                            <ThemeToggle />
 
                             {/* Mobile menu button */}
                             <Button
