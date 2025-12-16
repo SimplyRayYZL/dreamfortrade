@@ -128,14 +128,12 @@ const BrandBanners = () => {
                                     <div className="text-white text-center md:text-right">
                                         {/* Brand Logo */}
                                         <div className="flex justify-center md:justify-end mb-5">
-                                            <div className="bg-white rounded-xl px-4 py-2 shadow-lg flex items-center justify-center" style={{ width: '140px', height: '50px' }}>
-                                                <img
-                                                    src={currentBanner.logo}
-                                                    alt={currentBanner.brand}
-                                                    className="max-h-[36px] max-w-[120px] w-auto h-auto object-contain"
-                                                    style={{ transform: `scale(${currentBanner.logoScale || 1})` }}
-                                                />
-                                            </div>
+                                            <img
+                                                src={currentBanner.logo}
+                                                alt={currentBanner.brand}
+                                                className="max-h-[50px] max-w-[160px] w-auto h-auto object-contain drop-shadow-lg"
+                                                style={{ transform: `scale(${currentBanner.logoScale || 1})` }}
+                                            />
                                         </div>
 
                                         {/* Tagline */}

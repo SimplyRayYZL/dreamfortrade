@@ -143,7 +143,7 @@ const Checkout = () => {
 
             // Send email notification to admin
             try {
-                await supabase.functions.invoke('send-order-email', {
+                await supabase.functions.invoke('send-order-notification', {
                     body: {
                         orderId: order.id,
                         customerName: formData.customerName,
