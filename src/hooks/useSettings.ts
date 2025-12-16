@@ -219,25 +219,37 @@ export const useSiteSettings = () => {
         queryKey: ["site-settings"],
         queryFn: async (): Promise<SiteSettings> => {
             try {
+                console.log("[Settings] Fetching settings from Supabase...");
                 const { data, error } = await (supabase
                     .from("site_settings") as any)
                     .select("settings")
                     .eq("id", "main")
                     .single();
 
-                if (error || !data) {
-                    // Fall back to localStorage if DB fails
+                console.log("[Settings] Supabase response:", { data, error });
+
+                if (error) {
+                    console.error("[Settings] Supabase error:", error);
                     return getLocalSettings();
                 }
 
-                const dbSettings = { ...DEFAULT_SETTINGS, ...data.settings };
-                cacheSettings(dbSettings); // Cache locally
-                return dbSettings;
-            } catch {
+                // Check if data.settings exists and has content
+                if (data && data.settings && Object.keys(data.settings).length > 0) {
+                    console.log("[Settings] Using DB settings:", data.settings);
+                    const dbSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+                    cacheSettings(dbSettings);
+                    return dbSettings;
+                } else {
+                    console.log("[Settings] DB settings empty, using localStorage/defaults");
+                    return getLocalSettings();
+                }
+            } catch (e) {
+                console.error("[Settings] Exception:", e);
                 return getLocalSettings();
             }
         },
         staleTime: 1000 * 60 * 5, // 5 minutes
+        refetchOnWindowFocus: true,
     });
 };
 
