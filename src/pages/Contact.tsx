@@ -9,17 +9,20 @@ import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import contactBanner from "@/assets/banners/contact-banner.jpg";
-
-const contactInfo = [
-  { icon: Phone, title: "اتصل بنا", value: "01208000550", href: "tel:01208000550", description: "متاحين من 9 صباحاً حتى 10 مساءً" },
-  { icon: MessageCircle, title: "واتساب", value: "01208000550", href: "https://wa.me/201208000550", description: "رد سريع على استفساراتك" },
-  { icon: Mail, title: "البريد الإلكتروني", value: "info@target-ac.com", href: "mailto:info@target-ac.com", description: "نرد خلال 24 ساعة" },
-  { icon: MapPin, title: "العنوان", value: "القاهرة - مصر", href: "#map", description: "زيارة المعرض" },
-];
+import { useSiteSettings } from "@/hooks/useSettings";
 
 const Contact = () => {
+  const { data: settings } = useSiteSettings();
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Dynamic contact info from settings
+  const contactInfo = [
+    { icon: Phone, title: "اتصل بنا", value: settings?.store_phone || "01208000550", href: `tel:${settings?.store_phone || "01208000550"}`, description: "متاحين من 9 صباحاً حتى 10 مساءً" },
+    { icon: MessageCircle, title: "واتساب", value: settings?.store_phone || "01208000550", href: `https://wa.me/${settings?.store_whatsapp || "201208000550"}`, description: "رد سريع على استفساراتك" },
+    { icon: Mail, title: "البريد الإلكتروني", value: settings?.store_email || "info@target-ac.com", href: `mailto:${settings?.store_email || "info@target-ac.com"}`, description: "نرد خلال 24 ساعة" },
+    { icon: MapPin, title: "العنوان", value: settings?.store_address || "القاهرة - مصر", href: "#map", description: "زيارة المعرض" },
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

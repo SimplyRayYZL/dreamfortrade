@@ -248,8 +248,9 @@ export const useSiteSettings = () => {
                 return getLocalSettings();
             }
         },
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 0, // Always fetch fresh data
         refetchOnWindowFocus: true,
+        refetchOnMount: true,
     });
 };
 
