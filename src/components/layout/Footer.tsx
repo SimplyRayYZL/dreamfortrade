@@ -51,20 +51,20 @@ const Footer = () => {
             <h3 className="text-lg font-bold">تواصل معنا</h3>
             <ul className="space-y-3">
               <li>
-                <a href="tel:01208000550" className="flex items-center gap-3 text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                <a href={`tel:${settings?.store_phone || "01208000550"}`} className="flex items-center gap-3 text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
                   <Phone className="h-4 w-4 flex-shrink-0" />
-                  <span>01208000550</span>
+                  <span>{settings?.store_phone || "01208000550"}</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@target-ac.com" className="flex items-center gap-3 text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
+                <a href={`mailto:${settings?.store_email || "info@target-ac.com"}`} className="flex items-center gap-3 text-primary-foreground/80 hover:text-secondary transition-colors text-sm">
                   <Mail className="h-4 w-4 flex-shrink-0" />
-                  <span>info@target-ac.com</span>
+                  <span>{settings?.store_email || "info@target-ac.com"}</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-primary-foreground/80 text-sm">
                 <MapPin className="h-4 w-4 flex-shrink-0 mt-1" />
-                <span>مصر - القاهرة</span>
+                <span>{settings?.store_address || "مصر - القاهرة"}</span>
               </li>
             </ul>
           </div>
