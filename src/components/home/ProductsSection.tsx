@@ -70,7 +70,7 @@ const ProductsSection = () => {
               >
                 {/* Product Image */}
                 <Link to={`/product/${product.id}`}>
-                  <div className="relative aspect-[4/3] bg-gradient-to-br from-muted to-background rounded-xl mb-4 overflow-hidden">
+                  <div className="relative aspect-square bg-gradient-to-br from-muted to-background rounded-xl mb-4 overflow-hidden">
                     {/* Discount Badge */}
                     {product.oldPrice && (
                       <div className="absolute top-3 right-3 bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-bold z-10 animate-pulse">
