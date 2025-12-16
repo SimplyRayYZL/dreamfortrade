@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Eye, Star, Loader2 } from "lucide-react";
+import { ShoppingCart, Heart, Star, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
@@ -78,13 +78,10 @@ const ProductsSection = () => {
                       </div>
                     )}
 
-                    {/* Wishlist & Quick View */}
+                    {/* Wishlist */}
                     <div className="absolute top-3 left-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 z-10">
                       <button className="w-9 h-9 rounded-full bg-card shadow-md flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors">
                         <Heart className="h-4 w-4" />
-                      </button>
-                      <button className="w-9 h-9 rounded-full bg-card shadow-md flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors">
-                        <Eye className="h-4 w-4" />
                       </button>
                     </div>
 
