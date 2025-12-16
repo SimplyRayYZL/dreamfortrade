@@ -6,6 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCompare } from "@/contexts/CompareContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteSettings } from "@/hooks/useSettings";
 import SearchDialog from "@/components/SearchDialog";
 import {
     DropdownMenu,
@@ -24,6 +25,7 @@ const Navbar = () => {
     const { items: wishlistItems } = useWishlist();
     const { items: compareItems } = useCompare();
     const { user, signOut } = useAuth();
+    const { data: settings } = useSiteSettings();
 
     const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -45,12 +47,13 @@ const Navbar = () => {
                 {/* Top Bar */}
                 <div className="bg-secondary text-secondary-foreground py-1.5 text-sm hidden md:block">
                     <div className="container mx-auto px-4 flex justify-between items-center">
-                        <span>شركة تارجت لأعمال التكييف</span>
-                        <a href="tel:01208000550" className="hover:underline flex items-center gap-1">
-                            📞 01208000550
+                        <span>{settings?.store_description || "شركة تارجت لأعمال التكييف"}</span>
+                        <a href={`tel:${settings?.store_phone || "01208000550"}`} className="hover:underline flex items-center gap-1">
+                            📞 {settings?.store_phone || "01208000550"}
                         </a>
                     </div>
                 </div>
+
 
                 {/* Main Navbar */}
                 <nav className="container mx-auto px-4">

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Facebook, Instagram, MessageCircle } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSettings";
 
 const Footer = () => {
+  const { data: settings } = useSiteSettings();
+
   return (
     <footer className="bg-primary text-primary-foreground">
       {/* Main Footer */}
@@ -10,14 +13,14 @@ const Footer = () => {
           {/* About */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Target Air Conditioning" className="h-14 w-auto" />
+              <img src={settings?.store_logo || "/logo.png"} alt={settings?.store_name || "Target Air Conditioning"} className="h-14 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-bold">Target</span>
+                <span className="text-xl font-bold">{settings?.store_name_en || "Target"}</span>
                 <span className="text-xs text-primary-foreground/70 -mt-1">Air Conditioning</span>
               </div>
             </div>
             <p className="text-primary-foreground/80 text-sm leading-relaxed">
-              شركة تارجت لأعمال التكييف. نوفر لكم أفضل المنتجات بأفضل الأسعار مع ضمان الجودة وخدمة ما بعد البيع.
+              {settings?.footer_text || "شركة تارجت لأعمال التكييف"}. نوفر لكم أفضل المنتجات بأفضل الأسعار مع ضمان الجودة وخدمة ما بعد البيع.
             </p>
           </div>
 
