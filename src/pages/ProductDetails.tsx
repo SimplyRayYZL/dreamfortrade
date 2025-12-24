@@ -260,7 +260,7 @@ const ProductDetails = () => {
                     )}
                   </div>
 
-                  {/* Specifications */}}
+                  {/* Specifications */}
                   <div className="bg-muted/50 rounded-xl p-6 space-y-4">
                     <h3 className="font-bold text-foreground">المواصفات</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
