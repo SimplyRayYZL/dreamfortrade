@@ -70,7 +70,7 @@ const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
                     </div>
 
                     {/* Features Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
                         {features.map((feature, index) => (
                             <div
                                 key={index}
