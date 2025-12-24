@@ -260,44 +260,7 @@ const ProductDetails = () => {
                     )}
                   </div>
 
-                  {/* Description - Moved here for better UX */}
-                  {product.description && (
-                    <div className="space-y-3 bg-muted/30 rounded-xl p-4">
-                      <h3 className="font-bold text-foreground">الوصف</h3>
-                      <div className="text-muted-foreground leading-relaxed space-y-2 text-sm">
-                        {product.description.split('\n').map((line, index) => {
-                          if (line.trim().startsWith('##')) {
-                            return (
-                              <h4 key={index} className="font-bold text-foreground text-base mt-3">
-                                {line.replace('##', '').trim()}
-                              </h4>
-                            );
-                          }
-                          if (line.trim().startsWith('#')) {
-                            return (
-                              <h4 key={index} className="font-bold text-foreground text-lg mt-3">
-                                {line.replace('#', '').trim()}
-                              </h4>
-                            );
-                          }
-                          if (line.trim().startsWith('-')) {
-                            return (
-                              <div key={index} className="flex gap-2 pr-4">
-                                <span className="text-secondary">•</span>
-                                <span>{line.replace('-', '').trim()}</span>
-                              </div>
-                            );
-                          }
-                          if (line.trim() === '') {
-                            return <div key={index} className="h-1" />;
-                          }
-                          return <p key={index}>{line}</p>;
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Specifications */}
+                  {/* Specifications */}}
                   <div className="bg-muted/50 rounded-xl p-6 space-y-4">
                     <h3 className="font-bold text-foreground">المواصفات</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
@@ -441,6 +404,45 @@ const ProductDetails = () => {
               </div>
             </div>
           </section>
+
+          {/* Description Section - Full Width */}
+          {product.description && (
+            <section className="py-8 bg-muted/30">
+              <div className="container mx-auto px-4">
+                <h3 className="text-xl font-bold text-foreground mb-4">الوصف</h3>
+                <div className="text-muted-foreground leading-relaxed space-y-2">
+                  {product.description.split('\n').map((line, index) => {
+                    if (line.trim().startsWith('##')) {
+                      return (
+                        <h4 key={index} className="font-bold text-foreground text-lg mt-4">
+                          {line.replace('##', '').trim()}
+                        </h4>
+                      );
+                    }
+                    if (line.trim().startsWith('#')) {
+                      return (
+                        <h4 key={index} className="font-bold text-foreground text-xl mt-4">
+                          {line.replace('#', '').trim()}
+                        </h4>
+                      );
+                    }
+                    if (line.trim().startsWith('-')) {
+                      return (
+                        <div key={index} className="flex gap-2 pr-4">
+                          <span className="text-secondary">•</span>
+                          <span>{line.replace('-', '').trim()}</span>
+                        </div>
+                      );
+                    }
+                    if (line.trim() === '') {
+                      return <div key={index} className="h-2" />;
+                    }
+                    return <p key={index}>{line}</p>;
+                  })}
+                </div>
+              </div>
+            </section>
+          )}
 
           {/* Customer Reviews */}
           <section className="py-12">
