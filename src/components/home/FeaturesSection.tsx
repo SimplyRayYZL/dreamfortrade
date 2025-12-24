@@ -1,4 +1,4 @@
-import { Truck, Shield, Headphones, CreditCard, Wrench, Award } from "lucide-react";
+import { Truck, Shield, Headphones, Wrench, Award } from "lucide-react";
 
 const features = [
   {
@@ -20,11 +20,6 @@ const features = [
     icon: Headphones,
     title: "دعم فني 24/7",
     description: "فريق دعم متواجد على مدار الساعة",
-  },
-  {
-    icon: CreditCard,
-    title: "تقسيط مريح",
-    description: "خطط تقسيط بدون فوائد",
   },
   {
     icon: Award,

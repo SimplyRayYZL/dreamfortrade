@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Star, MessageCircle, Phone, Truck, Shield, Wrench, Headphones, CreditCard, Package, Snowflake, Facebook, Instagram, Mail } from "lucide-react";
+import { ArrowLeft, Star, MessageCircle, Phone, Truck, Shield, Wrench, Headphones, Package, Snowflake, Facebook, Instagram, Mail } from "lucide-react";
 import "@/styles/snow.css";
 
 interface PromoBannerProps {
@@ -15,7 +15,6 @@ const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
             { icon: Shield, title: "ضمان شامل", desc: "ضمان حتى 5 سنوات على جميع المنتجات" },
             { icon: Wrench, title: "تركيب مجاني", desc: "فريق متخصص للتركيب والصيانة" },
             { icon: Headphones, title: "دعم فني 24/7", desc: "فريق دعم متواجد على مدار الساعة" },
-            { icon: CreditCard, title: "تقسيط مريح", desc: "خطط تقسيط بدون فوائد" },
             { icon: Package, title: "منتجات أصلية", desc: "وكيل معتمد لأشهر الماركات" },
         ];
 
