@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const ADMIN_EMAIL = "ahmedhossa20008@gmail.com";
+const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY");
+const ADMIN_EMAIL = "hossamlotfyabdelmonam@gmail.com";
+const SENDER_EMAIL = "hossamlotfyabdelmonam@gmail.com";
+const SENDER_NAME = "Target Air Conditioning";
 
 interface OrderData {
     orderId: string;
@@ -38,18 +40,26 @@ serve(async (req) => {
             `• ${item.name} (الكمية: ${item.quantity}) - ${item.price} ج.م`
         ).join("\n") || "لا توجد تفاصيل";
 
-        // Send email to admin
-        const res = await fetch("https://api.resend.com/emails", {
+        // Send email using Brevo API
+        const res = await fetch("https://api.brevo.com/v3/smtp/email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${RESEND_API_KEY}`,
+                "api-key": BREVO_API_KEY!,
             },
             body: JSON.stringify({
-                from: "Target Air Conditioning <onboarding@resend.dev>",
-                to: [ADMIN_EMAIL],
+                sender: {
+                    name: SENDER_NAME,
+                    email: SENDER_EMAIL,
+                },
+                to: [
+                    {
+                        email: ADMIN_EMAIL,
+                        name: "Admin",
+                    },
+                ],
                 subject: `🛒 طلب جديد #${orderData.orderId.slice(0, 8)}`,
-                html: `
+                htmlContent: `
           <div dir="rtl" style="font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #0057A0 0%, #003366 100%); color: white; padding: 20px; border-radius: 10px; text-align: center;">
               <h1 style="margin: 0;">🎉 طلب جديد!</h1>
@@ -72,6 +82,13 @@ serve(async (req) => {
               <h2 style="margin: 0;">الإجمالي: ${orderData.total.toLocaleString()} ج.م</h2>
             </div>
             
+            ${orderData.notes ? `
+            <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 20px;">
+              <h3 style="color: #856404; margin: 0 0 10px 0;">📝 ملاحظات العميل:</h3>
+              <p style="margin: 0; color: #856404;">${orderData.notes}</p>
+            </div>
+            ` : ""}
+            
             <p style="text-align: center; color: #666; margin-top: 20px;">
               Target Air Conditioning - تارجت لأعمال التكييف
             </p>
@@ -83,6 +100,7 @@ serve(async (req) => {
         const data = await res.json();
 
         if (!res.ok) {
+            console.error("Brevo API error:", data);
             throw new Error(data.message || "Failed to send email");
         }
 
