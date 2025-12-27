@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Scale, Star } from "lucide-react";
+import { ShoppingCart, Heart, Scale, Star, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -33,11 +34,15 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
     return fallbackImages[index % fallbackImages.length];
   };
 
+  const [isAdded, setIsAdded] = useState(false);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product);
+    setIsAdded(true);
     toast.success("تمت الإضافة إلى السلة");
+    setTimeout(() => setIsAdded(false), 2000);
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
@@ -180,11 +185,23 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
           </a>
           <Button
             onClick={handleAddToCart}
-            className="w-full bg-secondary hover:bg-accent text-secondary-foreground gap-1.5 transition-all duration-300 hover:scale-[1.02] h-8 md:h-10 text-xs md:text-sm font-semibold"
+            className={`w-full gap-1.5 transition-all duration-300 h-8 md:h-10 text-xs md:text-sm font-semibold ${isAdded
+                ? "bg-green-500 hover:bg-green-600 text-white animate-success-pop"
+                : "bg-secondary hover:bg-accent text-secondary-foreground hover:scale-[1.02]"
+              }`}
           >
-            <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
-            <span className="hidden sm:inline">أضف للسلة</span>
-            <span className="sm:hidden">سلة</span>
+            {isAdded ? (
+              <>
+                <Check className="h-4 w-4 md:h-5 md:w-5" />
+                <span>تمت الإضافة</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
+                <span className="hidden sm:inline">أضف للسلة</span>
+                <span className="sm:hidden">سلة</span>
+              </>
+            )}
           </Button>
         </div>
       </div>

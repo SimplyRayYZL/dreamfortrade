@@ -6,48 +6,47 @@ const SENDER_EMAIL = "info@targetaircool.com"
 const SENDER_NAME = "Target Air Conditioning"
 
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
 interface OrderEmailData {
-    orderId: string
-    customerName: string
-    customerEmail: string
-    phone: string
-    address: string
-    city: string
-    notes?: string
-    items: {
-        name: string
-        quantity: number
-        price: number
-    }[]
-    total: number
+  orderId: string
+  customerName: string
+  customerEmail: string
+  phone: string
+  address: string
+  city: string
+  notes?: string
+  items: {
+    name: string
+    quantity: number
+    price: number
+  }[]
+  total: number
 }
 
 serve(async (req) => {
-    // Handle CORS preflight requests
-    if (req.method === "OPTIONS") {
-        return new Response("ok", { headers: corsHeaders })
-    }
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders })
+  }
 
-    try {
-        const orderData: OrderEmailData = await req.json()
+  try {
+    const orderData: OrderEmailData = await req.json()
 
-        const itemsHtml = orderData.items
-            .map(
-                (item) =>
-                    `<tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name}</td>
+    const itemsHtml = orderData.items
+      .map(
+        (item) =>
+          `<tr>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${item.name}</td>
             <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
             <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: left;">${item.price.toLocaleString()} ج.م</td>
           </tr>`
-            )
-            .join("")
+      )
+      .join("")
 
-        // Admin Email Template
-        const adminEmailHtml = `
+    // Admin Email Template
+    const adminEmailHtml = `
       <!DOCTYPE html>
       <html dir="rtl" lang="ar">
       <head><meta charset="UTF-8"></head>
@@ -98,8 +97,8 @@ serve(async (req) => {
       </html>
     `
 
-        // Customer Confirmation Template
-        const customerEmailHtml = `
+    // Customer Confirmation Template
+    const customerEmailHtml = `
       <!DOCTYPE html>
       <html dir="rtl" lang="ar">
       <head><meta charset="UTF-8"></head>
@@ -144,58 +143,58 @@ serve(async (req) => {
       </html>
     `
 
-        // Send emails using Brevo API
-        const brevoEndpoint = "https://api.brevo.com/v3/smtp/email"
-        const commonHeaders = {
-            "Content-Type": "application/json",
-            "api-key": BREVO_API_KEY!,
-        }
-
-        // Email to Admin
-        const adminRes = await fetch(brevoEndpoint, {
-            method: "POST",
-            headers: commonHeaders,
-            body: JSON.stringify({
-                sender: { name: SENDER_NAME, email: SENDER_EMAIL },
-                to: [{ email: ADMIN_EMAIL, name: "Admin" }],
-                subject: `🛒 طلب جديد #${orderData.orderId.slice(0, 8).toUpperCase()} - ${orderData.customerName}`,
-                htmlContent: adminEmailHtml,
-            }),
-        })
-
-        if (!adminRes.ok) {
-            const error = await adminRes.json()
-            console.error("Brevo Admin Email Error:", error)
-        }
-
-        // Email to Customer
-        if (orderData.customerEmail) {
-            const customerRes = await fetch(brevoEndpoint, {
-                method: "POST",
-                headers: commonHeaders,
-                body: JSON.stringify({
-                    sender: { name: SENDER_NAME, email: SENDER_EMAIL },
-                    to: [{ email: orderData.customerEmail, name: orderData.customerName }],
-                    subject: `✅ تم استلام طلبك #${orderData.orderId.slice(0, 8).toUpperCase()} - ${SENDER_NAME}`,
-                    htmlContent: customerEmailHtml,
-                }),
-            })
-
-            if (!customerRes.ok) {
-                const error = await customerRes.json()
-                console.error("Brevo Customer Email Error:", error)
-            }
-        }
-
-        return new Response(JSON.stringify({ success: true }), {
-            status: 200,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-        })
-    } catch (error) {
-        console.error("Error in Edge Function:", error)
-        return new Response(JSON.stringify({ error: (error as Error).message }), {
-            status: 500,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-        })
+    // Send emails using Brevo API
+    const brevoEndpoint = "https://api.brevo.com/v3/smtp/email"
+    const commonHeaders = {
+      "Content-Type": "application/json",
+      "api-key": BREVO_API_KEY!,
     }
+
+    // Email to Admin
+    const adminRes = await fetch(brevoEndpoint, {
+      method: "POST",
+      headers: commonHeaders,
+      body: JSON.stringify({
+        sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+        to: [{ email: ADMIN_EMAIL, name: "Admin" }],
+        subject: `🛒 طلب جديد #${orderData.orderId.slice(0, 8).toUpperCase()} - ${orderData.customerName}`,
+        htmlContent: adminEmailHtml,
+      }),
+    })
+
+    if (!adminRes.ok) {
+      const error = await adminRes.json()
+      console.error("Brevo Admin Email Error:", error)
+    }
+
+    // Email to Customer
+    if (orderData.customerEmail) {
+      const customerRes = await fetch(brevoEndpoint, {
+        method: "POST",
+        headers: commonHeaders,
+        body: JSON.stringify({
+          sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+          to: [{ email: orderData.customerEmail, name: orderData.customerName }],
+          subject: `✅ تم استلام طلبك #${orderData.orderId.slice(0, 8).toUpperCase()} - ${SENDER_NAME}`,
+          htmlContent: customerEmailHtml,
+        }),
+      })
+
+      if (!customerRes.ok) {
+        const error = await customerRes.json()
+        console.error("Brevo Customer Email Error:", error)
+      }
+    }
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
+  } catch (error) {
+    console.error("Error in Edge Function:", error)
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
+  }
 })
