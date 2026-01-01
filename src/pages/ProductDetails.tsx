@@ -85,8 +85,6 @@ const ProductDetails = () => {
   const productImage = product.image_url || fallbackImages[0];
   const images = [productImage];
 
-  const [isAdded, setIsAdded] = useState(false);
-
   const handleAddToCart = () => {
     if (product.stock <= 0) {
       toast.error("عذراً، هذا المنتج غير متوفر حالياً");
@@ -97,9 +95,7 @@ const ProductDetails = () => {
       return;
     }
     addToCart(product, quantity);
-    setIsAdded(true);
     toast.success(`تمت إضافة ${quantity} ${product.name} إلى السلة`);
-    setTimeout(() => setIsAdded(false), 2000);
   };
 
   const handleWishlist = () => {
@@ -124,7 +120,7 @@ const ProductDetails = () => {
   return (
     <>
       <Helmet>
-        <title>{product.name} | ????? ?????? ???????</title>
+        <title>{product.name} | تارجت لأعمال التكييف</title>
         <meta name="description" content={`${product.name} - ${product.brand} - ${product.capacity} - السعر ${product.price} جنيه`} />
       </Helmet>
 
@@ -337,23 +333,11 @@ const ProductDetails = () => {
                     <div className="flex gap-3">
                       <Button
                         onClick={handleAddToCart}
-                        className={`flex-1 gap-2 h-14 text-lg transition-all duration-300 ${isAdded
-                            ? "bg-green-500 hover:bg-green-600 text-white animate-success-pop"
-                            : "bg-secondary hover:bg-secondary/90 text-secondary-foreground"
-                          }`}
+                        className="flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground gap-2 h-14 text-lg"
                         disabled={product.stock <= 0}
                       >
-                        {isAdded ? (
-                          <>
-                            <Check className="h-5 w-5" />
-                            تمت الإضافة
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart className="h-5 w-5" />
-                            أضف للسلة
-                          </>
-                        )}
+                        <ShoppingCart className="h-5 w-5" />
+                        أضف للسلة
                       </Button>
                       <Button
                         variant="outline"

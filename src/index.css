@@ -162,13 +162,3 @@
     @apply text-3xl md:text-4xl font-bold text-foreground mb-4;
   }
 }
-
-@keyframes success-pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-.animate-success-pop {
-  animation: success-pop 0.4s ease-out;
-}

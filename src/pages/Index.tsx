@@ -8,6 +8,7 @@ import ProductsSection from "@/components/home/ProductsSection";
 import FeaturesSection from "@/components/home/FeaturesSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PromoBanner from "@/components/home/PromoBanner";
+import BlogSection from "@/components/home/BlogSection";
 
 const Index = () => {
   // Structured Data for SEO
@@ -16,7 +17,7 @@ const Index = () => {
     "@type": "Store",
     "name": "Target Air Conditioning",
     "description": "شركة تارجت لأعمال التكييف - تكييفات شارب، كاريير، جنرال، ميديا، تورنيدو في مصر",
-    "url": "https://target-ac.com",
+    "url": "https://targetaircool.com",
     "telephone": "+201208000550",
     "address": {
       "@type": "PostalAddress",
@@ -40,13 +41,13 @@ const Index = () => {
           content="شركة تارجت لأعمال التكييف - تكييفات شارب، كاريير، جنرال، ميديا، تورنيدو في مصر. أفضل الأسعار، ضمان شامل، وتوصيل مجاني."
         />
         <meta name="keywords" content="تكييفات, شارب, كاريير, جنرال, ميديا, تورنيدو, مصر, تارجت" />
-        <link rel="canonical" href="https://target-ac.com" />
+        <link rel="canonical" href="https://targetaircool.com" />
 
         {/* Open Graph */}
         <meta property="og:title" content="تارجت لأعمال التكييف | تكييفات في مصر" />
         <meta property="og:description" content="أفضل أسعار التكييفات في مصر مع ضمان شامل وتوصيل مجاني" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://target-ac.com" />
+        <meta property="og:url" content="https://targetaircool.com" />
         <meta property="og:locale" content="ar_EG" />
 
         {/* Twitter Card */}
@@ -69,6 +70,7 @@ const Index = () => {
           <ProductsSection />
           <PromoBanner variant="features" />
           <TestimonialsSection />
+          <BlogSection />
           <PromoBanner variant="contact" />
         </main>
         <Footer />

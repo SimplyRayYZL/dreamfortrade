@@ -1,7 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Heart, Trash2, ShoppingCart, Star, Check } from "lucide-react";
+import { Heart, Trash2, ShoppingCart, Star } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -24,21 +23,15 @@ const Wishlist = () => {
   const { items, removeFromWishlist, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
 
-  const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
-
   const handleAddToCart = (product: typeof items[0]) => {
     addToCart(product);
-    setAddedItems(prev => ({ ...prev, [product.id]: true }));
     toast.success("تمت الإضافة إلى السلة");
-    setTimeout(() => {
-      setAddedItems(prev => ({ ...prev, [product.id]: false }));
-    }, 2000);
   };
 
   return (
     <>
       <Helmet>
-        <title>قائمة الأمنيات | ????? ?????? ???????</title>
+        <title>قائمة الأمنيات | تارجت لأعمال التكييف</title>
         <meta name="description" content="قائمة الأمنيات الخاصة بك - ????? ?????? ???????" />
       </Helmet>
 
@@ -108,8 +101,8 @@ const Wishlist = () => {
                           <Star
                             key={i}
                             className={`h-4 w-4 ${i < Math.floor(product.rating)
-                                ? "fill-dream-gold text-dream-gold"
-                                : "text-muted"
+                              ? "fill-dream-gold text-dream-gold"
+                              : "text-muted"
                               }`}
                           />
                         ))}
@@ -130,23 +123,11 @@ const Wishlist = () => {
                       </div>
 
                       <Button
-                        className={`w-full mt-4 transition-all duration-300 ${addedItems[product.id]
-                            ? "bg-green-500 hover:bg-green-600 text-white animate-success-pop"
-                            : "btn-dream-primary"
-                          }`}
+                        className="w-full btn-dream-primary mt-4"
                         onClick={() => handleAddToCart(product)}
                       >
-                        {addedItems[product.id] ? (
-                          <>
-                            <Check className="h-4 w-4" />
-                            تمت الإضافة
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart className="h-4 w-4" />
-                            أضف للسلة
-                          </>
-                        )}
+                        <ShoppingCart className="h-4 w-4" />
+                        أضف للسلة
                       </Button>
                     </div>
                   </div>

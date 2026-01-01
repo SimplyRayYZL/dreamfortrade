@@ -78,7 +78,7 @@ const ResetPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>رابط غير صالح | ????? ?????? ???????</title>
+                    <title>رابط غير صالح | تارجت لأعمال التكييف</title>
                 </Helmet>
 
                 <Navbar />
@@ -120,7 +120,7 @@ const ResetPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>تم تغيير كلمة المرور | ????? ?????? ???????</title>
+                    <title>تم تغيير كلمة المرور | تارجت لأعمال التكييف</title>
                 </Helmet>
 
                 <Navbar />
@@ -162,7 +162,7 @@ const ResetPassword = () => {
     return (
         <>
             <Helmet>
-                <title>إعادة تعيين كلمة المرور | ????? ?????? ???????</title>
+                <title>إعادة تعيين كلمة المرور | تارجت لأعمال التكييف</title>
             </Helmet>
 
             <Navbar />

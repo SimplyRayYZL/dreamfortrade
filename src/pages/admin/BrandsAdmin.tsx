@@ -244,7 +244,7 @@ const BrandsAdmin = () => {
     return (
         <>
             <Helmet>
-                <title>إدارة الماركات | ????? ?????? ???????</title>
+                <title>إدارة الماركات | تارجت لأعمال التكييف</title>
             </Helmet>
 
             <div className="min-h-screen bg-background">

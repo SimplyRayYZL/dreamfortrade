@@ -80,7 +80,7 @@ const AdminDashboard = () => {
     return (
         <>
             <Helmet>
-                <title>لوحة التحكم | ????? ?????? ???????</title>
+                <title>لوحة التحكم | تارجت لأعمال التكييف</title>
             </Helmet>
 
             <div className="min-h-screen bg-muted/30">

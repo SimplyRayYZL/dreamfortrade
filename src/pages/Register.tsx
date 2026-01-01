@@ -76,7 +76,7 @@ const Register = () => {
         return (
             <>
                 <Helmet>
-                    <title>تأكيد البريد الإلكتروني | ????? ?????? ???????</title>
+                    <title>تأكيد البريد الإلكتروني | تارجت لأعمال التكييف</title>
                 </Helmet>
 
                 <Navbar />
@@ -118,7 +118,7 @@ const Register = () => {
     return (
         <>
             <Helmet>
-                <title>إنشاء حساب | ????? ?????? ???????</title>
+                <title>إنشاء حساب | تارجت لأعمال التكييف</title>
                 <meta name="description" content="أنشئ حسابك في ????? ?????? ??????? للاستمتاع بتجربة تسوق مميزة" />
             </Helmet>
 

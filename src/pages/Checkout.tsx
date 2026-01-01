@@ -182,7 +182,7 @@ const Checkout = () => {
         return (
             <>
                 <Helmet>
-                    <title>يجب تسجيل الدخول | ????? ?????? ???????</title>
+                    <title>يجب تسجيل الدخول | تارجت لأعمال التكييف</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -224,7 +224,7 @@ const Checkout = () => {
         return (
             <>
                 <Helmet>
-                    <title>إتمام الشراء | ????? ?????? ???????</title>
+                    <title>إتمام الشراء | تارجت لأعمال التكييف</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -254,7 +254,7 @@ const Checkout = () => {
     return (
         <>
             <Helmet>
-                <title>إتمام الشراء | ????? ?????? ???????</title>
+                <title>إتمام الشراء | تارجت لأعمال التكييف</title>
                 <meta name="description" content="إتمام عملية الشراء - ????? ?????? ???????" />
             </Helmet>
 

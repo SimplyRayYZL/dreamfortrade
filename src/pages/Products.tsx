@@ -70,8 +70,10 @@ const Products = () => {
   return (
     <>
       <Helmet>
-        <title>منتجاتنا | تارجت لأعمال التكييف - أفضل تكييفات في مصر</title>
-        <meta name="description" content="تصفح مجموعتنا الواسعة من التكييفات من أشهر الماركات العالمية - جنرال، كاريير، شارب، فريش، ميديا والمزيد" />
+        <title>منتجاتنا | تارجت لأعمال التكييف - أفضل تكييفات كاريير، هاير، ميديا</title>
+        <meta name="description" content="تصفح مجموعتنا الواسعة من التكييفات من أشهر الماركات العالمية في مصر. كاريير، هاير، ميديا بأسعار تبدأ من 15,000 جنيه. توصيل وتركيب مجاني." />
+        <meta name="keywords" content="تكييفات, تكييف كاريير, تكييف هاير, تكييف ميديا, تكييف انفرتر, اسعار التكييفات في مصر 2025" />
+        <link rel="canonical" href="https://targetaircool.com/products" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

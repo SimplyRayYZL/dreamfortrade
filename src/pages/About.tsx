@@ -24,8 +24,9 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>عن الشركة | تارجت لأعمال التكييف - شركة تكييفات</title>
-        <meta name="description" content="تعرف على شركة تارجت لأعمال التكييف في مصر" />
+        <title>عن الشركة | تارجت لأعمال التكييف - خبرة 15 عاماً في حلول التبريد</title>
+        <meta name="description" content="تعرف على شركة تارجت لأعمال التكييف في مصر. خبرة أكثر من 15 عاماً في توريد وتركيب تكييفات كاريير، هاير، وميديا بأفضل جودة وأنسب سعر." />
+        <link rel="canonical" href="https://targetaircool.com/about" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

@@ -89,7 +89,7 @@ const OrderSuccess = () => {
         return (
             <>
                 <Helmet>
-                    <title>الطلب غير موجود | ????? ?????? ???????</title>
+                    <title>الطلب غير موجود | تارجت لأعمال التكييف</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -113,7 +113,7 @@ const OrderSuccess = () => {
     return (
         <>
             <Helmet>
-                <title>تم تأكيد الطلب | ????? ?????? ???????</title>
+                <title>تم تأكيد الطلب | تارجت لأعمال التكييف</title>
             </Helmet>
 
             <div className="min-h-screen flex flex-col">

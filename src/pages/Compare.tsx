@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { Scale, X, ShoppingCart, Check } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -24,15 +23,9 @@ const Compare = () => {
   const { items, removeFromCompare, clearCompare } = useCompare();
   const { addToCart } = useCart();
 
-  const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
-
   const handleAddToCart = (product: typeof items[0]) => {
     addToCart(product);
-    setAddedItems(prev => ({ ...prev, [product.id]: true }));
     toast.success("تمت الإضافة إلى السلة");
-    setTimeout(() => {
-      setAddedItems(prev => ({ ...prev, [product.id]: false }));
-    }, 2000);
   };
 
   const specifications = [
@@ -46,7 +39,7 @@ const Compare = () => {
   return (
     <>
       <Helmet>
-        <title>مقارنة المنتجات | ????? ?????? ???????</title>
+        <title>مقارنة المنتجات | تارجت لأعمال التكييف</title>
         <meta name="description" content="قارن بين المنتجات المختلفة - ????? ?????? ???????" />
       </Helmet>
 
@@ -170,23 +163,11 @@ const Compare = () => {
                       {items.map((product, index) => (
                         <td key={product.id} className={`p-4 ${index === items.length - 1 ? 'rounded-bl-xl' : ''}`}>
                           <Button
-                            className={`w-full transition-all duration-300 ${addedItems[product.id]
-                                ? "bg-green-500 hover:bg-green-600 text-white animate-success-pop"
-                                : "btn-dream-primary"
-                              }`}
+                            className="w-full btn-dream-primary"
                             onClick={() => handleAddToCart(product)}
                           >
-                            {addedItems[product.id] ? (
-                              <>
-                                <Check className="h-4 w-4" />
-                                تمت الإضافة
-                              </>
-                            ) : (
-                              <>
-                                <ShoppingCart className="h-4 w-4" />
-                                أضف للسلة
-                              </>
-                            )}
+                            <ShoppingCart className="h-4 w-4" />
+                            أضف للسلة
                           </Button>
                         </td>
                       ))}

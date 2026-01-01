@@ -31,6 +31,7 @@ const Footer = () => {
               {[
                 { name: "الرئيسية", href: "/" },
                 { name: "منتجاتنا", href: "/products" },
+                { name: "المدونة", href: "/blog" },
                 { name: "عن الشركة", href: "/about" },
                 { name: "اتصل بنا", href: "/contact" },
               ].map((link) => (

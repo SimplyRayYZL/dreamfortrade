@@ -36,7 +36,7 @@ const ForgotPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>تم إرسال الرابط | ????? ?????? ???????</title>
+                    <title>تم إرسال الرابط | تارجت لأعمال التكييف</title>
                 </Helmet>
 
                 <Navbar />
@@ -81,7 +81,7 @@ const ForgotPassword = () => {
     return (
         <>
             <Helmet>
-                <title>نسيت كلمة المرور | ????? ?????? ???????</title>
+                <title>نسيت كلمة المرور | تارجت لأعمال التكييف</title>
                 <meta name="description" content="استعد كلمة المرور الخاصة بك" />
             </Helmet>
 

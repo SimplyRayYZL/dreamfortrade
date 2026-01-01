@@ -40,6 +40,8 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const MyOrders = lazy(() => import("./pages/MyOrders"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogArticle = lazy(() => import("./pages/BlogArticle"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -103,6 +105,9 @@ const App = () => (
                           <Route path="/admin/banners" element={<ProtectedAdminRoute><BannersAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/settings" element={<ProtectedAdminRoute><SettingsAdmin /></ProtectedAdminRoute>} />
                           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                          {/* Blog Routes */}
+                          <Route path="/blog" element={<Blog />} />
+                          <Route path="/blog/:slug" element={<BlogArticle />} />
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                       </Suspense>
