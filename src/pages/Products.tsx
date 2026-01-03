@@ -10,7 +10,7 @@ import { useProducts, useBrands } from "@/hooks/useProducts";
 import ProductCard from "@/components/products/ProductCard";
 import productsBanner from "@/assets/banners/products-banner.jpg";
 
-const capacities = ["1 حصان", "1.5 حصان", "2.25 حصان", "3 حصان", "4 حصان", "5 حصان"];
+const capacities = ["1.5 حصان", "2.25 حصان", "3 حصان", "4 حصان", "5 حصان"];
 const types = ["بارد فقط", "بارد ساخن"];
 const inverterOptions = ["عادي", "انفرتر"];
 

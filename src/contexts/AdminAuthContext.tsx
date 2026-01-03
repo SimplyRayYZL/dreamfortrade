@@ -21,6 +21,7 @@ const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefin
 // admin = full access to everything
 // editor = products, orders, brands only (no settings)
 const ADMIN_USERS = [
+    { username: 'target', password: 'target', role: 'admin' as AdminRole },
     { username: 'ahmed', password: 'ahmed', role: 'admin' as AdminRole },
     { username: 'dream', password: 'dream', role: 'editor' as AdminRole },
     // Keep old admin for backward compatibility
