@@ -133,84 +133,91 @@ const Products = () => {
           />
 
           {/* Filters */}
-          <div className="bg-card border-b border-border sticky top-[72px] md:top-[136px] z-40">
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Filter className="h-5 w-5" />
-                  <span className="font-medium">تصفية:</span>
+          <div className="bg-gradient-to-r from-card to-card/80 border-b border-border shadow-sm sticky top-[72px] md:top-[136px] z-40 backdrop-blur-sm">
+            <div className="container mx-auto px-4 py-5">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2 text-secondary">
+                  <div className="w-9 h-9 bg-secondary/10 rounded-lg flex items-center justify-center">
+                    <Filter className="h-5 w-5" />
+                  </div>
+                  <span className="font-bold text-foreground">تصفية المنتجات</span>
                 </div>
 
-                {/* Brand Filter */}
-                <div className="relative">
-                  <select
-                    value={selectedBrand}
-                    onChange={(e) => handleBrandChange(e.target.value)}
-                    className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                  >
-                    {brandOptions.map((brand) => (
-                      <option key={brand} value={brand}>{brand === "الكل" ? "جميع الماركات" : brand}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <div className="flex flex-wrap items-center gap-3 flex-1">
+                  {/* Brand Filter */}
+                  <div className="relative group">
+                    <select
+                      value={selectedBrand}
+                      onChange={(e) => handleBrandChange(e.target.value)}
+                      className={`appearance-none cursor-pointer bg-background border-2 rounded-xl px-5 py-2.5 pr-10 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary hover:border-secondary/50 ${selectedBrand !== "الكل" ? "border-secondary bg-secondary/5 text-secondary" : "border-border"}`}
+                    >
+                      {brandOptions.map((brand) => (
+                        <option key={brand} value={brand}>{brand === "الكل" ? "الماركة" : brand}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-hover:text-secondary transition-colors" />
+                  </div>
+
+                  {/* Capacity Filter */}
+                  <div className="relative group">
+                    <select
+                      value={selectedCapacity}
+                      onChange={(e) => handleCapacityChange(e.target.value)}
+                      className={`appearance-none cursor-pointer bg-background border-2 rounded-xl px-5 py-2.5 pr-10 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary hover:border-secondary/50 ${selectedCapacity !== "الكل" ? "border-secondary bg-secondary/5 text-secondary" : "border-border"}`}
+                    >
+                      {capacityOptions.map((capacity) => (
+                        <option key={capacity} value={capacity}>{capacity === "الكل" ? "القدرة" : capacity}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-hover:text-secondary transition-colors" />
+                  </div>
+
+                  {/* Type Filter (Hot/Cold) */}
+                  <div className="relative group">
+                    <select
+                      value={selectedType}
+                      onChange={(e) => handleTypeChange(e.target.value)}
+                      className={`appearance-none cursor-pointer bg-background border-2 rounded-xl px-5 py-2.5 pr-10 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary hover:border-secondary/50 ${selectedType !== "الكل" ? "border-secondary bg-secondary/5 text-secondary" : "border-border"}`}
+                    >
+                      {typeOptions.map((type) => (
+                        <option key={type} value={type}>{type === "الكل" ? "النوع" : type}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-hover:text-secondary transition-colors" />
+                  </div>
+
+                  {/* Inverter Filter */}
+                  <div className="relative group">
+                    <select
+                      value={selectedInverter}
+                      onChange={(e) => handleInverterChange(e.target.value)}
+                      className={`appearance-none cursor-pointer bg-background border-2 rounded-xl px-5 py-2.5 pr-10 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary hover:border-secondary/50 ${selectedInverter !== "الكل" ? "border-secondary bg-secondary/5 text-secondary" : "border-border"}`}
+                    >
+                      {inverterFilterOptions.map((inv) => (
+                        <option key={inv} value={inv}>{inv === "الكل" ? "التقنية" : inv}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none group-hover:text-secondary transition-colors" />
+                  </div>
+
+                  {/* Reset Filters Button */}
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={resetFilters}
+                      className="border-2 border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive rounded-xl px-4 py-2 font-medium transition-all duration-200"
+                    >
+                      <X className="h-4 w-4 ml-1" />
+                      مسح الكل
+                    </Button>
+                  )}
                 </div>
 
-                {/* Capacity Filter */}
-                <div className="relative">
-                  <select
-                    value={selectedCapacity}
-                    onChange={(e) => handleCapacityChange(e.target.value)}
-                    className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                  >
-                    {capacityOptions.map((capacity) => (
-                      <option key={capacity} value={capacity}>{capacity === "الكل" ? "جميع القدرات" : capacity}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <div className="flex items-center gap-2 bg-secondary/10 rounded-full px-4 py-2">
+                  <span className="text-xl font-bold text-secondary">{filteredProducts.length}</span>
+                  <span className="text-sm text-muted-foreground">منتج</span>
                 </div>
-
-                {/* Type Filter (Hot/Cold) */}
-                <div className="relative">
-                  <select
-                    value={selectedType}
-                    onChange={(e) => handleTypeChange(e.target.value)}
-                    className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                  >
-                    {typeOptions.map((type) => (
-                      <option key={type} value={type}>{type === "الكل" ? "بارد/ساخن" : type}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                </div>
-
-                {/* Inverter Filter */}
-                <div className="relative">
-                  <select
-                    value={selectedInverter}
-                    onChange={(e) => handleInverterChange(e.target.value)}
-                    className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
-                  >
-                    {inverterFilterOptions.map((inv) => (
-                      <option key={inv} value={inv}>{inv === "الكل" ? "عادي/انفرتر" : inv}</option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                </div>
-
-                {/* Reset Filters Button */}
-                {hasActiveFilters && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={resetFilters}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <X className="h-4 w-4 ml-1" />
-                    مسح الفلاتر
-                  </Button>
-                )}
-
-                <span className="text-sm text-muted-foreground mr-auto">{filteredProducts.length} منتج</span>
               </div>
             </div>
           </div>

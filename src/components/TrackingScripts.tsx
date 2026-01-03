@@ -1,13 +1,22 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSettings';
+import { trackPageView } from '@/lib/analytics';
 
 /**
  * TrackingScripts Component
  * Dynamically injects tracking scripts (GTM, GA4, Facebook Pixel, TikTok Pixel, Snapchat Pixel)
  * based on settings from the admin panel.
+ * Also tracks page views for our internal analytics.
  */
 const TrackingScripts = () => {
     const { data: settings } = useSiteSettings();
+    const location = useLocation();
+
+    // Track page views on route changes
+    useEffect(() => {
+        trackPageView(location.pathname);
+    }, [location.pathname]);
 
     useEffect(() => {
         if (!settings) return;
