@@ -121,7 +121,49 @@ const ProductDetails = () => {
     <>
       <Helmet>
         <title>{product.name} | تارجت لأعمال التكييف</title>
-        <meta name="description" content={`${product.name} - ${product.brand} - ${product.capacity} - السعر ${product.price} جنيه`} />
+        <meta name="description" content={`${product.name} - ${product.brand} - ${product.capacity} - السعر ${product.price} جنيه - شحن مجاني وضمان 5 سنوات`} />
+        <meta name="keywords" content={`${product.name}, ${product.brand}, تكييف ${product.capacity}, تكييف ${product.type}, شراء تكييف, أفضل سعر تكييف`} />
+        <link rel="canonical" href={`https://targetaircool.com/products/${product.id}`} />
+
+        <meta property="og:title" content={`${product.name} | تارجت`} />
+        <meta property="og:description" content={`${product.name} - ${product.brand} - ${product.capacity} - السعر ${product.price} جنيه`} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={`https://targetaircool.com/products/${product.id}`} />
+        <meta property="og:image" content={product.image_url || 'https://targetaircool.com/logo.png'} />
+        <meta property="product:price:amount" content={String(product.price)} />
+        <meta property="product:price:currency" content="EGP" />
+
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.name,
+            "description": `${product.name} - ${product.brand} - ${product.capacity} - ${product.type}`,
+            "image": product.image_url || 'https://targetaircool.com/logo.png',
+            "brand": {
+              "@type": "Brand",
+              "name": product.brand
+            },
+            "sku": product.id,
+            "offers": {
+              "@type": "Offer",
+              "url": `https://targetaircool.com/products/${product.id}`,
+              "priceCurrency": "EGP",
+              "price": product.price,
+              "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "تارجت لأعمال التكييف"
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating || 4.5,
+              "reviewCount": 50
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen flex flex-col">

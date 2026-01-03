@@ -7,120 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, ArrowLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-
-// Blog articles data - can be moved to database later
-const articles = [
-    {
-        id: "1-5-hp-guide",
-        title: "دليل شامل: تكييف 1.5 حصان - الأفضل للغرف الصغيرة",
-        excerpt: "كل ما تحتاج معرفته عن تكييفات 1.5 حصان: المساحة المناسبة، أفضل الماركات، الأسعار، ونصائح التركيب.",
-        image: "/assets/blog/1-5-hp-guide.png",
-        category: "دليل القدرات",
-        date: "2025-01-03",
-        readTime: "5 دقائق",
-        tags: ["1.5 حصان", "غرف صغيرة", "دليل الشراء"],
-        filterLink: "/products?capacity=1.5 حصان"
-    },
-    {
-        id: "2-25-hp-guide",
-        title: "تكييف 2.25 حصان (3/4): الاختيار المثالي للغرف المتوسطة",
-        excerpt: "اكتشف لماذا تكييف 2.25 حصان هو الأكثر مبيعاً في مصر. مقارنة شاملة بين الماركات والأسعار.",
-        image: "/assets/blog/2-25-hp-guide.png",
-        category: "دليل القدرات",
-        date: "2025-01-02",
-        readTime: "6 دقائق",
-        tags: ["2.25 حصان", "غرف متوسطة", "الأكثر مبيعاً"],
-        filterLink: "/products?capacity=2.25 حصان"
-    },
-    {
-        id: "3-hp-guide",
-        title: "تكييف 3 حصان: القوة الكاملة للصالات والمكاتب",
-        excerpt: "دليلك الشامل لتكييفات 3 حصان. أفضل الخيارات للصالات الكبيرة والمكاتب التجارية.",
-        image: "/assets/blog/3-hp-guide.png",
-        category: "دليل القدرات",
-        date: "2025-01-01",
-        readTime: "5 دقائق",
-        tags: ["3 حصان", "صالات", "مكاتب"],
-        filterLink: "/products?capacity=3 حصان"
-    },
-    {
-        id: "4-hp-guide",
-        title: "تكييف 4 حصان: الحل الأمثل للمساحات الواسعة",
-        excerpt: "كل ما تحتاج معرفته عن تكييفات 4 حصان للفلل والمحلات التجارية الكبيرة.",
-        image: "/assets/blog/4-hp-guide.png",
-        category: "دليل القدرات",
-        date: "2024-12-30",
-        readTime: "5 دقائق",
-        tags: ["4 حصان", "فلل", "محلات"],
-        filterLink: "/products?capacity=4 حصان"
-    },
-    {
-        id: "5-hp-guide",
-        title: "تكييف 5 حصان: أقصى قوة تبريد للمساحات الضخمة",
-        excerpt: "دليل شراء تكييفات 5 حصان للقاعات والمولات والمصانع. أفضل الماركات والأسعار.",
-        image: "/assets/blog/5-hp-guide.png",
-        category: "دليل القدرات",
-        date: "2024-12-28",
-        readTime: "6 دقائق",
-        tags: ["5 حصان", "قاعات", "مصانع"],
-        filterLink: "/products?capacity=5 حصان"
-    },
-    {
-        id: "carrier-brand-guide",
-        title: "كاريير: لماذا هي الماركة الأولى في مصر؟",
-        excerpt: "مراجعة شاملة لتكييفات كاريير. تاريخ العلامة التجارية، المميزات، وأفضل الموديلات.",
-        image: "/assets/blog/carrier-guide.png",
-        category: "الماركات",
-        date: "2024-12-25",
-        readTime: "7 دقائق",
-        tags: ["كاريير", "ماركة أمريكية", "الأفضل"],
-        filterLink: "/products?brand=كاريير"
-    },
-    {
-        id: "haier-brand-guide",
-        title: "هاير: الجودة الصينية بمعايير عالمية",
-        excerpt: "اكتشف تكييفات هاير: التقنيات الحديثة، الأسعار التنافسية، وضمان المصنع.",
-        image: "/assets/blog/haier-guide.png",
-        category: "الماركات",
-        date: "2024-12-22",
-        readTime: "6 دقائق",
-        tags: ["هاير", "ماركة صينية", "أسعار منافسة"],
-        filterLink: "/products?brand=هاير"
-    },
-    {
-        id: "midea-brand-guide",
-        title: "ميديا: التوازن المثالي بين السعر والجودة",
-        excerpt: "دليلك الشامل لتكييفات ميديا. مراجعة الموديلات، المميزات، والعيوب.",
-        image: "/assets/blog/midea-guide.png",
-        category: "الماركات",
-        date: "2024-12-20",
-        readTime: "6 دقائق",
-        tags: ["ميديا", "أسعار متوسطة", "جودة عالية"],
-        filterLink: "/products?brand=ميديا"
-    },
-    {
-        id: "inverter-vs-normal",
-        title: "الفرق بين تكييف الانفرتر والعادي - أيهما أفضل لك؟",
-        excerpt: "تعرف على الفرق الحقيقي بين تكييف الانفرتر والتكييف العادي من حيث استهلاك الكهرباء والأداء والسعر.",
-        image: "/assets/blog/inverter-guide.png",
-        category: "معلومات تقنية",
-        date: "2024-12-18",
-        readTime: "6 دقائق",
-        tags: ["انفرتر", "توفير الكهرباء", "تقنية"],
-        filterLink: "/products?inverter=انفرتر"
-    },
-    {
-        id: "electricity-saving",
-        title: "كيف توفر في فاتورة الكهرباء مع التكييف؟",
-        excerpt: "نصائح عملية ومجربة لتوفير استهلاك الكهرباء أثناء استخدام التكييف في الصيف.",
-        image: "/assets/blog/electricity-saving.png",
-        category: "نصائح",
-        date: "2024-12-15",
-        readTime: "5 دقائق",
-        tags: ["توفير", "كهرباء", "نصائح"],
-        filterLink: null
-    }
-];
+import { blogArticles } from "@/data/blogArticles";
 
 const categories = ["الكل", "دليل القدرات", "الماركات", "معلومات تقنية", "نصائح"];
 
@@ -128,7 +15,7 @@ const Blog = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("الكل");
 
-    const filteredArticles = articles.filter(article => {
+    const filteredArticles = blogArticles.filter(article => {
         const matchesSearch = article.title.includes(searchTerm) ||
             article.excerpt.includes(searchTerm) ||
             article.tags.some(tag => tag.includes(searchTerm));
