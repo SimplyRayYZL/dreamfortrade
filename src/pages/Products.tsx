@@ -3,7 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
 import { Button } from "@/components/ui/button";
-import { Filter, ChevronDown, Loader2 } from "lucide-react";
+import { Filter, ChevronDown, Loader2, X } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts, useBrands } from "@/hooks/useProducts";
@@ -12,34 +12,63 @@ import productsBanner from "@/assets/banners/products-banner.jpg";
 
 const capacities = ["1 حصان", "1.5 حصان", "2.25 حصان", "3 حصان", "4 حصان", "5 حصان"];
 const types = ["بارد فقط", "بارد ساخن"];
+const inverterOptions = ["عادي", "انفرتر"];
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const brandFromUrl = searchParams.get("brand");
 
-  const [selectedBrand, setSelectedBrand] = useState(brandFromUrl || "الكل");
-  const [selectedCapacity, setSelectedCapacity] = useState("الكل");
-  const [selectedType, setSelectedType] = useState("الكل");
+  // Read all filters from URL
+  const brandFromUrl = searchParams.get("brand") || "الكل";
+  const capacityFromUrl = searchParams.get("capacity") || "الكل";
+  const typeFromUrl = searchParams.get("type") || "الكل";
+  const inverterFromUrl = searchParams.get("inverter") || "الكل";
+
+  const [selectedBrand, setSelectedBrand] = useState(brandFromUrl);
+  const [selectedCapacity, setSelectedCapacity] = useState(capacityFromUrl);
+  const [selectedType, setSelectedType] = useState(typeFromUrl);
+  const [selectedInverter, setSelectedInverter] = useState(inverterFromUrl);
 
   const { data: products = [], isLoading: productsLoading } = useProducts();
   const { data: brands = [], isLoading: brandsLoading } = useBrands();
 
-  // Update selected brand when URL changes
+  // Sync state with URL on mount and URL changes
   useEffect(() => {
-    if (brandFromUrl) {
-      setSelectedBrand(brandFromUrl);
-    }
-  }, [brandFromUrl]);
+    setSelectedBrand(searchParams.get("brand") || "الكل");
+    setSelectedCapacity(searchParams.get("capacity") || "الكل");
+    setSelectedType(searchParams.get("type") || "الكل");
+    setSelectedInverter(searchParams.get("inverter") || "الكل");
+  }, [searchParams]);
 
-  // Update URL when brand filter changes
+  // Generic function to update URL params
+  const updateUrlParam = (key: string, value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === "الكل") {
+      newParams.delete(key);
+    } else {
+      newParams.set(key, value);
+    }
+    setSearchParams(newParams);
+  };
+
+  // Filter handlers
   const handleBrandChange = (brand: string) => {
     setSelectedBrand(brand);
-    if (brand === "الكل") {
-      searchParams.delete("brand");
-    } else {
-      searchParams.set("brand", brand);
-    }
-    setSearchParams(searchParams);
+    updateUrlParam("brand", brand);
+  };
+
+  const handleCapacityChange = (capacity: string) => {
+    setSelectedCapacity(capacity);
+    updateUrlParam("capacity", capacity);
+  };
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    updateUrlParam("type", type);
+  };
+
+  const handleInverterChange = (inverter: string) => {
+    setSelectedInverter(inverter);
+    updateUrlParam("inverter", inverter);
   };
 
   const filteredProducts = useMemo(() => {
@@ -47,9 +76,20 @@ const Products = () => {
       const brandMatch = selectedBrand === "الكل" || product.brand === selectedBrand;
       const capacityMatch = selectedCapacity === "الكل" || product.capacity === selectedCapacity;
       const typeMatch = selectedType === "الكل" || product.type === selectedType;
-      return brandMatch && capacityMatch && typeMatch;
+
+      // Inverter filter logic - check if product name contains "انفرتر" or "Inverter"
+      let inverterMatch = true;
+      if (selectedInverter === "انفرتر") {
+        inverterMatch = product.name?.toLowerCase().includes("انفرتر") ||
+          product.name?.toLowerCase().includes("inverter");
+      } else if (selectedInverter === "عادي") {
+        inverterMatch = !product.name?.toLowerCase().includes("انفرتر") &&
+          !product.name?.toLowerCase().includes("inverter");
+      }
+
+      return brandMatch && capacityMatch && typeMatch && inverterMatch;
     });
-  }, [products, selectedBrand, selectedCapacity, selectedType]);
+  }, [products, selectedBrand, selectedCapacity, selectedType, selectedInverter]);
 
   const brandOptions = useMemo(() => {
     return ["الكل", ...brands.map(b => b.name)];
@@ -57,13 +97,18 @@ const Products = () => {
 
   const capacityOptions = ["الكل", ...capacities];
   const typeOptions = ["الكل", ...types];
+  const inverterFilterOptions = ["الكل", ...inverterOptions];
 
   const resetFilters = () => {
     setSelectedBrand("الكل");
     setSelectedCapacity("الكل");
     setSelectedType("الكل");
+    setSelectedInverter("الكل");
     setSearchParams({});
   };
+
+  const hasActiveFilters = selectedBrand !== "الكل" || selectedCapacity !== "الكل" ||
+    selectedType !== "الكل" || selectedInverter !== "الكل";
 
   const isLoading = productsLoading || brandsLoading;
 
@@ -90,7 +135,7 @@ const Products = () => {
           {/* Filters */}
           <div className="bg-card border-b border-border sticky top-[72px] md:top-[136px] z-40">
             <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Filter className="h-5 w-5" />
                   <span className="font-medium">تصفية:</span>
@@ -114,7 +159,7 @@ const Products = () => {
                 <div className="relative">
                   <select
                     value={selectedCapacity}
-                    onChange={(e) => setSelectedCapacity(e.target.value)}
+                    onChange={(e) => handleCapacityChange(e.target.value)}
                     className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
                   >
                     {capacityOptions.map((capacity) => (
@@ -124,19 +169,46 @@ const Products = () => {
                   <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
 
-                {/* Type Filter */}
+                {/* Type Filter (Hot/Cold) */}
                 <div className="relative">
                   <select
                     value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
+                    onChange={(e) => handleTypeChange(e.target.value)}
                     className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
                   >
                     {typeOptions.map((type) => (
-                      <option key={type} value={type}>{type === "الكل" ? "جميع الأنواع" : type}</option>
+                      <option key={type} value={type}>{type === "الكل" ? "بارد/ساخن" : type}</option>
                     ))}
                   </select>
                   <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                 </div>
+
+                {/* Inverter Filter */}
+                <div className="relative">
+                  <select
+                    value={selectedInverter}
+                    onChange={(e) => handleInverterChange(e.target.value)}
+                    className="appearance-none bg-muted border border-border rounded-lg px-4 py-2 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+                  >
+                    {inverterFilterOptions.map((inv) => (
+                      <option key={inv} value={inv}>{inv === "الكل" ? "عادي/انفرتر" : inv}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                </div>
+
+                {/* Reset Filters Button */}
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={resetFilters}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <X className="h-4 w-4 ml-1" />
+                    مسح الفلاتر
+                  </Button>
+                )}
 
                 <span className="text-sm text-muted-foreground mr-auto">{filteredProducts.length} منتج</span>
               </div>
@@ -180,3 +252,4 @@ const Products = () => {
 };
 
 export default Products;
+

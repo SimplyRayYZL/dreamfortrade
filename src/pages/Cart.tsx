@@ -6,9 +6,16 @@ import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { useEffect } from "react";
+import { trackViewCart } from "@/lib/analytics";
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
+
+  // Track cart view
+  useEffect(() => {
+    trackViewCart();
+  }, []);
 
   const handleCheckout = () => {
     toast.success("سيتم التواصل معك قريباً لإتمام الطلب!");

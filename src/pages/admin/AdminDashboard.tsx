@@ -8,16 +8,21 @@ import {
     BarChart3,
     Users,
     LogOut,
+    Eye,
+    CreditCard,
+    TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useTodayStats } from "@/hooks/useAnalytics";
 
 const AdminDashboard = () => {
     const { logout, username, role, canAccessSettings } = useAdminAuth();
     const navigate = useNavigate();
+    const { data: todayStats, isLoading: statsLoading } = useTodayStats();
 
     // Filter pages based on role
     const adminPages = [
@@ -94,7 +99,7 @@ const AdminDashboard = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-xl font-bold">لوحة التحكم</h1>
-                                    <p className="text-sm text-muted-foreground">????? ?????? ???????</p>
+                                    <p className="text-sm text-muted-foreground">تارجت لأعمال التكييف</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
@@ -132,27 +137,33 @@ const AdminDashboard = () => {
                         </p>
                     </div>
 
-                    {/* Quick Stats */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    {/* Today's Analytics Stats */}
+                    <h3 className="text-lg font-bold mb-4">إحصائيات اليوم 📊</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                         <div className="bg-card rounded-xl p-4 border">
-                            <Package className="h-8 w-8 text-blue-500 mb-2" />
-                            <p className="text-2xl font-bold">--</p>
-                            <p className="text-sm text-muted-foreground">المنتجات</p>
+                            <Eye className="h-8 w-8 text-blue-500 mb-2" />
+                            <p className="text-2xl font-bold">{statsLoading ? "--" : todayStats?.visitors || 0}</p>
+                            <p className="text-sm text-muted-foreground">زائر</p>
                         </div>
                         <div className="bg-card rounded-xl p-4 border">
-                            <ShoppingCart className="h-8 w-8 text-green-500 mb-2" />
-                            <p className="text-2xl font-bold">--</p>
-                            <p className="text-sm text-muted-foreground">الطلبات</p>
+                            <ShoppingCart className="h-8 w-8 text-orange-500 mb-2" />
+                            <p className="text-2xl font-bold">{statsLoading ? "--" : todayStats?.addToCart || 0}</p>
+                            <p className="text-sm text-muted-foreground">أضاف للسلة</p>
                         </div>
                         <div className="bg-card rounded-xl p-4 border">
-                            <Tags className="h-8 w-8 text-purple-500 mb-2" />
-                            <p className="text-2xl font-bold">--</p>
-                            <p className="text-sm text-muted-foreground">الماركات</p>
+                            <CreditCard className="h-8 w-8 text-purple-500 mb-2" />
+                            <p className="text-2xl font-bold">{statsLoading ? "--" : todayStats?.checkout || 0}</p>
+                            <p className="text-sm text-muted-foreground">بدأ الدفع</p>
                         </div>
                         <div className="bg-card rounded-xl p-4 border">
-                            <Users className="h-8 w-8 text-orange-500 mb-2" />
-                            <p className="text-2xl font-bold">--</p>
-                            <p className="text-sm text-muted-foreground">العملاء</p>
+                            <TrendingUp className="h-8 w-8 text-green-500 mb-2" />
+                            <p className="text-2xl font-bold">{statsLoading ? "--" : todayStats?.purchases || 0}</p>
+                            <p className="text-sm text-muted-foreground">أتم الشراء</p>
+                        </div>
+                        <div className="bg-card rounded-xl p-4 border">
+                            <BarChart3 className="h-8 w-8 text-secondary mb-2" />
+                            <p className="text-2xl font-bold">{statsLoading ? "--" : (todayStats?.revenue || 0).toLocaleString()}</p>
+                            <p className="text-sm text-muted-foreground">الإيرادات (ج.م)</p>
                         </div>
                     </div>
 

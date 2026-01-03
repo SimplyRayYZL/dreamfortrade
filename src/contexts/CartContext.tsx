@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product } from "@/hooks/useProducts";
+import { trackAddToCart } from "@/lib/analytics";
 
 export interface CartItem {
   product: Product;
@@ -37,6 +38,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addToCart = (product: Product, quantity: number = 1) => {
+    // Track add to cart event
+    trackAddToCart(product.id, product.name);
+
     setItems((prev) => {
       const existingItem = prev.find((item) => item.product.id === product.id);
       if (existingItem) {

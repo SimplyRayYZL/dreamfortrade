@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { getActiveShippingAreas, useSiteSettings } from "@/hooks/useSettings";
+import { trackStartCheckout, trackCompletePurchase } from "@/lib/analytics";
 
 interface CheckoutFormData {
     customerName: string;
@@ -66,6 +67,13 @@ const Checkout = () => {
             }));
         }
     }, [user, profile]);
+
+    // Track checkout start
+    useEffect(() => {
+        if (items.length > 0) {
+            trackStartCheckout();
+        }
+    }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -164,6 +172,9 @@ const Checkout = () => {
                 console.error("Error sending email notification:", emailError);
                 // Don't block order completion if email fails
             }
+
+            // Track purchase completion
+            trackCompletePurchase(order.id, totalPrice);
 
             // Clear cart and navigate to success page
             clearCart();
