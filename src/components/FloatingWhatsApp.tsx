@@ -1,7 +1,17 @@
 import { MessageCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { useSiteSettings } from "@/hooks/useSettings";
 
 const FloatingWhatsApp = () => {
-  const phoneNumber = "201208000550";
+  const location = useLocation();
+  const { data: settings } = useSiteSettings();
+
+  // Hide on admin pages
+  if (location.pathname.startsWith("/admin")) {
+    return null;
+  }
+
+  const phoneNumber = settings?.store_whatsapp?.replace(/\D/g, '') || "201208000550";
   const message = "مرحباً، أريد الاستفسار عن منتجاتكم";
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -25,3 +35,4 @@ const FloatingWhatsApp = () => {
 };
 
 export default FloatingWhatsApp;
+
