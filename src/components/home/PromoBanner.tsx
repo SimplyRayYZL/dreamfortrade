@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Star, MessageCircle, Phone, Truck, Shield, Wrench, Headphones, Package, Snowflake, Facebook, Instagram, Mail } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSettings";
 import "@/styles/snow.css";
 
 interface PromoBannerProps {
@@ -8,6 +9,9 @@ interface PromoBannerProps {
 }
 
 const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
+    const { data: settings } = useSiteSettings();
+    const whatsappNumber = settings?.store_whatsapp || "201208000550";
+    const phoneNumber = settings?.store_phone || "01208000550";
     if (variant === "features") {
         // Features section with cyan/blue snowflakes
         const features = [
@@ -188,13 +192,13 @@ const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
 
                             {/* Buttons */}
                             <div className="flex flex-col gap-3">
-                                <a href="tel:+201208000550" className="block">
+                                <a href={`tel:+2${phoneNumber}`} className="block">
                                     <Button className="w-full bg-white hover:bg-white/90 text-primary font-bold gap-2 h-12 rounded-xl shadow-lg transition-all duration-300 hover:scale-105">
                                         <Phone className="h-5 w-5" />
                                         اتصل الآن
                                     </Button>
                                 </a>
-                                <a href="https://wa.me/201208000550" target="_blank" rel="noopener noreferrer" className="block">
+                                <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="block">
                                     <Button className="w-full bg-green-500 hover:bg-green-600 text-white font-bold gap-2 h-12 rounded-xl shadow-lg transition-all duration-300 hover:scale-105">
                                         <MessageCircle className="h-5 w-5" />
                                         واتساب

@@ -34,6 +34,7 @@ export interface SiteSettings {
     store_description: string;
     store_slogan: string;
     store_address: string;
+    store_map_embed: string;
     store_phone: string;
     store_phone_alt: string;
     store_email: string;
@@ -110,6 +111,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
     store_description: "شركة تارجت لأعمال التكييف",
     store_slogan: "جودة... ثقة... خدمة",
     store_address: "القاهرة، مصر",
+    store_map_embed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.0987738426833!2d31.235711!3d30.044419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDAyJzM5LjkiTiAzMcKwMTQnMDguNiJF!5e0!3m2!1sar!2seg!4v1234567890",
     store_phone: "01208000550",
     store_phone_alt: "",
     store_email: "info@target-ac.com",

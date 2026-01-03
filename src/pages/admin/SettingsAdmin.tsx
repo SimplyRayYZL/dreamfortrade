@@ -500,6 +500,15 @@ const SettingsAdmin = () => {
                                         placeholder="القاهرة، مصر"
                                     />
                                 </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label>رابط خريطة Google Maps (Embed URL)</Label>
+                                    <Input
+                                        value={formData.store_map_embed}
+                                        onChange={(e) => handleChange("store_map_embed", e.target.value)}
+                                        placeholder="https://www.google.com/maps/embed?pb=..."
+                                    />
+                                    <p className="text-xs text-muted-foreground">انسخ رابط التضمين من Google Maps (Share → Embed a map)</p>
+                                </div>
                             </div>
 
                             <h3 className="text-lg font-semibold border-b pb-3 pt-4 flex items-center gap-2">

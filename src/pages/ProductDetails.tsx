@@ -25,6 +25,7 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useCompare } from "@/contexts/CompareContext";
 import { toast } from "sonner";
 import ProductReviews from "@/components/ProductReviews";
+import { useSiteSettings } from "@/hooks/useSettings";
 
 // Fallback product images
 import acProduct1 from "@/assets/products/ac-white-1.png";
@@ -42,6 +43,8 @@ const ProductDetails = () => {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const { data: siteSettings } = useSiteSettings();
+  const whatsappNumber = siteSettings?.store_whatsapp || "201208000550";
 
   const { data: product, isLoading, error } = useProduct(id || "");
   const { data: relatedProducts = [] } = useRelatedProducts(
@@ -398,7 +401,7 @@ const ProductDetails = () => {
                     </div>
                     {/* WhatsApp Order Button */}
                     <a
-                      href={`https://wa.me/201208000550?text=${encodeURIComponent(
+                      href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
                         `مرحباً، أود طلب المنتج التالي:\n\n` +
                         `📦 المنتج: ${product.name}\n` +
                         `💰 السعر: ${product.price > 0 ? product.price.toLocaleString() + ' جنيه' : 'اتصل للسعر'}\n` +

@@ -3,6 +3,7 @@ import { ShoppingCart, Heart, Star, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/contexts/CartContext";
+import { useSiteSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 
 // Fallback images
@@ -16,6 +17,8 @@ const fallbackImages = [acProduct1, acProduct2, acProduct3, acProduct4];
 const ProductsSection = () => {
   const { data: products = [], isLoading } = useProducts();
   const { addToCart } = useCart();
+  const { data: settings } = useSiteSettings();
+  const whatsappNumber = settings?.store_whatsapp || "201208000550";
 
   // Get first 6 products for homepage
   const featuredProducts = products.slice(0, 6);
@@ -165,7 +168,7 @@ const ProductsSection = () => {
                   {/* Add to Cart with WhatsApp */}
                   <div className="flex flex-col gap-2">
                     <a
-                      href={`https://wa.me/201208000550?text=${encodeURIComponent(
+                      href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
                         `🛒 *استفسار عن منتج*\n\n` +
                         `📦 *المنتج:* ${product.name}\n` +
                         `🏷️ *الماركة:* ${product.brand}\n` +

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCompare } from "@/contexts/CompareContext";
+import { useSiteSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 import type { Product } from "@/hooks/useProducts";
 
@@ -25,6 +26,8 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const { data: settings } = useSiteSettings();
+  const whatsappNumber = settings?.store_whatsapp || "201208000550";
 
   const getProductImage = () => {
     if (product.image_url) {
@@ -155,7 +158,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
         {/* Buttons */}
         <div className="flex flex-col gap-1.5 md:gap-2 mt-auto pt-2 md:pt-3">
           <a
-            href={`https://wa.me/201208000550?text=${encodeURIComponent(
+            href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
               `🛒 *استفسار عن منتج*\n\n` +
               `📦 *المنتج:* ${product.name}\n` +
               `🏷️ *الماركة:* ${product.brand}\n` +
