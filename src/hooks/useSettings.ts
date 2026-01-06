@@ -240,6 +240,7 @@ export const useSiteSettings = () => {
                 // Check if data.settings exists and has content
                 if (data && data.settings && Object.keys(data.settings).length > 0) {
                     console.log("[Settings] Using DB settings:", data.settings);
+                    console.log("[Settings] Banners from DB:", data.settings.banners);
                     const dbSettings = { ...DEFAULT_SETTINGS, ...data.settings };
                     cacheSettings(dbSettings);
                     return dbSettings;
@@ -268,6 +269,7 @@ export const useUpdateSettings = () => {
             cacheSettings(settings);
 
             console.log("[Settings] Saving to Supabase (update)...");
+            console.log("[Settings] Banners being saved:", settings.banners);
 
             // Save to Supabase using UPDATE (row must exist)
             const { error } = await (supabase
