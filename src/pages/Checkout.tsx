@@ -35,8 +35,9 @@ const Checkout = () => {
     const { data: siteSettings } = useSiteSettings();
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [deliveryType, setDeliveryType] = useState<"delivery_only" | "delivery_with_installation">("delivery_only");
+    const [deliveryType, setDeliveryType] = useState<"pickup_from_branch" | "delivery_only" | "delivery_with_installation">("delivery_only");
     const shippingAreas = getActiveShippingAreas();
+    const isPickup = deliveryType === "pickup_from_branch";
     const [formData, setFormData] = useState<CheckoutFormData>({
         customerName: "",
         phone: "",
@@ -47,14 +48,13 @@ const Checkout = () => {
         paymentMethod: "cod", // Cash on Delivery
     });
 
-    // Calculate shipping fee based on selected city
+    // Calculate shipping fee based on selected city (only for delivery options)
     const selectedArea = shippingAreas.find(area => area.name === formData.city);
     const shippingFee = selectedArea?.fee || 0;
-    const freeShippingThreshold = siteSettings?.free_shipping_threshold || 0;
-    const isFreeShipping = freeShippingThreshold > 0 && totalPrice >= freeShippingThreshold;
-    const finalShippingFee = isFreeShipping ? 0 : shippingFee;
     const installationFee = siteSettings?.installation_fee || 1000;
     const includeInstallation = deliveryType === "delivery_with_installation";
+    // For pickup: no shipping, no installation. For delivery: add shipping + optional installation
+    const finalShippingFee = isPickup ? 0 : shippingFee;
     const grandTotal = totalPrice + finalShippingFee + (includeInstallation ? installationFee : 0);
 
     // Pre-fill form with user data if logged in
@@ -91,8 +91,14 @@ const Checkout = () => {
             return;
         }
 
-        if (!formData.customerName || !formData.phone || !formData.address) {
+        // For pickup orders, only name and phone are required. For delivery, address is also required.
+        if (!formData.customerName || !formData.phone) {
             toast.error("يرجى ملء جميع الحقول المطلوبة");
+            return;
+        }
+
+        if (!isPickup && !formData.address) {
+            toast.error("يرجى إدخال عنوان التوصيل");
             return;
         }
 
@@ -293,65 +299,7 @@ const Checkout = () => {
                                         </CardContent>
                                     </Card>
 
-                                    {/* Shipping Address */}
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center gap-2">
-                                                <MapPin className="h-5 w-5" />
-                                                عنوان التوصيل
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="city">المحافظة *</Label>
-                                                    <Select
-                                                        value={formData.city}
-                                                        onValueChange={(value) => setFormData((prev) => ({ ...prev, city: value }))}
-                                                    >
-                                                        <SelectTrigger id="city">
-                                                            <SelectValue placeholder="اختر المحافظة" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {shippingAreas.map((area) => (
-                                                                <SelectItem key={area.id} value={area.name}>
-                                                                    {area.name} ({area.fee} ج.م)
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {shippingAreas.length === 0 && (
-                                                        <p className="text-sm text-destructive">لا توجد مناطق توصيل متاحة</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="address">العنوان التفصيلي *</Label>
-                                                <Textarea
-                                                    id="address"
-                                                    name="address"
-                                                    value={formData.address}
-                                                    onChange={handleInputChange}
-                                                    placeholder="الشارع، رقم المبنى، الدور، الشقة..."
-                                                    rows={3}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="notes">ملاحظات إضافية (اختياري)</Label>
-                                                <Textarea
-                                                    id="notes"
-                                                    name="notes"
-                                                    value={formData.notes}
-                                                    onChange={handleInputChange}
-                                                    placeholder="أي تعليمات خاصة للتوصيل..."
-                                                    rows={2}
-                                                />
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-
-                                    {/* Delivery Type */}
+                                    {/* Delivery Type - FIRST */}
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
@@ -362,9 +310,21 @@ const Checkout = () => {
                                         <CardContent>
                                             <RadioGroup
                                                 value={deliveryType}
-                                                onValueChange={(value: "delivery_only" | "delivery_with_installation") => setDeliveryType(value)}
+                                                onValueChange={(value: "pickup_from_branch" | "delivery_only" | "delivery_with_installation") => setDeliveryType(value)}
                                                 className="space-y-3"
                                             >
+                                                <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                                                    <RadioGroupItem value="pickup_from_branch" id="pickup_from_branch" />
+                                                    <Label htmlFor="pickup_from_branch" className="flex items-center gap-3 cursor-pointer flex-1">
+                                                        <MapPin className="h-5 w-5 text-secondary" />
+                                                        <div>
+                                                            <p className="font-semibold">استلام من الفرع</p>
+                                                            <p className="text-sm text-muted-foreground">
+                                                                استلم طلبك من فرعنا بدون رسوم توصيل
+                                                            </p>
+                                                        </div>
+                                                    </Label>
+                                                </div>
                                                 <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
                                                     <RadioGroupItem value="delivery_only" id="delivery_only" />
                                                     <Label htmlFor="delivery_only" className="flex items-center gap-3 cursor-pointer flex-1">
@@ -396,6 +356,66 @@ const Checkout = () => {
                                             </RadioGroup>
                                         </CardContent>
                                     </Card>
+
+                                    {/* Shipping Address - Only show for delivery options */}
+                                    {!isPickup && (
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle className="flex items-center gap-2">
+                                                    <MapPin className="h-5 w-5" />
+                                                    عنوان التوصيل
+                                                </CardTitle>
+                                            </CardHeader>
+                                            <CardContent className="space-y-4">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="city">المحافظة *</Label>
+                                                        <Select
+                                                            value={formData.city}
+                                                            onValueChange={(value) => setFormData((prev) => ({ ...prev, city: value }))}
+                                                        >
+                                                            <SelectTrigger id="city">
+                                                                <SelectValue placeholder="اختر المحافظة" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {shippingAreas.map((area) => (
+                                                                    <SelectItem key={area.id} value={area.name}>
+                                                                        {area.name} ({area.fee} ج.م)
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        {shippingAreas.length === 0 && (
+                                                            <p className="text-sm text-destructive">لا توجد مناطق توصيل متاحة</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="address">العنوان التفصيلي *</Label>
+                                                    <Textarea
+                                                        id="address"
+                                                        name="address"
+                                                        value={formData.address}
+                                                        onChange={handleInputChange}
+                                                        placeholder="الشارع، رقم المبنى، الدور، الشقة..."
+                                                        rows={3}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="notes">ملاحظات إضافية (اختياري)</Label>
+                                                    <Textarea
+                                                        id="notes"
+                                                        name="notes"
+                                                        value={formData.notes}
+                                                        onChange={handleInputChange}
+                                                        placeholder="أي تعليمات خاصة للتوصيل..."
+                                                        rows={2}
+                                                    />
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    )}
 
                                     {/* Payment Method */}
                                     <Card>
@@ -459,20 +479,21 @@ const Checkout = () => {
                                                     <span className="text-muted-foreground">المجموع الفرعي:</span>
                                                     <span>{totalPrice.toLocaleString()} ج.م</span>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-muted-foreground">التوصيل ({formData.city || "اختر المحافظة"}):</span>
-                                                    {isFreeShipping ? (
-                                                        <span className="text-green-600">مجاني 🎉</span>
-                                                    ) : formData.city ? (
-                                                        <span>{finalShippingFee.toLocaleString()} ج.م</span>
-                                                    ) : (
-                                                        <span className="text-muted-foreground">--</span>
-                                                    )}
-                                                </div>
-                                                {!isFreeShipping && freeShippingThreshold > 0 && (
-                                                    <p className="text-xs text-muted-foreground">
-                                                        شحن مجاني للطلبات فوق {freeShippingThreshold.toLocaleString()} ج.م
-                                                    </p>
+                                                {!isPickup && (
+                                                    <div className="flex justify-between">
+                                                        <span className="text-muted-foreground">التوصيل ({formData.city || "اختر المحافظة"}):</span>
+                                                        {formData.city ? (
+                                                            <span>{finalShippingFee.toLocaleString()} ج.م</span>
+                                                        ) : (
+                                                            <span className="text-muted-foreground">--</span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                {isPickup && (
+                                                    <div className="flex justify-between">
+                                                        <span className="text-muted-foreground">الاستلام:</span>
+                                                        <span className="text-green-600">من الفرع</span>
+                                                    </div>
                                                 )}
                                                 {includeInstallation && (
                                                     <div className="flex justify-between">
