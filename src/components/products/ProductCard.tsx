@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Scale, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCompare } from "@/contexts/CompareContext";
@@ -23,6 +23,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProps) => {
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
@@ -41,6 +42,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
     e.stopPropagation();
     addToCart(product);
     toast.success("تمت الإضافة إلى السلة");
+    navigate("/cart");
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {

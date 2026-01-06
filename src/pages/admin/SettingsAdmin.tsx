@@ -1048,6 +1048,18 @@ const SettingsAdmin = () => {
                                         placeholder="التوصيل خلال 2-5 أيام عمل"
                                     />
                                 </div>
+                                <div className="space-y-2">
+                                    <Label>سعر التركيب (ج.م)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.installation_fee}
+                                        onChange={(e) => handleChange("installation_fee", Number(e.target.value))}
+                                        placeholder="1000"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        السعر المضاف عند اختيار "توصيل + تركيب" في صفحة الدفع
+                                    </p>
+                                </div>
                             </div>
                         </TabsContent>
 

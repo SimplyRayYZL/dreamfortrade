@@ -67,6 +67,7 @@ export interface SiteSettings {
     shipping_areas: ShippingArea[];
     free_shipping_threshold: number;
     delivery_message: string;
+    installation_fee: number;
 
     // Banners
     banners: Banner[];
@@ -145,6 +146,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
     ],
     free_shipping_threshold: 10000,
     delivery_message: "التوصيل خلال 2-5 أيام عمل",
+    installation_fee: 1000,
 
     // Default banners
     banners: [
