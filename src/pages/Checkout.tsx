@@ -35,9 +35,10 @@ const Checkout = () => {
     const { data: siteSettings } = useSiteSettings();
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [deliveryType, setDeliveryType] = useState<"pickup_from_branch" | "delivery_only" | "delivery_with_installation">("delivery_only");
+    const [deliveryType, setDeliveryType] = useState<"pickup_from_branch" | "delivery_only" | "delivery_with_installation" | "free_delivery">("delivery_only");
     const shippingAreas = getActiveShippingAreas();
     const isPickup = deliveryType === "pickup_from_branch";
+    const isFreeDelivery = deliveryType === "free_delivery";
     const [formData, setFormData] = useState<CheckoutFormData>({
         customerName: "",
         phone: "",
@@ -53,8 +54,8 @@ const Checkout = () => {
     const shippingFee = selectedArea?.fee || 0;
     const installationFee = siteSettings?.installation_fee || 1000;
     const includeInstallation = deliveryType === "delivery_with_installation";
-    // For pickup: no shipping, no installation. For delivery: add shipping + optional installation
-    const finalShippingFee = isPickup ? 0 : shippingFee;
+    // For pickup and free_delivery: no fees. For delivery: add shipping + optional installation
+    const finalShippingFee = (isPickup || isFreeDelivery) ? 0 : shippingFee;
     const grandTotal = totalPrice + finalShippingFee + (includeInstallation ? installationFee : 0);
 
     // Pre-fill form with user data if logged in
@@ -310,49 +311,73 @@ const Checkout = () => {
                                         <CardContent>
                                             <RadioGroup
                                                 value={deliveryType}
-                                                onValueChange={(value: "pickup_from_branch" | "delivery_only" | "delivery_with_installation") => setDeliveryType(value)}
+                                                onValueChange={(value: "pickup_from_branch" | "delivery_only" | "delivery_with_installation" | "free_delivery") => setDeliveryType(value)}
                                                 className="space-y-3"
                                             >
-                                                <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
-                                                    <RadioGroupItem value="pickup_from_branch" id="pickup_from_branch" />
-                                                    <Label htmlFor="pickup_from_branch" className="flex items-center gap-3 cursor-pointer flex-1">
-                                                        <MapPin className="h-5 w-5 text-secondary" />
-                                                        <div>
-                                                            <p className="font-semibold">استلام من الفرع</p>
-                                                            <p className="text-sm text-muted-foreground">
-                                                                استلم طلبك من فرعنا بدون رسوم توصيل
-                                                            </p>
-                                                        </div>
-                                                    </Label>
-                                                </div>
-                                                <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
-                                                    <RadioGroupItem value="delivery_only" id="delivery_only" />
-                                                    <Label htmlFor="delivery_only" className="flex items-center gap-3 cursor-pointer flex-1">
-                                                        <Truck className="h-5 w-5 text-secondary" />
-                                                        <div>
-                                                            <p className="font-semibold">توصيل فقط</p>
-                                                            <p className="text-sm text-muted-foreground">
-                                                                استلم المنتج واركبه بنفسك
-                                                            </p>
-                                                        </div>
-                                                    </Label>
-                                                </div>
-                                                <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
-                                                    <RadioGroupItem value="delivery_with_installation" id="delivery_with_installation" />
-                                                    <Label htmlFor="delivery_with_installation" className="flex items-center gap-3 cursor-pointer flex-1">
-                                                        <div className="flex items-center gap-1">
+                                                {siteSettings?.pickup_enabled !== false && (
+                                                    <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                                                        <RadioGroupItem value="pickup_from_branch" id="pickup_from_branch" />
+                                                        <Label htmlFor="pickup_from_branch" className="flex items-center gap-3 cursor-pointer flex-1">
+                                                            <MapPin className="h-5 w-5 text-secondary" />
+                                                            <div>
+                                                                <p className="font-semibold">استلام من الفرع</p>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    استلم طلبك من فرعنا بدون رسوم توصيل
+                                                                </p>
+                                                            </div>
+                                                        </Label>
+                                                    </div>
+                                                )}
+                                                {siteSettings?.delivery_only_enabled !== false && (
+                                                    <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                                                        <RadioGroupItem value="delivery_only" id="delivery_only" />
+                                                        <Label htmlFor="delivery_only" className="flex items-center gap-3 cursor-pointer flex-1">
                                                             <Truck className="h-5 w-5 text-secondary" />
-                                                            <span className="text-secondary">+</span>
-                                                            <CheckCircle className="h-5 w-5 text-secondary" />
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <p className="font-semibold">توصيل + تركيب</p>
-                                                            <p className="text-sm text-muted-foreground">
-                                                                توصيل وتركيب احترافي (+{installationFee.toLocaleString()} ج.م)
-                                                            </p>
-                                                        </div>
-                                                    </Label>
-                                                </div>
+                                                            <div>
+                                                                <p className="font-semibold">توصيل فقط</p>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    استلم المنتج واركبه بنفسك
+                                                                </p>
+                                                            </div>
+                                                        </Label>
+                                                    </div>
+                                                )}
+                                                {siteSettings?.delivery_with_installation_enabled !== false && (
+                                                    <div className="flex items-center space-x-3 space-x-reverse p-4 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                                                        <RadioGroupItem value="delivery_with_installation" id="delivery_with_installation" />
+                                                        <Label htmlFor="delivery_with_installation" className="flex items-center gap-3 cursor-pointer flex-1">
+                                                            <div className="flex items-center gap-1">
+                                                                <Truck className="h-5 w-5 text-secondary" />
+                                                                <span className="text-secondary">+</span>
+                                                                <CheckCircle className="h-5 w-5 text-secondary" />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="font-semibold">توصيل + تركيب</p>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                    توصيل وتركيب احترافي (+{installationFee.toLocaleString()} ج.م)
+                                                                </p>
+                                                            </div>
+                                                        </Label>
+                                                    </div>
+                                                )}
+                                                {siteSettings?.free_delivery_installation_enabled === true && (
+                                                    <div className="flex items-center space-x-3 space-x-reverse p-4 border-2 border-purple-300 bg-purple-50 rounded-lg hover:bg-purple-100 cursor-pointer">
+                                                        <RadioGroupItem value="free_delivery" id="free_delivery" />
+                                                        <Label htmlFor="free_delivery" className="flex items-center gap-3 cursor-pointer flex-1">
+                                                            <div className="flex items-center gap-1">
+                                                                <Truck className="h-5 w-5 text-purple-600" />
+                                                                <span className="text-purple-600">+</span>
+                                                                <CheckCircle className="h-5 w-5 text-purple-600" />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="font-semibold text-purple-700">🎁 توصيل + تركيب مجاني</p>
+                                                                <p className="text-sm text-purple-600">
+                                                                    عرض خاص - توصيل وتركيب بدون رسوم!
+                                                                </p>
+                                                            </div>
+                                                        </Label>
+                                                    </div>
+                                                )}
                                             </RadioGroup>
                                         </CardContent>
                                     </Card>
