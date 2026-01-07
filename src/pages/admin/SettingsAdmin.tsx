@@ -27,6 +27,9 @@ import {
     GripVertical,
     Eye,
     EyeOff,
+    Package,
+    Wrench,
+    Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1059,6 +1062,77 @@ const SettingsAdmin = () => {
                                     <p className="text-xs text-muted-foreground">
                                         السعر المضاف عند اختيار "توصيل + تركيب" في صفحة الدفع
                                     </p>
+                                </div>
+                            </div>
+
+                            {/* Delivery Options Toggles */}
+                            <h3 className="text-lg font-semibold border-t pt-6 flex items-center gap-2">
+                                <Truck className="h-5 w-5 text-secondary" />
+                                خيارات التوصيل في صفحة الدفع
+                            </h3>
+                            <p className="text-sm text-muted-foreground mb-4">
+                                اختر الخيارات اللي هتظهر للعملاء في صفحة إتمام الطلب
+                            </p>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <Package className="h-5 w-5 text-orange-500" />
+                                        <div>
+                                            <p className="font-medium">استلام من الفرع</p>
+                                            <p className="text-xs text-muted-foreground">بدون رسوم توصيل</p>
+                                        </div>
+                                    </div>
+                                    <Switch
+                                        checked={formData.pickup_enabled}
+                                        onCheckedChange={(checked) => handleChange("pickup_enabled", checked)}
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <Truck className="h-5 w-5 text-blue-500" />
+                                        <div>
+                                            <p className="font-medium">توصيل فقط</p>
+                                            <p className="text-xs text-muted-foreground">حسب المحافظة</p>
+                                        </div>
+                                    </div>
+                                    <Switch
+                                        checked={formData.delivery_only_enabled}
+                                        onCheckedChange={(checked) => handleChange("delivery_only_enabled", checked)}
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center">
+                                            <Truck className="h-5 w-5 text-green-500" />
+                                            <span className="text-green-500 mx-0.5">+</span>
+                                            <Wrench className="h-5 w-5 text-green-500" />
+                                        </div>
+                                        <div>
+                                            <p className="font-medium">توصيل + تركيب</p>
+                                            <p className="text-xs text-muted-foreground">سعر التركيب أعلاه</p>
+                                        </div>
+                                    </div>
+                                    <Switch
+                                        checked={formData.delivery_with_installation_enabled}
+                                        onCheckedChange={(checked) => handleChange("delivery_with_installation_enabled", checked)}
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border-2 border-purple-200 bg-purple-50 rounded-lg">
+                                    <div className="flex items-center gap-3">
+                                        <Gift className="h-5 w-5 text-purple-500" />
+                                        <div>
+                                            <p className="font-medium text-purple-700">توصيل + تركيب مجاني</p>
+                                            <p className="text-xs text-purple-600">عرض خاص</p>
+                                        </div>
+                                    </div>
+                                    <Switch
+                                        checked={formData.free_delivery_installation_enabled}
+                                        onCheckedChange={(checked) => handleChange("free_delivery_installation_enabled", checked)}
+                                    />
                                 </div>
                             </div>
                         </TabsContent>

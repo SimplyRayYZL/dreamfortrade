@@ -69,6 +69,12 @@ export interface SiteSettings {
     delivery_message: string;
     installation_fee: number;
 
+    // Delivery Options (admin toggles)
+    pickup_enabled: boolean;
+    delivery_only_enabled: boolean;
+    delivery_with_installation_enabled: boolean;
+    free_delivery_installation_enabled: boolean;
+
     // Banners
     banners: Banner[];
 
@@ -147,6 +153,12 @@ const DEFAULT_SETTINGS: SiteSettings = {
     free_shipping_threshold: 10000,
     delivery_message: "التوصيل خلال 2-5 أيام عمل",
     installation_fee: 1000,
+
+    // Delivery options (admin toggles)
+    pickup_enabled: true,
+    delivery_only_enabled: true,
+    delivery_with_installation_enabled: true,
+    free_delivery_installation_enabled: false,
 
     // Default banners
     banners: [
