@@ -62,6 +62,23 @@ const queryClient = new QueryClient({
   },
 });
 
+// Import AOS styles
+import 'aos/dist/aos.css';
+import AOS from 'aos';
+
+// Initialize AOS - FASTER settings
+if (typeof window !== 'undefined') {
+  AOS.init({
+    duration: 600,
+    easing: 'ease-out-quart',
+    once: true,
+    offset: 50,
+    delay: 0,
+    mirror: false,
+    anchorPlacement: 'top-bottom',
+  });
+}
+
 // Loading component for Suspense fallback
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">

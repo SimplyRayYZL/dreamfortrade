@@ -403,10 +403,25 @@ const PageBannersAdmin = () => {
                                                         placeholder="أو أدخل رابط الصورة"
                                                         className="h-9 mt-1"
                                                     />
+                                                    {formData.image_url && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-red-500 border-red-300 hover:bg-red-50 h-8 w-full"
+                                                            onClick={() => {
+                                                                setFormData({ ...formData, image_url: '' });
+                                                                setSelectedFile(null);
+                                                            }}
+                                                        >
+                                                            <X className="h-3 w-3 ml-1" />
+                                                            مسح الصورة (إرجاع الـ Gradient)
+                                                        </Button>
+                                                    )}
                                                 </div>
                                                 <div className="flex gap-2 pt-2">
                                                     <Button
-                                                        onClick={() => handleSave(banner.id)}
+                                                        onClick={() => handleSave(banner.page_name)}
                                                         disabled={uploading || saveMutation.isPending}
                                                         className="flex-1 gap-1 bg-secondary hover:bg-secondary/90"
                                                         size="sm"

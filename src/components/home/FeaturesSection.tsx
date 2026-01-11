@@ -4,7 +4,7 @@ const features = [
   {
     icon: Truck,
     title: "توصيل سريع",
-    description: "توصيل سريع لجميع أنحاء الجمهورية",
+    description: "توصيل سريع لجميع الطلبات",
     color: "from-blue-500 to-cyan-500",
   },
   {
@@ -14,16 +14,16 @@ const features = [
     color: "from-green-500 to-emerald-500",
   },
   {
-    icon: Wrench,
-    title: "تركيب مجاني",
-    description: "فريق متخصص للتركيب والصيانة",
-    color: "from-orange-500 to-amber-500",
-  },
-  {
     icon: Headphones,
     title: "دعم فني 24/7",
     description: "فريق دعم متواجد على مدار الساعة",
     color: "from-purple-500 to-violet-500",
+  },
+  {
+    icon: Wrench,
+    title: "أسعار منافسة",
+    description: "أفضل الأسعار في السوق المصري",
+    color: "from-orange-500 to-amber-500",
   },
   {
     icon: Award,
@@ -35,18 +35,18 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-gradient-to-b from-background via-muted/30 to-background overflow-hidden relative">
+      <div className="container mx-auto px-4 relative">
         {/* Section Title with Animation */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4 animate-[bounce-in_0.6s_ease-out_forwards]">
+          <div data-aos="zoom-in" className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="h-4 w-4" />
             <span>مميزاتنا</span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 animate-[slide-up_0.8s_ease-out_forwards]">
+          <h2 data-aos="fade-up" data-aos-delay="100" className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             ليه تختار <span className="text-secondary bg-secondary/10 px-3 py-1 rounded-lg">دريم</span>؟
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto animate-[slide-up_0.8s_ease-out_0.2s_forwards] opacity-0">
+          <p data-aos="fade-up" data-aos-delay="200" className="text-lg text-muted-foreground max-w-2xl mx-auto">
             نقدم لك أفضل الخدمات والمنتجات بأعلى جودة وأفضل سعر
           </p>
         </div>
@@ -56,8 +56,9 @@ const FeaturesSection = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="group relative text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-secondary/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl opacity-0 animate-[scale-in_0.6s_ease-out_forwards]"
-              style={{ animationDelay: `${0.3 + index * 0.15}s` }}
+              data-aos="flip-up"
+              data-aos-delay={index * 100}
+              className="group relative text-center p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-secondary/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
             >
               {/* Glow effect on hover */}
               <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl`} />

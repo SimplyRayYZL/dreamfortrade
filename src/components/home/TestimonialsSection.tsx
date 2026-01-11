@@ -88,14 +88,14 @@ const TestimonialsSection = () => {
 
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
+          <div data-aos="zoom-in" className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="h-4 w-4" />
             <span>آراء العملاء</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 data-aos="fade-up" data-aos-delay="100" className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             ماذا يقول <span className="text-secondary">عملاؤنا</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+          <p data-aos="fade-up" data-aos-delay="200" className="text-muted-foreground text-lg max-w-xl mx-auto">
             نفتخر بثقة أكثر من 50,000 عميل سعيد
           </p>
         </div>

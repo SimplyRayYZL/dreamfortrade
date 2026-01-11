@@ -51,14 +51,14 @@ const ProductsSection = () => {
       <div className="container mx-auto px-4 relative">
         {/* Section Header with animation */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4 opacity-0 animate-[scale-in_0.5s_ease-out_forwards]">
+          <div data-aos="zoom-in" className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="h-4 w-4" />
             <span>أفضل العروض</span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 opacity-0 animate-[slide-up_0.8s_ease-out_0.1s_forwards]">
+          <h2 data-aos="fade-up" data-aos-delay="100" className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             أحدث <span className="text-secondary">المنتجات</span>
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto opacity-0 animate-[slide-up_0.8s_ease-out_0.2s_forwards]">
+          <p data-aos="fade-up" data-aos-delay="200" className="text-muted-foreground max-w-xl mx-auto">
             اكتشف مجموعتنا الواسعة من التكييفات العصرية بأفضل الأسعار
           </p>
         </div>
@@ -74,8 +74,9 @@ const ProductsSection = () => {
             {featuredProducts.map((product, index) => (
               <div
                 key={product.id}
-                className="group bg-card rounded-2xl lg:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 opacity-0 animate-[scale-in_0.5s_ease-out_forwards]"
-                style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+                className="group bg-card rounded-2xl lg:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500"
               >
                 {/* Product Image */}
                 <Link to={`/product/${product.id}`}>

@@ -1,6 +1,8 @@
 ﻿import { Link } from "react-router-dom";
 import { Loader2, Sparkles } from "lucide-react";
 import { useBrands } from "@/hooks/useProducts";
+import { AnimatedParticles } from "@/components/ui/AnimatedElements";
+import { motion } from "framer-motion";
 
 // Fallback logos
 import sharpLogo from "@/assets/brands/sharp.png";
@@ -41,21 +43,22 @@ const BrandsSection = () => {
     <section className="py-20 bg-gradient-to-b from-card to-background overflow-hidden relative">
       {/* Decorative background */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-secondary rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-64 h-64 bg-secondary rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
       </div>
+      <AnimatedParticles />
 
       <div className="container mx-auto px-4 relative">
         {/* Section Header with animation */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4 opacity-0 animate-[scale-in_0.5s_ease-out_forwards]">
+          <div data-aos="zoom-in" className="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Sparkles className="h-4 w-4" />
             <span>وكيل معتمد</span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 opacity-0 animate-[slide-up_0.8s_ease-out_0.1s_forwards]">
+          <h2 data-aos="fade-up" data-aos-delay="100" className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             ماركاتنا <span className="text-secondary">المعتمدة</span>
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto opacity-0 animate-[slide-up_0.8s_ease-out_0.2s_forwards]">
+          <p data-aos="fade-up" data-aos-delay="200" className="text-muted-foreground max-w-2xl mx-auto">
             نفتخر بكوننا الوكيل المعتمد لأشهر الماركات العالمية في مجال التكييفات
           </p>
         </div>
@@ -72,8 +75,9 @@ const BrandsSection = () => {
               <Link
                 key={brand.id}
                 to={`/products?brand=${brand.name}`}
-                className="group cursor-pointer opacity-0 animate-[scale-in_0.5s_ease-out_forwards]"
-                style={{ animationDelay: `${0.3 + index * 0.1}s` }}
+                data-aos="zoom-in"
+                data-aos-delay={index * 100}
+                className="group cursor-pointer"
               >
                 <div className="relative w-36 h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-3xl bg-card border-2 border-border p-4 flex flex-col items-center justify-center transition-all duration-500 group-hover:shadow-2xl group-hover:border-secondary group-hover:-translate-y-3 overflow-hidden">
                   {/* Glow effect on hover */}

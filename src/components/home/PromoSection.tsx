@@ -44,24 +44,31 @@ const PromoSection = ({ group }: PromoSectionProps) => {
         return null;
     }
 
-    // Determine grid layout based on number of banners - max 2 columns for wider banners
+    // Smart grid layout based on number of banners
     const getGridCols = () => {
         const count = banners.length;
         if (count === 1) return "grid-cols-1";
-        // Always show max 2 columns for wider banners
-        return "grid-cols-1 md:grid-cols-2";
+        if (count === 2) return "grid-cols-1 md:grid-cols-2"; // 2 large banners
+        if (count === 3) return "grid-cols-1 md:grid-cols-3";
+        return "grid-cols-2 md:grid-cols-4"; // 4 small banners
     };
 
+    const isFourBanners = banners.length >= 4;
+
     return (
-        <section className="py-10 md:py-16 bg-gradient-to-b from-muted/20 to-background">
-            <div className="container mx-auto px-4">
-                <div className={`grid ${getGridCols()} gap-4 md:gap-6 lg:gap-8`}>
+        <section className={isFourBanners ? "py-6 md:py-10 bg-gradient-to-b from-muted/20 to-background" : "py-10 md:py-16 bg-gradient-to-b from-muted/20 to-background"}>
+            <div className={isFourBanners ? "w-full px-2 md:px-4" : "container mx-auto px-4"}>
+                <div className={`grid ${getGridCols()} ${isFourBanners ? "gap-2 md:gap-3" : "gap-4 md:gap-6 lg:gap-8"}`}>
                     {banners.map((banner, index) => (
                         <Link
                             key={banner.id}
                             to={banner.link_url || "/products"}
-                            className="group block relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 opacity-0 animate-[scale-in_0.5s_ease-out_forwards]"
-                            style={{ animationDelay: `${index * 0.1}s` }}
+                            data-aos="zoom-in"
+                            data-aos-delay={index * 100}
+                            className={isFourBanners
+                                ? "group block relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1"
+                                : "group block relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
+                            }
                         >
                             {banner.image_url ? (
                                 <>

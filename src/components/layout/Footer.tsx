@@ -77,9 +77,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 {[
                   "بيع التكييفات",
-                  "التركيب المجاني",
-                  "الصيانة والإصلاح",
-                  "قطع الغيار الأصلية",
+                  "توصيل سريع",
                   "ضمان 5 سنوات",
                 ].map((service) => (
                   <li key={service} className="text-primary-foreground/70 text-sm flex items-center gap-2">
