@@ -200,11 +200,16 @@ const PageBannersAdmin = () => {
         let imageUrl = formData.image_url;
 
         if (selectedFile) {
+            console.log("Uploading file:", selectedFile.name);
             const uploadedUrl = await uploadImage(selectedFile);
+            console.log("Upload result:", uploadedUrl);
             if (uploadedUrl) {
                 imageUrl = uploadedUrl;
             }
         }
+
+        console.log("Saving with image_url:", imageUrl);
+        console.log("PageId:", pageId);
 
         saveMutation.mutate({
             pageId,
