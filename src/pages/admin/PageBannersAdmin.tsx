@@ -159,16 +159,46 @@ const PageBannersAdmin = () => {
     // Save mutation
     const saveMutation = useMutation({
         mutationFn: async ({ pageId, data }: { pageId: string; data: Partial<PageBanner> }) => {
-            const { error } = await (supabase as any)
+            // First check if record exists
+            const { data: existing } = await (supabase as any)
                 .from("page_banners")
-                .update({
-                    title: data.title,
-                    subtitle: data.subtitle,
-                    image_url: data.image_url,
-                    updated_at: new Date().toISOString(),
-                })
-                .eq("id", pageId);
-            if (error) throw error;
+                .select("id")
+                .eq("page_name", pageId)
+                .single();
+
+            let error;
+            if (existing) {
+                // Update existing record
+                const result = await (supabase as any)
+                    .from("page_banners")
+                    .update({
+                        title: data.title,
+                        subtitle: data.subtitle,
+                        image_url: data.image_url,
+                        updated_at: new Date().toISOString(),
+                    })
+                    .eq("page_name", pageId);
+                error = result.error;
+            } else {
+                // Insert new record with generated UUID
+                const result = await (supabase as any)
+                    .from("page_banners")
+                    .insert({
+                        id: crypto.randomUUID(),
+                        page_name: pageId,
+                        title: data.title,
+                        subtitle: data.subtitle,
+                        image_url: data.image_url,
+                        is_active: true,
+                    });
+                error = result.error;
+            }
+
+            if (error) {
+                console.error("Save error:", error);
+                throw error;
+            }
+            console.log("Save successful for:", pageId);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["page-banners"] });

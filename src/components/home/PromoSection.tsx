@@ -44,14 +44,12 @@ const PromoSection = ({ group }: PromoSectionProps) => {
         return null;
     }
 
-    // Determine grid layout based on number of banners
+    // Determine grid layout based on number of banners - max 2 columns for wider banners
     const getGridCols = () => {
         const count = banners.length;
         if (count === 1) return "grid-cols-1";
-        if (count === 2) return "grid-cols-1 md:grid-cols-2";
-        if (count === 3) return "grid-cols-1 md:grid-cols-3";
-        if (count >= 4) return "grid-cols-2 md:grid-cols-4";
-        return "grid-cols-2";
+        // Always show max 2 columns for wider banners
+        return "grid-cols-1 md:grid-cols-2";
     };
 
     return (
@@ -67,12 +65,13 @@ const PromoSection = ({ group }: PromoSectionProps) => {
                         >
                             {banner.image_url ? (
                                 <>
-                                    <img
-                                        src={banner.image_url}
-                                        alt={banner.title || "بانر ترويجي"}
-                                        className="w-full h-auto block group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                    {/* Overlay on hover */}
+                                    <div className="aspect-square overflow-hidden">
+                                        <img
+                                            src={banner.image_url}
+                                            alt={banner.title || "بانر ترويجي"}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        />
+                                    </div>
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
                                             <span className="text-white font-bold text-sm md:text-base">

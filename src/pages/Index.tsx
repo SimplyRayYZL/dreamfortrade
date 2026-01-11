@@ -1,4 +1,5 @@
 ﻿import { Helmet } from "react-helmet-async";
+import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroBanner from "@/components/home/HeroBanner";
@@ -9,9 +10,24 @@ import TestimonialsSection from "@/components/home/TestimonialsSection";
 import PromoBanner from "@/components/home/PromoBanner";
 import PromoSection from "@/components/home/PromoSection";
 import { useSiteSettings } from "@/hooks/useSettings";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const { data: settings } = useSiteSettings();
+
+  // Fetch CTA banner background
+  const { data: ctaBanner } = useQuery({
+    queryKey: ["cta_banner"],
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("page_banners")
+        .select("*")
+        .eq("page_name", "cta_section")
+        .eq("is_active", true)
+        .single();
+      return data as { image_url: string | null } | null;
+    },
+  });
 
   // Structured Data for SEO
   const structuredData = {
@@ -88,7 +104,16 @@ const Index = () => {
           <TestimonialsSection />
 
           {/* 8. CTA Section */}
-          <section className="py-16 md:py-20 bg-gradient-to-br from-primary via-primary to-secondary relative overflow-hidden">
+          <section
+            className="py-16 md:py-20 relative overflow-hidden"
+            style={{
+              backgroundImage: ctaBanner?.image_url && ctaBanner.image_url.trim() !== ''
+                ? `linear-gradient(to bottom right, rgba(24, 90, 157, 0.4), rgba(24, 90, 157, 0.3), rgba(59, 130, 246, 0.4)), url(${ctaBanner.image_url})`
+                : 'linear-gradient(to bottom right, var(--primary), var(--primary), var(--secondary))',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
             {/* Decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/30 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
