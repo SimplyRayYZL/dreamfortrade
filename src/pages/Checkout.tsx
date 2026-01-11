@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, CreditCard, Truck, MapPin, Phone, User, Mail, CheckCircle, LogIn } from "lucide-react";
@@ -92,7 +92,7 @@ const Checkout = () => {
             return;
         }
 
-        // For pickup orders, only name and phone are required. For delivery, address is also required.
+        // For pickup orders, only name and phone are required. For delivery, address and city are also required.
         if (!formData.customerName || !formData.phone) {
             toast.error("يرجى ملء جميع الحقول المطلوبة");
             return;
@@ -100,6 +100,11 @@ const Checkout = () => {
 
         if (!isPickup && !formData.address) {
             toast.error("يرجى إدخال عنوان التوصيل");
+            return;
+        }
+
+        if (!isPickup && !formData.city) {
+            toast.error("يرجى اختيار المحافظة/المنطقة");
             return;
         }
 
@@ -205,7 +210,7 @@ const Checkout = () => {
         return (
             <>
                 <Helmet>
-                    <title>إتمام الشراء | تارجت لأعمال التكييف</title>
+                    <title>إتمام الشراء | دريم للتجارة والتوريدات</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -235,7 +240,7 @@ const Checkout = () => {
     return (
         <>
             <Helmet>
-                <title>إتمام الشراء | تارجت لأعمال التكييف</title>
+                <title>إتمام الشراء | دريم للتجارة والتوريدات</title>
                 <meta name="description" content="إتمام عملية الشراء - ????? ?????? ???????" />
             </Helmet>
 

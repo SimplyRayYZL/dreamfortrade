@@ -1,9 +1,9 @@
-import { Phone } from "lucide-react";
+﻿import { Phone } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSettings";
 
 const FloatingWhatsApp = () => {
   const { data: settings } = useSiteSettings();
-  const phoneNumber = settings?.store_phone || "01208000550";
+  const phoneNumber = settings?.store_phone || "01289006310";
 
   // Clean the phone number for the tel: link
   const cleanPhone = phoneNumber.replace(/[^0-9+]/g, "");

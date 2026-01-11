@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Lock, CheckCircle, XCircle, ArrowRight } from "lucide-react";
@@ -78,7 +78,7 @@ const ResetPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>رابط غير صالح | تارجت لأعمال التكييف</title>
+                    <title>رابط غير صالح | دريم للتجارة والتوريدات</title>
                 </Helmet>
 
                 <Navbar />
@@ -120,7 +120,7 @@ const ResetPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>تم تغيير كلمة المرور | تارجت لأعمال التكييف</title>
+                    <title>تم تغيير كلمة المرور | دريم للتجارة والتوريدات</title>
                 </Helmet>
 
                 <Navbar />
@@ -162,7 +162,7 @@ const ResetPassword = () => {
     return (
         <>
             <Helmet>
-                <title>إعادة تعيين كلمة المرور | تارجت لأعمال التكييف</title>
+                <title>إعادة تعيين كلمة المرور | دريم للتجارة والتوريدات</title>
             </Helmet>
 
             <Navbar />

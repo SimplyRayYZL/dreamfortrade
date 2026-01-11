@@ -1,0 +1,20 @@
+[33meca208f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Connect delivery options to admin settings
+[33m5247628[m Add 4 delivery options with admin toggles for Target
+[33m7a9973f[m Change floating button to phone call
+[33mcec0971[m Fix checkout and add debugging
+[33m42977b5[m Add pickup from branch option, reorder checkout sections
+[33md9eab85[m Checkout improvements: guest checkout, delivery + installation option, cart redirect
+[33m66554e7[m Major updates: Blog articles,
+[33m3039823[m Major updates: Blog articles,
+[33maa94b41[m Major updates: Blog articles, WhatsApp from settings, hide admin floating, target limited access, remove Lovable
+[33m7e19094[m Add target admin, remove blog section, fix capacity filter
+[33m4aaac12[m Add page view tracking and improve filter design
+[33meabd7b2[m Add URL-synced filters, inverter filter, and analytics tracking dashboard
+[33m0955b2f[m Add dynamic tracking scripts from admin settings
+[33medaac50[m Add SEO improvements, Blog section, and Google Tag Manager
+[33mb5f84c2[m Add premium Success animation to Add to Cart buttons
+[33m70697e9[m Refine email notifications: Switch to Brevo, set sender info@targetaircool.com, and add customer confirmation
+[33m81ac607[m Switch from Resend to Brevo for order notification emails
+[33m779e093[m Fix syntax error
+[33m57df99a[m Move description to bottom before customer reviews as full-width section
+[33m94f718a[m Move description section to be after stock status for better UX

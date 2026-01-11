@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import { CheckCircle, Package, Truck, MapPin, Phone, ArrowLeft, Copy, Home } from "lucide-react";
@@ -89,7 +89,7 @@ const OrderSuccess = () => {
         return (
             <>
                 <Helmet>
-                    <title>الطلب غير موجود | تارجت لأعمال التكييف</title>
+                    <title>الطلب غير موجود | دريم للتجارة والتوريدات</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -113,7 +113,7 @@ const OrderSuccess = () => {
     return (
         <>
             <Helmet>
-                <title>تم تأكيد الطلب | تارجت لأعمال التكييف</title>
+                <title>تم تأكيد الطلب | دريم للتجارة والتوريدات</title>
             </Helmet>
 
             <div className="min-h-screen flex flex-col">

@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { Phone, MessageCircle } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSettings";
 
 const CTASection = () => {
   const { data: settings } = useSiteSettings();
-  const whatsappNumber = settings?.store_whatsapp || "201208000550";
+  const whatsappNumber = settings?.store_whatsapp || "201289006310";
   const phoneNumber = settings?.store_phone || "01289006310";
   return (
     <section className="py-20 relative overflow-hidden">

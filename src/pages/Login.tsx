@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Mail, Phone, Lock, LogIn, User } from "lucide-react";
@@ -41,7 +41,7 @@ const Login = () => {
     return (
         <>
             <Helmet>
-                <title>تسجيل الدخول | تارجت لأعمال التكييف</title>
+                <title>تسجيل الدخول | دريم للتجارة والتوريدات</title>
                 <meta name="description" content="سجّل دخولك لمتابعة طلباتك وإدارة حسابك في ????? ?????? ???????" />
             </Helmet>
 

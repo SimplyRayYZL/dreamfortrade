@@ -1,27 +1,29 @@
-import { Helmet } from "react-helmet-async";
+﻿import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageCircle, Send, Facebook, Sparkles, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import contactBanner from "@/assets/banners/contact-banner.jpg";
 import { useSiteSettings } from "@/hooks/useSettings";
+import { usePageBanner, defaultPageBanners } from "@/hooks/usePageBanner";
+import contactBanner from "@/assets/banners/contact-banner.jpg";
 
 const Contact = () => {
   const { data: settings } = useSiteSettings();
+  const { data: pageBanner } = usePageBanner("contact");
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Dynamic contact info from settings
   const contactInfo = [
-    { icon: Phone, title: "اتصل بنا", value: settings?.store_phone || "01208000550", href: `tel:${settings?.store_phone || "01208000550"}`, description: "متاحين من 9 صباحاً حتى 10 مساءً" },
-    { icon: MessageCircle, title: "واتساب", value: settings?.store_phone || "01208000550", href: `https://wa.me/${settings?.store_whatsapp || "201208000550"}`, description: "رد سريع على استفساراتك" },
-    { icon: Mail, title: "البريد الإلكتروني", value: settings?.store_email || "info@target-ac.com", href: `mailto:${settings?.store_email || "info@target-ac.com"}`, description: "نرد خلال 24 ساعة" },
-    { icon: MapPin, title: "العنوان", value: settings?.store_address || "القاهرة - مصر", href: "#map", description: "زيارة المعرض" },
+    { icon: Phone, title: "اتصل بنا", value: settings?.store_phone || "01289006310", href: `tel:${settings?.store_phone || "01289006310"}`, description: "متاحين طوال الأسبوع", color: "from-blue-500 to-cyan-500" },
+    { icon: MessageCircle, title: "واتساب", value: settings?.store_phone || "01289006310", href: `https://wa.me/${settings?.store_whatsapp || "201289006310"}`, description: "رد سريع على استفساراتك", color: "from-green-500 to-emerald-500" },
+    { icon: Mail, title: "البريد الإلكتروني", value: settings?.store_email || "info@dreamfortrade.com", href: `mailto:${settings?.store_email || "info@dreamfortrade.com"}`, description: "نرد خلال 24 ساعة", color: "from-purple-500 to-violet-500" },
+    { icon: Facebook, title: "فيسبوك", value: "DreamCommercialAgencies", href: "https://www.facebook.com/DreamCommercialAgencies", description: "تابعنا للعروض الجديدة", color: "from-blue-600 to-blue-700" },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,8 +41,8 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>اتصل بنا | تارجت لأعمال التكييف</title>
-        <meta name="description" content="تواصل معنا للاستفسار عن منتجاتنا أو للحصول على عرض سعر - تارجت لأعمال التكييف" />
+        <title>تواصل معنا | دريم للتجارة والتوريدات</title>
+        <meta name="description" content="تواصل معنا للاستفسار عن منتجاتنا أو للحصول على عرض سعر - دريم للتجارة والتوريدات" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -48,126 +50,179 @@ const Contact = () => {
         <main className="flex-grow">
           {/* Page Banner */}
           <PageBanner
-            title="اتصل بنا"
-            subtitle="نحن هنا لمساعدتك في أي وقت - فريق الدعم جاهز للرد على استفساراتك"
-            backgroundImage={contactBanner}
+            title={pageBanner?.title || defaultPageBanners.contact.title}
+            subtitle={pageBanner?.subtitle || defaultPageBanners.contact.subtitle}
+            backgroundImage={pageBanner?.image_url || contactBanner}
+            breadcrumbs={[{ label: "تواصل معنا" }]}
           />
+
+          {/* Contact Cards - Floating above */}
+          <section className="py-8 -mt-16 relative z-10">
+            <div className="container mx-auto px-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {contactInfo.map((info, index) => (
+                  <a
+                    key={info.title}
+                    href={info.href}
+                    target={info.href.startsWith("http") ? "_blank" : undefined}
+                    rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="bg-card rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 text-center group opacity-0 animate-[scale-in_0.5s_ease-out_forwards]"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className={`w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-br ${info.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                      <info.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="font-bold text-foreground text-sm mb-1">{info.title}</h3>
+                    <p className="text-muted-foreground text-xs">{info.description}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
 
           {/* Contact Content */}
           <section className="py-16 bg-background">
             <div className="container mx-auto px-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {/* Contact Form */}
-                <div className="card-dream animate-fade-in">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">أرسل لنا رسالة</h2>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+                {/* Contact Form - Wider */}
+                <div className="lg:col-span-3">
+                  <div className="bg-card rounded-3xl p-8 shadow-lg">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
+                        <Send className="h-6 w-6 text-secondary" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-foreground">أرسل لنا رسالة</h2>
+                        <p className="text-muted-foreground text-sm">سنرد عليك في أقرب وقت</p>
+                      </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label htmlFor="name" className="text-sm font-medium text-foreground">الاسم الكامل *</label>
+                          <Input
+                            id="name"
+                            placeholder="أدخل اسمك"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                            className="h-12 rounded-xl bg-muted border-0 focus:ring-2 focus:ring-secondary"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="phone" className="text-sm font-medium text-foreground">رقم الهاتف *</label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="01xxxxxxxxx"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            required
+                            className="h-12 rounded-xl bg-muted border-0 focus:ring-2 focus:ring-secondary"
+                          />
+                        </div>
+                      </div>
                       <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium text-foreground">الاسم الكامل</label>
+                        <label htmlFor="email" className="text-sm font-medium text-foreground">البريد الإلكتروني (اختياري)</label>
                         <Input
-                          id="name"
-                          placeholder="أدخل اسمك"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          required
-                          className="bg-muted border-border"
+                          id="email"
+                          type="email"
+                          placeholder="example@email.com"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="h-12 rounded-xl bg-muted border-0 focus:ring-2 focus:ring-secondary"
                         />
                       </div>
                       <div className="space-y-2">
-                        <label htmlFor="phone" className="text-sm font-medium text-foreground">رقم الهاتف</label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="01xxxxxxxxx"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        <label htmlFor="message" className="text-sm font-medium text-foreground">رسالتك *</label>
+                        <Textarea
+                          id="message"
+                          placeholder="اكتب رسالتك أو استفسارك هنا..."
+                          rows={5}
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                           required
-                          className="bg-muted border-border"
+                          className="rounded-xl bg-muted border-0 focus:ring-2 focus:ring-secondary resize-none"
                         />
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium text-foreground">البريد الإلكتروني (اختياري)</label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="example@email.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="bg-muted border-border"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="message" className="text-sm font-medium text-foreground">رسالتك</label>
-                      <Textarea
-                        id="message"
-                        placeholder="اكتب رسالتك أو استفسارك هنا..."
-                        rows={5}
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        required
-                        className="bg-muted border-border resize-none"
-                      />
-                    </div>
-                    <Button type="submit" className="w-full btn-dream-primary" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        "جاري الإرسال..."
-                      ) : (
-                        <>
-                          <Send className="h-5 w-5" />
-                          إرسال الرسالة
-                        </>
-                      )}
-                    </Button>
-                  </form>
+                      <Button
+                        type="submit"
+                        className="w-full h-14 rounded-xl bg-secondary hover:bg-secondary/90 text-white text-lg font-bold gap-2"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          "جاري الإرسال..."
+                        ) : (
+                          <>
+                            <Send className="h-5 w-5" />
+                            إرسال الرسالة
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </div>
                 </div>
 
-                {/* Contact Info */}
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-foreground mb-6">معلومات التواصل</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {contactInfo.map((info, index) => (
-                      <a
-                        key={info.title}
-                        href={info.href}
-                        target={info.href.startsWith("http") ? "_blank" : undefined}
-                        rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="card-dream group animate-fade-in"
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary/20 to-accent/10 flex items-center justify-center flex-shrink-0 group-hover:from-secondary group-hover:to-accent transition-all">
-                            <info.icon className="h-6 w-6 text-secondary group-hover:text-secondary-foreground transition-colors" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-foreground mb-1">{info.title}</h3>
-                            <p className="text-secondary font-medium">{info.value}</p>
-                            <p className="text-sm text-muted-foreground mt-1">{info.description}</p>
-                          </div>
-                        </div>
+                {/* Contact Info Sidebar */}
+                <div className="lg:col-span-2 space-y-6">
+                  {/* Quick Contact */}
+                  <div className="bg-gradient-to-br from-primary to-secondary rounded-3xl p-6 text-white">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Sparkles className="h-6 w-6" />
+                      <h3 className="text-xl font-bold">تواصل سريع</h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      <a href={`tel:${settings?.store_phone || "01289006310"}`} className="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
+                        <Phone className="h-5 w-5" />
+                        <span className="font-medium">{settings?.store_phone || "01289006310"}</span>
                       </a>
-                    ))}
+                      <a href={`https://wa.me/${settings?.store_whatsapp || "201289006310"}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
+                        <MessageCircle className="h-5 w-5" />
+                        <span className="font-medium">راسلنا واتساب</span>
+                      </a>
+                    </div>
                   </div>
 
                   {/* Working Hours */}
-                  <div className="card-dream animate-fade-in" style={{ animationDelay: "0.4s" }}>
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary/20 to-accent/10 flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-6 w-6 text-secondary" />
+                  <div className="bg-card rounded-3xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                        <Clock className="h-5 w-5 text-secondary" />
                       </div>
-                      <div>
-                        <h3 className="font-bold text-foreground mb-3">ساعات العمل</h3>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">السبت - الخميس</span>
-                            <span className="text-foreground font-medium">9:00 ص - 10:00 م</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">الجمعة</span>
-                            <span className="text-foreground font-medium">2:00 م - 10:00 م</span>
-                          </div>
+                      <h3 className="text-lg font-bold text-foreground">ساعات العمل</h3>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-3 rounded-xl bg-muted/50">
+                        <span className="text-muted-foreground">السبت - الخميس</span>
+                        <span className="text-foreground font-bold">9:00 ص - 10:00 م</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-xl bg-muted/50">
+                        <span className="text-muted-foreground">الجمعة</span>
+                        <span className="text-foreground font-bold">2:00 م - 10:00 م</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="bg-card rounded-3xl p-6 shadow-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
+                        <MapPin className="h-5 w-5 text-secondary" />
+                      </div>
+                      <h3 className="text-lg font-bold text-foreground">موقعنا</h3>
+                    </div>
+                    <p className="text-muted-foreground">{settings?.store_address || "القاهرة - مصر"}</p>
+
+                    <div className="mt-4 space-y-2">
+                      {["توصيل لجميع المحافظات", "تركيب مجاني", "ضمان شامل"].map((item) => (
+                        <div key={item} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-foreground">{item}</span>
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -185,14 +240,16 @@ const Contact = () => {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="موقع تارجت لأعمال التكييف على الخريطة"
+              title="موقع دريم للتجارة والتوريدات على الخريطة"
               className="grayscale hover:grayscale-0 transition-all duration-500"
             />
-            <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm p-4 rounded-xl shadow-lg">
+            <div className="absolute top-4 right-4 bg-card/95 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
               <div className="flex items-center gap-3">
-                <MapPin className="h-6 w-6 text-secondary" />
+                <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">
+                  <MapPin className="h-5 w-5 text-white" />
+                </div>
                 <div>
-                  <p className="font-bold text-foreground">Target Air Conditioning</p>
+                  <p className="font-bold text-foreground">دريم للتجارة والتوريدات</p>
                   <p className="text-sm text-muted-foreground">القاهرة - مصر</p>
                 </div>
               </div>

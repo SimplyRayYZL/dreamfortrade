@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSettings';
 import { trackPageView } from '@/lib/analytics';

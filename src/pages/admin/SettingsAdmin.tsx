@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import {
@@ -366,40 +366,53 @@ const SettingsAdmin = () => {
                 {/* Content */}
                 <main className="container mx-auto px-4 py-8">
                     <Tabs defaultValue="store" className="space-y-6">
-                        <TabsList className="flex flex-wrap gap-2 h-auto bg-card p-2 rounded-xl">
-                            <TabsTrigger value="store" className="gap-2">
-                                <Store className="h-4 w-4" />
-                                المتجر
-                            </TabsTrigger>
-                            <TabsTrigger value="social" className="gap-2">
-                                <Share2 className="h-4 w-4" />
-                                السوشيال
-                            </TabsTrigger>
-                            <TabsTrigger value="analytics" className="gap-2">
-                                <BarChart3 className="h-4 w-4" />
-                                التتبع
-                            </TabsTrigger>
-                            <TabsTrigger value="banners" className="gap-2">
-                                <Image className="h-4 w-4" />
-                                البانرات
-                            </TabsTrigger>
-                            <TabsTrigger value="content" className="gap-2">
-                                <FileText className="h-4 w-4" />
-                                المحتوى
-                            </TabsTrigger>
-                            <TabsTrigger value="shipping" className="gap-2">
-                                <Truck className="h-4 w-4" />
-                                الشحن
-                            </TabsTrigger>
-                            <TabsTrigger value="seo" className="gap-2">
-                                <Search className="h-4 w-4" />
-                                SEO
-                            </TabsTrigger>
-                            <TabsTrigger value="database" className="gap-2">
-                                <Database className="h-4 w-4" />
-                                الداتابيز
-                            </TabsTrigger>
-                        </TabsList>
+                        {/* Card-based Navigation Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                            <TabsList className="contents h-auto bg-transparent p-0">
+                                <TabsTrigger value="store" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:border-blue-500">
+                                    <div className="p-3 bg-blue-500/10 rounded-xl group-data-[state=active]:bg-white/20">
+                                        <Store className="h-6 w-6 text-blue-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">المتجر</span>
+                                    <span className="text-[10px] opacity-70">معلومات الشركة</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="social" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-purple-500 data-[state=active]:to-purple-600 data-[state=active]:text-white data-[state=active]:border-purple-500">
+                                    <div className="p-3 bg-purple-500/10 rounded-xl">
+                                        <Share2 className="h-6 w-6 text-purple-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">السوشيال</span>
+                                    <span className="text-[10px] opacity-70">منصات التواصل</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="content" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-green-500 data-[state=active]:to-green-600 data-[state=active]:text-white data-[state=active]:border-green-500">
+                                    <div className="p-3 bg-green-500/10 rounded-xl">
+                                        <FileText className="h-6 w-6 text-green-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">المحتوى</span>
+                                    <span className="text-[10px] opacity-70">الصفحات والنصوص</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="analytics" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-orange-500 data-[state=active]:to-orange-600 data-[state=active]:text-white data-[state=active]:border-orange-500">
+                                    <div className="p-3 bg-orange-500/10 rounded-xl">
+                                        <BarChart3 className="h-6 w-6 text-orange-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">التتبع</span>
+                                    <span className="text-[10px] opacity-70">Analytics & Pixels</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="seo" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-red-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:border-red-500">
+                                    <div className="p-3 bg-red-500/10 rounded-xl">
+                                        <Search className="h-6 w-6 text-red-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">SEO</span>
+                                    <span className="text-[10px] opacity-70">محركات البحث</span>
+                                </TabsTrigger>
+                                <TabsTrigger value="database" className="flex flex-col items-center gap-2 p-4 h-auto bg-card border rounded-xl hover:bg-muted/50 data-[state=active]:bg-gradient-to-br data-[state=active]:from-gray-500 data-[state=active]:to-gray-600 data-[state=active]:text-white data-[state=active]:border-gray-500">
+                                    <div className="p-3 bg-gray-500/10 rounded-xl">
+                                        <Database className="h-6 w-6 text-gray-500 data-[state=active]:text-white" />
+                                    </div>
+                                    <span className="font-semibold">قاعدة البيانات</span>
+                                    <span className="text-[10px] opacity-70">Backup & SQL</span>
+                                </TabsTrigger>
+                            </TabsList>
+                        </div>
 
                         {/* Store Info Tab */}
                         <TabsContent value="store" className="bg-card rounded-xl p-6 space-y-6">
@@ -550,8 +563,8 @@ const SettingsAdmin = () => {
                         <TabsContent value="social" className="bg-card rounded-xl p-6 space-y-6">
                             <h2 className="text-xl font-bold border-b pb-4">روابط السوشيال ميديا</h2>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Facebook className="h-4 w-4 text-blue-600" />
                                         Facebook
@@ -562,7 +575,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://facebook.com/yourpage"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-pink-500/5 to-purple-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Instagram className="h-4 w-4 text-pink-600" />
                                         Instagram
@@ -573,7 +586,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://instagram.com/yourprofile"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-gray-900/5 to-gray-800/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
@@ -586,7 +599,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://tiktok.com/@yourprofile"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-sky-500/5 to-sky-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Twitter className="h-4 w-4 text-sky-500" />
                                         Twitter / X
@@ -597,7 +610,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://twitter.com/yourprofile"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-red-500/5 to-red-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Youtube className="h-4 w-4 text-red-600" />
                                         YouTube
@@ -608,7 +621,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://youtube.com/@yourchannel"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-blue-700/5 to-blue-800/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <svg className="h-4 w-4 text-blue-700" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -621,7 +634,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://linkedin.com/company/yourcompany"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-yellow-500/5 to-yellow-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <svg className="h-4 w-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z" />
@@ -634,7 +647,7 @@ const SettingsAdmin = () => {
                                         placeholder="https://snapchat.com/add/yourprofile"
                                     />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-blue-500/5 to-cyan-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <MessageCircle className="h-4 w-4 text-blue-500" />
                                         Telegram
@@ -705,7 +718,7 @@ const SettingsAdmin = () => {
 
                             <h3 className="text-lg font-semibold border-b pb-3 pt-4">Pixels للإعلانات</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <Facebook className="h-4 w-4 text-blue-600" />
                                         Facebook Pixel
@@ -715,8 +728,9 @@ const SettingsAdmin = () => {
                                         onChange={(e) => handleChange("facebook_pixel_id", e.target.value)}
                                         placeholder="Pixel ID"
                                     />
+                                    <p className="text-xs text-muted-foreground">لتتبع التحويلات من إعلانات فيسبوك</p>
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-pink-500/5 to-pink-600/10 space-y-2">
                                     <Label className="flex items-center gap-2">
                                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
@@ -728,123 +742,49 @@ const SettingsAdmin = () => {
                                         onChange={(e) => handleChange("tiktok_pixel_id", e.target.value)}
                                         placeholder="Pixel ID"
                                     />
+                                    <p className="text-xs text-muted-foreground">لتتبع إعلانات TikTok</p>
                                 </div>
-                                <div className="space-y-2">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-yellow-500/5 to-yellow-600/10 space-y-2">
                                     <Label>Snapchat Pixel</Label>
                                     <Input
                                         value={formData.snapchat_pixel_id}
                                         onChange={(e) => handleChange("snapchat_pixel_id", e.target.value)}
                                         placeholder="Pixel ID"
                                     />
+                                    <p className="text-xs text-muted-foreground">لتتبع إعلانات Snapchat</p>
+                                </div>
+                            </div>
+
+                            <h3 className="text-lg font-semibold border-b pb-3 pt-4">أدوات تحليل السلوك</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-orange-500/5 to-orange-600/10 space-y-2">
+                                    <Label className="flex items-center gap-2">
+                                        <BarChart3 className="h-4 w-4 text-orange-500" />
+                                        Hotjar Site ID
+                                    </Label>
+                                    <Input
+                                        value={formData.hotjar_id}
+                                        onChange={(e) => handleChange("hotjar_id", e.target.value)}
+                                        placeholder="1234567"
+                                    />
+                                    <p className="text-xs text-muted-foreground">لتسجيل جلسات المستخدمين وخرائط الحرارة</p>
+                                </div>
+                                <div className="p-4 border rounded-xl bg-gradient-to-br from-blue-500/5 to-blue-600/10 space-y-2">
+                                    <Label className="flex items-center gap-2">
+                                        <Eye className="h-4 w-4 text-blue-500" />
+                                        Microsoft Clarity
+                                    </Label>
+                                    <Input
+                                        value={formData.clarity_id}
+                                        onChange={(e) => handleChange("clarity_id", e.target.value)}
+                                        placeholder="abcdefghij"
+                                    />
+                                    <p className="text-xs text-muted-foreground">بديل مجاني لـ Hotjar من Microsoft</p>
                                 </div>
                             </div>
                         </TabsContent>
 
-                        {/* Banners Tab */}
-                        <TabsContent value="banners" className="bg-card rounded-xl p-6 space-y-6">
-                            <div className="flex items-center justify-between border-b pb-4">
-                                <h2 className="text-xl font-bold">إدارة البانرات</h2>
-                                <Button onClick={addBanner} className="gap-2">
-                                    <Plus className="h-4 w-4" />
-                                    إضافة بانر
-                                </Button>
-                            </div>
 
-                            {formData.banners.length === 0 ? (
-                                <div className="bg-muted/50 rounded-xl p-8 text-center">
-                                    <Image className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                                    <h3 className="font-semibold mb-2">لا توجد بانرات</h3>
-                                    <p className="text-muted-foreground text-sm mb-4">
-                                        أضف بانرات لعرضها في الصفحة الرئيسية
-                                    </p>
-                                    <Button onClick={addBanner} variant="outline" className="gap-2">
-                                        <Plus className="h-4 w-4" />
-                                        إضافة أول بانر
-                                    </Button>
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {formData.banners.map((banner, index) => (
-                                        <div
-                                            key={banner.id}
-                                            className="border rounded-xl p-4 space-y-4 bg-muted/20"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <GripVertical className="h-5 w-5 text-muted-foreground cursor-move" />
-                                                    <span className="font-semibold">بانر {index + 1}</span>
-                                                    {banner.isActive ? (
-                                                        <span className="text-xs bg-green-500/10 text-green-600 px-2 py-1 rounded">مفعل</span>
-                                                    ) : (
-                                                        <span className="text-xs bg-red-500/10 text-red-600 px-2 py-1 rounded">غير مفعل</span>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => updateBanner(banner.id, "isActive", !banner.isActive)}
-                                                    >
-                                                        {banner.isActive ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="text-destructive hover:text-destructive"
-                                                        onClick={() => removeBanner(banner.id)}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label>رابط الصورة</Label>
-                                                    <Input
-                                                        value={banner.image}
-                                                        onChange={(e) => updateBanner(banner.id, "image", e.target.value)}
-                                                        placeholder="/banner-1.png"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>العنوان</Label>
-                                                    <Input
-                                                        value={banner.title}
-                                                        onChange={(e) => updateBanner(banner.id, "title", e.target.value)}
-                                                        placeholder="تكييفات كاريير"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2 md:col-span-2">
-                                                    <Label>النص الفرعي</Label>
-                                                    <Input
-                                                        value={banner.subtitle}
-                                                        onChange={(e) => updateBanner(banner.id, "subtitle", e.target.value)}
-                                                        placeholder="أفضل تكييفات في مصر بأسعار منافسة"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>نص الزر</Label>
-                                                    <Input
-                                                        value={banner.buttonText}
-                                                        onChange={(e) => updateBanner(banner.id, "buttonText", e.target.value)}
-                                                        placeholder="تسوق الآن"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label>رابط الزر</Label>
-                                                    <Input
-                                                        value={banner.buttonLink}
-                                                        onChange={(e) => updateBanner(banner.id, "buttonLink", e.target.value)}
-                                                        placeholder="/products"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </TabsContent>
 
                         {/* Content Tab */}
                         <TabsContent value="content" className="bg-card rounded-xl p-6 space-y-6">
@@ -977,166 +917,6 @@ const SettingsAdmin = () => {
                             </div>
                         </TabsContent>
 
-                        {/* Shipping Tab */}
-                        <TabsContent value="shipping" className="bg-card rounded-xl p-6 space-y-6">
-                            <div className="flex items-center justify-between border-b pb-4">
-                                <h2 className="text-xl font-bold">مناطق الشحن والتوصيل</h2>
-                                <Button onClick={addShippingArea} className="gap-2">
-                                    <Plus className="h-4 w-4" />
-                                    إضافة منطقة
-                                </Button>
-                            </div>
-
-                            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-                                <p className="text-blue-600 dark:text-blue-400 text-sm">
-                                    📍 أضف المحافظات التي تقوم بالتوصيل إليها. هذه المحافظات ستظهر للعميل عند الشراء.
-                                </p>
-                            </div>
-
-                            <div className="space-y-3">
-                                {formData.shipping_areas.map((area) => (
-                                    <div
-                                        key={area.id}
-                                        className="flex items-center gap-4 p-4 border rounded-xl bg-muted/20"
-                                    >
-                                        <Switch
-                                            checked={area.isActive}
-                                            onCheckedChange={(checked) => updateShippingArea(area.id, "isActive", checked)}
-                                        />
-                                        <Input
-                                            value={area.name}
-                                            onChange={(e) => updateShippingArea(area.id, "name", e.target.value)}
-                                            placeholder="اسم المحافظة"
-                                            className="flex-1"
-                                        />
-                                        <div className="flex items-center gap-2">
-                                            <Input
-                                                type="number"
-                                                value={area.fee}
-                                                onChange={(e) => updateShippingArea(area.id, "fee", Number(e.target.value))}
-                                                className="w-24"
-                                            />
-                                            <span className="text-muted-foreground">ج.م</span>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="text-destructive hover:text-destructive"
-                                            onClick={() => removeShippingArea(area.id)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-6">
-                                <div className="space-y-2">
-                                    <Label>حد الشحن المجاني (ج.م)</Label>
-                                    <Input
-                                        type="number"
-                                        value={formData.free_shipping_threshold}
-                                        onChange={(e) => handleChange("free_shipping_threshold", Number(e.target.value))}
-                                        placeholder="10000"
-                                    />
-                                    <p className="text-xs text-muted-foreground">
-                                        الطلبات فوق هذا المبلغ يكون الشحن مجاني (0 = لا يوجد شحن مجاني)
-                                    </p>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>رسالة التوصيل</Label>
-                                    <Input
-                                        value={formData.delivery_message}
-                                        onChange={(e) => handleChange("delivery_message", e.target.value)}
-                                        placeholder="التوصيل خلال 2-5 أيام عمل"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>سعر التركيب (ج.م)</Label>
-                                    <Input
-                                        type="number"
-                                        value={formData.installation_fee}
-                                        onChange={(e) => handleChange("installation_fee", Number(e.target.value))}
-                                        placeholder="1000"
-                                    />
-                                    <p className="text-xs text-muted-foreground">
-                                        السعر المضاف عند اختيار "توصيل + تركيب" في صفحة الدفع
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Delivery Options Toggles */}
-                            <h3 className="text-lg font-semibold border-t pt-6 flex items-center gap-2">
-                                <Truck className="h-5 w-5 text-secondary" />
-                                خيارات التوصيل في صفحة الدفع
-                            </h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                اختر الخيارات اللي هتظهر للعملاء في صفحة إتمام الطلب
-                            </p>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="flex items-center justify-between p-4 border rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        <Package className="h-5 w-5 text-orange-500" />
-                                        <div>
-                                            <p className="font-medium">استلام من الفرع</p>
-                                            <p className="text-xs text-muted-foreground">بدون رسوم توصيل</p>
-                                        </div>
-                                    </div>
-                                    <Switch
-                                        checked={formData.pickup_enabled}
-                                        onCheckedChange={(checked) => handleChange("pickup_enabled", checked)}
-                                    />
-                                </div>
-
-                                <div className="flex items-center justify-between p-4 border rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        <Truck className="h-5 w-5 text-blue-500" />
-                                        <div>
-                                            <p className="font-medium">توصيل فقط</p>
-                                            <p className="text-xs text-muted-foreground">حسب المحافظة</p>
-                                        </div>
-                                    </div>
-                                    <Switch
-                                        checked={formData.delivery_only_enabled}
-                                        onCheckedChange={(checked) => handleChange("delivery_only_enabled", checked)}
-                                    />
-                                </div>
-
-                                <div className="flex items-center justify-between p-4 border rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center">
-                                            <Truck className="h-5 w-5 text-green-500" />
-                                            <span className="text-green-500 mx-0.5">+</span>
-                                            <Wrench className="h-5 w-5 text-green-500" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">توصيل + تركيب</p>
-                                            <p className="text-xs text-muted-foreground">سعر التركيب أعلاه</p>
-                                        </div>
-                                    </div>
-                                    <Switch
-                                        checked={formData.delivery_with_installation_enabled}
-                                        onCheckedChange={(checked) => handleChange("delivery_with_installation_enabled", checked)}
-                                    />
-                                </div>
-
-                                <div className="flex items-center justify-between p-4 border-2 border-purple-200 bg-purple-50 rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        <Gift className="h-5 w-5 text-purple-500" />
-                                        <div>
-                                            <p className="font-medium text-purple-700">توصيل + تركيب مجاني</p>
-                                            <p className="text-xs text-purple-600">عرض خاص</p>
-                                        </div>
-                                    </div>
-                                    <Switch
-                                        checked={formData.free_delivery_installation_enabled}
-                                        onCheckedChange={(checked) => handleChange("free_delivery_installation_enabled", checked)}
-                                    />
-                                </div>
-                            </div>
-                        </TabsContent>
-
                         {/* SEO Tab */}
                         <TabsContent value="seo" className="bg-card rounded-xl p-6 space-y-6">
                             <h2 className="text-xl font-bold border-b pb-4">إعدادات SEO</h2>
@@ -1231,20 +1011,30 @@ const SettingsAdmin = () => {
                                         <Label>Structured Data (JSON-LD)</Label>
                                         <p className="text-xs text-muted-foreground">بيانات منظمة لمحركات البحث</p>
                                     </div>
-                                    <Switch
-                                        checked={formData.structured_data_enabled}
-                                        onCheckedChange={(checked) => handleChange("structured_data_enabled", checked)}
-                                    />
+                                    <Button
+                                        type="button"
+                                        variant={formData.structured_data_enabled ? "default" : "outline"}
+                                        size="sm"
+                                        className={formData.structured_data_enabled ? 'bg-green-600 hover:bg-green-700' : ''}
+                                        onClick={() => handleChange("structured_data_enabled", !formData.structured_data_enabled)}
+                                    >
+                                        {formData.structured_data_enabled ? "مفعّل" : "موقف"}
+                                    </Button>
                                 </div>
                                 <div className="flex items-center justify-between p-4 border rounded-xl">
                                     <div>
                                         <Label>خريطة الموقع (Sitemap)</Label>
                                         <p className="text-xs text-muted-foreground">تفعيل sitemap.xml</p>
                                     </div>
-                                    <Switch
-                                        checked={formData.sitemap_enabled}
-                                        onCheckedChange={(checked) => handleChange("sitemap_enabled", checked)}
-                                    />
+                                    <Button
+                                        type="button"
+                                        variant={formData.sitemap_enabled ? "default" : "outline"}
+                                        size="sm"
+                                        className={formData.sitemap_enabled ? 'bg-green-600 hover:bg-green-700' : ''}
+                                        onClick={() => handleChange("sitemap_enabled", !formData.sitemap_enabled)}
+                                    >
+                                        {formData.sitemap_enabled ? "مفعّل" : "موقف"}
+                                    </Button>
                                 </div>
                             </div>
 

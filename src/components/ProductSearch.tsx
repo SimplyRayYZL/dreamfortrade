@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useProducts } from "@/hooks/useProducts";

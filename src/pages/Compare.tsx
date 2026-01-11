@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+﻿import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Scale, X, ShoppingCart, Check } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -39,7 +39,7 @@ const Compare = () => {
   return (
     <>
       <Helmet>
-        <title>مقارنة المنتجات | تارجت لأعمال التكييف</title>
+        <title>مقارنة المنتجات | دريم للتجارة والتوريدات</title>
         <meta name="description" content="قارن بين المنتجات المختلفة - ????? ?????? ???????" />
       </Helmet>
 

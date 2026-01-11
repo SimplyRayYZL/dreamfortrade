@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -62,6 +62,8 @@ export interface SiteSettings {
     facebook_pixel_id: string;
     tiktok_pixel_id: string;
     snapchat_pixel_id: string;
+    hotjar_id: string;
+    clarity_id: string;
 
     // Shipping
     shipping_areas: ShippingArea[];
@@ -112,23 +114,23 @@ export interface SiteSettings {
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
-    store_name: "تارجت لأعمال التكييف",
-    store_name_en: "Target Air Conditioning",
+    store_name: "دريم للتجارة والتوريدات",
+    store_name_en: "Dream Trade & Supplies",
     store_logo: "/logo.png",
-    store_description: "شركة تارجت لأعمال التكييف",
+    store_description: "شركة دريم للتجارة والتوريدات",
     store_slogan: "جودة... ثقة... خدمة",
     store_address: "القاهرة، مصر",
     store_map_embed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.0987738426833!2d31.235711!3d30.044419!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDAyJzM5LjkiTiAzMcKwMTQnMDguNiJF!5e0!3m2!1sar!2seg!4v1234567890",
-    store_phone: "01208000550",
+    store_phone: "01289006310",
     store_phone_alt: "",
-    store_email: "info@target-ac.com",
-    store_whatsapp: "201208000550",
+    store_email: "info@dreamfortrade.com",
+    store_whatsapp: "201289006310",
     whatsapp_message: "مرحباً، أريد الاستفسار عن منتجاتكم",
     working_hours_from: "09:00",
     working_hours_to: "21:00",
     working_days: "السبت - الخميس",
 
-    facebook_url: "",
+    facebook_url: "https://www.facebook.com/DreamCommercialAgencies",
     instagram_url: "",
     tiktok_url: "",
     twitter_url: "",
@@ -144,6 +146,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
     facebook_pixel_id: "",
     tiktok_pixel_id: "",
     snapchat_pixel_id: "",
+    hotjar_id: "",
+    clarity_id: "",
 
     // Dynamic shipping areas
     shipping_areas: [
@@ -174,14 +178,14 @@ const DEFAULT_SETTINGS: SiteSettings = {
         },
     ],
 
-    seo_title: "تارجت لأعمال التكييف - تكييفات بأفضل الأسعار",
-    seo_description: "شركة تارجت لأعمال التكييف في مصر. كاريير، ميديا، شارب، فريش وأكثر.",
-    seo_keywords: "تكييف، تكييفات، كاريير، ميديا، شارب، فريش، مصر، تارجت",
+    seo_title: "دريم للتجارة والتوريدات - تكييفات بأفضل الأسعار",
+    seo_description: "شركة دريم للتجارة والتوريدات في مصر. كاريير، ميديا، شارب، فريش وأكثر.",
+    seo_keywords: "تكييف، تكييفات، كاريير، ميديا، شارب، فريش، مصر، دريم",
     og_image: "/og-image.jpg",
     seo_robots: "index, follow",
     seo_canonical_url: "",
     seo_language: "ar",
-    seo_author: "Target Air Conditioning",
+    seo_author: "Dream Trade & Supplies",
     structured_data_enabled: true,
     sitemap_enabled: true,
     google_verification_file_name: "",
@@ -193,14 +197,14 @@ const DEFAULT_SETTINGS: SiteSettings = {
     homepage_features_title: "لماذا تختارنا؟",
     homepage_products_title: "أحدث المنتجات",
     homepage_brands_title: "الماركات المتوفرة",
-    about_title: "عن تارجت لأعمال التكييف",
+    about_title: "عن دريم للتجارة والتوريدات",
     about_content: "",
     about_mission: "توفير أفضل أنظمة التكييف بأسعار تنافسية مع خدمة عملاء متميزة",
     about_vision: "أن نكون الخيار الأول للعملاء في مجال التكييفات في مصر",
     contact_title: "تواصل معنا",
     contact_subtitle: "نحن هنا لمساعدتك! تواصل معنا في أي وقت",
-    footer_text: "شركة تارجت لأعمال التكييف",
-    footer_copyright: "جميع الحقوق محفوظة © تارجت لأعمال التكييف",
+    footer_text: "شركة دريم للتجارة والتوريدات",
+    footer_copyright: "جميع الحقوق محفوظة © دريم للتجارة والتوريدات",
 
     // Database config
     database_config: {

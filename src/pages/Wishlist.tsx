@@ -1,23 +1,12 @@
-import { Helmet } from "react-helmet-async";
+﻿import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Heart, Trash2, ShoppingCart, Star } from "lucide-react";
+import { Heart, Trash2, ShoppingCart, Star, ShoppingBag, Package } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
-
-import acProduct5 from "@/assets/products/ac-product-5.png";
-import acProduct6 from "@/assets/products/ac-product-6.png";
-import acProduct7 from "@/assets/products/ac-product-7.png";
-import acProduct8 from "@/assets/products/ac-product-8.png";
-
-const productImages = [acProduct5, acProduct6, acProduct7, acProduct8];
-
-const getProductImage = (index: number) => {
-  return productImages[index % productImages.length];
-};
 
 const Wishlist = () => {
   const { items, removeFromWishlist, clearWishlist } = useWishlist();
@@ -28,111 +17,161 @@ const Wishlist = () => {
     toast.success("تمت الإضافة إلى السلة");
   };
 
+  const handleAddAllToCart = () => {
+    items.forEach(product => addToCart(product));
+    toast.success("تمت إضافة جميع المنتجات للسلة");
+  };
+
   return (
     <>
       <Helmet>
-        <title>قائمة الأمنيات | تارجت لأعمال التكييف</title>
-        <meta name="description" content="قائمة الأمنيات الخاصة بك - ????? ?????? ???????" />
+        <title>قائمة المفضلة | دريم للتجارة والتوريدات</title>
+        <meta name="description" content="قائمة المفضلة الخاصة بك - دريم للتجارة والتوريدات" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-grow py-8 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
+        <main className="flex-grow bg-muted/30">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-rose-500 to-pink-500 py-8">
+            <div className="container mx-auto px-4">
               <div className="flex items-center gap-4">
-                <Heart className="h-8 w-8 text-destructive" />
-                <h1 className="text-3xl font-bold text-foreground">قائمة الأمنيات</h1>
-                <span className="text-muted-foreground">({items.length} منتج)</span>
+                <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                  <Heart className="h-7 w-7 text-white fill-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white">قائمة المفضلة</h1>
+                  <p className="text-white/80 text-sm">{items.length} منتج محفوظ</p>
+                </div>
               </div>
-              {items.length > 0 && (
-                <Button variant="outline" onClick={clearWishlist}>
-                  <Trash2 className="h-4 w-4 ml-2" />
-                  مسح الكل
-                </Button>
-              )}
             </div>
+          </div>
 
+          <div className="container mx-auto px-4 py-8">
             {items.length === 0 ? (
-              <div className="text-center py-16 card-dream">
-                <Heart className="h-24 w-24 text-muted-foreground/30 mx-auto mb-6" />
+              <div className="text-center py-20 bg-card rounded-3xl shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-rose-100 flex items-center justify-center">
+                  <Heart className="h-12 w-12 text-rose-300" />
+                </div>
                 <h2 className="text-2xl font-bold text-foreground mb-4">القائمة فارغة</h2>
-                <p className="text-muted-foreground mb-8">
-                  لم تقم بإضافة أي منتجات إلى قائمة الأمنيات بعد
+                <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                  لم تقم بإضافة أي منتجات إلى قائمة المفضلة بعد. تصفح منتجاتنا واحفظ ما يعجبك!
                 </p>
                 <Link to="/products">
-                  <Button className="btn-dream-primary">
+                  <Button size="lg" className="bg-rose-500 hover:bg-rose-600 text-white rounded-full px-8 gap-2">
+                    <ShoppingBag className="h-5 w-5" />
                     تصفح المنتجات
                   </Button>
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {items.map((product, index) => (
-                  <div key={product.id} className="card-dream group">
-                    <div className="relative overflow-hidden rounded-xl mb-4">
-                      <Link to={`/product/${product.id}`}>
-                        <img
-                          src={getProductImage(index)}
-                          alt={product.name}
-                          className="w-full h-48 object-contain bg-muted group-hover:scale-105 transition-transform"
-                        />
-                      </Link>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 left-2 bg-card/80 hover:bg-destructive hover:text-white"
-                        onClick={() => removeFromWishlist(product.id)}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
-                    </div>
+              <>
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-3 mb-6">
+                  <Button
+                    onClick={handleAddAllToCart}
+                    className="bg-secondary hover:bg-secondary/90 text-white rounded-full gap-2"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    أضف الكل للسلة
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={clearWishlist}
+                    className="rounded-full border-rose-500 text-rose-500 hover:bg-rose-500 hover:text-white gap-2"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    مسح الكل
+                  </Button>
+                </div>
 
-                    <div className="space-y-2">
-                      <span className="text-xs font-semibold text-secondary">{product.brand}</span>
-                      <Link to={`/product/${product.id}`}>
-                        <h3 className="font-bold text-foreground line-clamp-2 hover:text-secondary transition-colors">
-                          {product.name}
-                        </h3>
-                      </Link>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {items.map((product, index) => (
+                    <div
+                      key={product.id}
+                      className="bg-card rounded-2xl p-4 shadow-sm hover:shadow-xl transition-all duration-500 group opacity-0 animate-[scale-in_0.5s_ease-out_forwards]"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="relative overflow-hidden rounded-xl mb-4 bg-muted aspect-square">
+                        <Link to={`/product/${product.id}`}>
+                          {product.image_url ? (
+                            <img
+                              src={product.image_url}
+                              alt={product.name}
+                              className="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Package className="h-16 w-16 text-muted-foreground/30" />
+                            </div>
+                          )}
+                        </Link>
 
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${i < Math.floor(product.rating)
-                              ? "fill-dream-gold text-dream-gold"
-                              : "text-muted"
-                              }`}
-                          />
-                        ))}
-                        <span className="text-sm text-muted-foreground mr-2">
-                          ({product.reviews})
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-secondary">
-                          {product.price.toLocaleString()} جنيه
-                        </span>
+                        {/* Discount badge */}
                         {product.oldPrice && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            {product.oldPrice.toLocaleString()}
-                          </span>
+                          <div className="absolute top-2 right-2 bg-rose-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                            خصم {Math.round((1 - product.price / product.oldPrice) * 100)}%
+                          </div>
                         )}
+
+                        {/* Remove button */}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 left-2 w-8 h-8 rounded-full bg-white/90 shadow hover:bg-rose-500 hover:text-white transition-colors"
+                          onClick={() => removeFromWishlist(product.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
 
-                      <Button
-                        className="w-full btn-dream-primary mt-4"
-                        onClick={() => handleAddToCart(product)}
-                      >
-                        <ShoppingCart className="h-4 w-4" />
-                        أضف للسلة
-                      </Button>
+                      <div className="space-y-2">
+                        <span className="text-xs font-semibold text-secondary">{product.brand}</span>
+                        <Link to={`/product/${product.id}`}>
+                          <h3 className="font-bold text-sm text-foreground line-clamp-2 hover:text-secondary transition-colors">
+                            {product.name}
+                          </h3>
+                        </Link>
+
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-3.5 w-3.5 ${i < Math.floor(product.rating)
+                                ? "fill-dream-gold text-dream-gold"
+                                : "text-muted"
+                                }`}
+                            />
+                          ))}
+                          <span className="text-xs text-muted-foreground mr-1">
+                            ({product.reviews})
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <span className="text-lg font-bold text-secondary">
+                            {product.price.toLocaleString()}
+                          </span>
+                          <span className="text-xs text-muted-foreground">جنيه</span>
+                          {product.oldPrice && (
+                            <span className="text-xs text-muted-foreground line-through">
+                              {product.oldPrice.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+
+                        <Button
+                          className="w-full bg-secondary hover:bg-secondary/90 text-white rounded-xl h-10 gap-2 mt-3"
+                          onClick={() => handleAddToCart(product)}
+                        >
+                          <ShoppingCart className="h-4 w-4" />
+                          أضف للسلة
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </main>
@@ -143,4 +182,3 @@ const Wishlist = () => {
 };
 
 export default Wishlist;
-

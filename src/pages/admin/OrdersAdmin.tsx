@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,10 @@ import {
     Phone,
     MapPin,
     Clock,
-    ArrowLeft,
+    ArrowRight,
+    DollarSign,
+    XCircle,
+    CheckCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -189,12 +192,10 @@ const OrdersAdmin = () => {
     };
 
     const getOrderStats = () => {
-        if (!orders) return { total: 0, pending: 0, processing: 0, delivered: 0 };
+        if (!orders) return { total: 0, cancelled: 0 };
         return {
             total: orders.length,
-            pending: orders.filter((o) => o.status === "pending").length,
-            processing: orders.filter((o) => o.status === "processing").length,
-            delivered: orders.filter((o) => o.status === "delivered").length,
+            cancelled: orders.filter((o) => o.status === "cancelled").length,
         };
     };
 
@@ -209,33 +210,25 @@ const OrdersAdmin = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background" dir="rtl">
+        <div className="min-h-screen bg-muted/30" dir="rtl">
             {/* Header */}
-            <div className="bg-card border-b">
-                <div className="container mx-auto px-4 py-6">
+            <div className="bg-card border-b sticky top-0 z-40">
+                <div className="container mx-auto px-4 py-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-foreground">إدارة الطلبات</h1>
-                            <p className="text-muted-foreground">عرض ومتابعة الطلبات</p>
+                        <div className="flex items-center gap-4">
+                            <Link to="/admin" className="p-2 rounded-lg hover:bg-muted transition-colors">
+                                <ArrowRight className="h-5 w-5" />
+                            </Link>
+                            <div>
+                                <h1 className="text-xl font-bold text-foreground">إدارة الطلبات</h1>
+                                <p className="text-sm text-muted-foreground">عرض ومتابعة طلبات العملاء</p>
+                            </div>
                         </div>
                         <div className="flex gap-2">
-                            <Link to="/admin/products">
-                                <Button variant="outline" className="gap-2">
-                                    <ArrowLeft className="w-4 h-4" />
-                                    المنتجات
-                                </Button>
-                            </Link>
-                            <Link to="/admin/brands">
-                                <Button variant="outline" className="gap-2">
-                                    <Package className="w-4 h-4" />
-                                    الماركات
-                                </Button>
-                            </Link>
-                            <Button onClick={() => refetch()} variant="outline" className="gap-2">
+                            <Button onClick={() => refetch()} variant="outline" size="sm" className="gap-2">
                                 <RefreshCw className="w-4 h-4" />
                                 تحديث
                             </Button>
-                            {/* Show role badge for viewer */}
                             {role === 'viewer' && (
                                 <Badge variant="secondary" className="h-9 px-3 flex items-center gap-1">
                                     <Eye className="w-4 h-4" />
@@ -249,55 +242,29 @@ const OrdersAdmin = () => {
 
             <div className="container mx-auto px-4 py-6">
                 {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <Card>
-                        <CardContent className="pt-6">
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                    <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
+                        <CardContent className="pt-4 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-primary/10 rounded-lg">
-                                    <ShoppingCart className="w-5 h-5 text-primary" />
+                                <div className="p-2.5 bg-blue-500 rounded-xl">
+                                    <ShoppingCart className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-muted-foreground">إجمالي الطلبات</p>
-                                    <p className="text-2xl font-bold">{stats.total}</p>
+                                    <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                                    <p className="text-xs text-muted-foreground">إجمالي الطلبات</p>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card>
-                        <CardContent className="pt-6">
+                    <Card className="bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
+                        <CardContent className="pt-4 pb-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-yellow-500/10 rounded-lg">
-                                    <Clock className="w-5 h-5 text-yellow-500" />
+                                <div className="p-2.5 bg-red-500 rounded-xl">
+                                    <XCircle className="w-5 h-5 text-white" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-muted-foreground">قيد الانتظار</p>
-                                    <p className="text-2xl font-bold">{stats.pending}</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-500/10 rounded-lg">
-                                    <Package className="w-5 h-5 text-blue-500" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">جاري التجهيز</p>
-                                    <p className="text-2xl font-bold">{stats.processing}</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-500/10 rounded-lg">
-                                    <Package className="w-5 h-5 text-green-500" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">تم التوصيل</p>
-                                    <p className="text-2xl font-bold">{stats.delivered}</p>
+                                    <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
+                                    <p className="text-xs text-muted-foreground">الملغي/المرتجع</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -314,6 +281,7 @@ const OrdersAdmin = () => {
                                     placeholder="البحث عن طلب (اسم، هاتف، رقم الطلب)..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
                                     className="pr-10"
                                 />
                             </div>
@@ -335,9 +303,12 @@ const OrdersAdmin = () => {
                 </Card>
 
                 {/* Orders Table */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>قائمة الطلبات</CardTitle>
+                <Card className="border-0 shadow-lg">
+                    <CardHeader className="bg-gradient-to-r from-secondary/10 to-secondary/5 border-b">
+                        <CardTitle className="flex items-center gap-2">
+                            <ShoppingCart className="h-5 w-5 text-secondary" />
+                            قائمة الطلبات
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
@@ -385,22 +356,36 @@ const OrdersAdmin = () => {
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     {getStatusBadge(order.status)}
-                                                    {canEdit() && order.status !== "cancelled" && (
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            onClick={() => updateOrderStatus(order.id, "cancelled")}
-                                                            disabled={updatingStatus === order.id}
-                                                            className="text-xs"
-                                                        >
-                                                            {updatingStatus === order.id ? (
-                                                                <Loader2 className="w-3 h-3 animate-spin" />
-                                                            ) : (
-                                                                "إلغاء"
-                                                            )}
-                                                        </Button>
-                                                    )}
                                                 </div>
+                                            </TableCell>
+                                            <TableCell dir="ltr">{order.phone}</TableCell>
+                                            <TableCell className="font-semibold">
+                                                {order.total_amount.toLocaleString()} ج.م
+                                            </TableCell>
+                                            <TableCell>
+                                                {canEdit() && order.status !== "cancelled" ? (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => updateOrderStatus(order.id, "cancelled")}
+                                                        disabled={updatingStatus === order.id}
+                                                        className="text-xs border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 gap-1"
+                                                    >
+                                                        {updatingStatus === order.id ? (
+                                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <XCircle className="w-3 h-3" />
+                                                                إلغاء
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                ) : order.status === "cancelled" ? (
+                                                    <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                                                        <XCircle className="w-3 h-3 ml-1" />
+                                                        ملغي
+                                                    </Badge>
+                                                ) : null}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground text-sm">
                                                 {new Date(order.created_at).toLocaleDateString("ar-EG")}

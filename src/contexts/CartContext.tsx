@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+﻿import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Product } from "@/hooks/useProducts";
 import { trackAddToCart } from "@/lib/analytics";
+import { toast } from "sonner";
 
 export interface CartItem {
   product: Product;
@@ -9,7 +10,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (product: Product, quantity?: number) => 'added' | 'exists' | false;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -37,7 +38,34 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: Product, quantity: number = 1) => {
+  const addToCart = (product: Product, quantity: number = 1): 'added' | 'exists' | false => {
+    // If stock is explicitly set to 0 or negative, block the add
+    if (typeof product.stock === 'number' && product.stock <= 0) {
+      toast.error("المنتج غير متوفر حالياً");
+      return false;
+    }
+
+    // Check if adding this quantity would exceed available stock
+    const existingItem = items.find((item) => item.product.id === product.id);
+    const currentQty = existingItem ? existingItem.quantity : 0;
+    const newTotalQty = currentQty + quantity;
+
+    // If adding qty 1 and product already in cart, show "already added" message
+    if (existingItem && quantity === 1) {
+      toast.info("هذا المنتج مضاف بالفعل في السلة");
+      return 'exists';
+    }
+
+    if (typeof product.stock === 'number' && newTotalQty > product.stock) {
+      const available = product.stock - currentQty;
+      if (available <= 0) {
+        toast.error(`وصلت للحد الأقصى المتاح من هذا المنتج`);
+        return false;
+      }
+      toast.error(`متوفر فقط ${product.stock} من هذا المنتج`);
+      return false;
+    }
+
     // Track add to cart event
     trackAddToCart(product.id, product.name);
 
@@ -52,6 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { product, quantity }];
     });
+    return 'added';
   };
 
   const removeFromCart = (productId: string) => {
@@ -63,6 +92,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       removeFromCart(productId);
       return;
     }
+
+    // Check stock limit
+    const item = items.find(i => i.product.id === productId);
+    if (item && typeof item.product.stock === 'number' && quantity > item.product.stock) {
+      toast.error(`متوفر فقط ${item.product.stock} من هذا المنتج`);
+      return;
+    }
+
     setItems((prev) =>
       prev.map((item) =>
         item.product.id === productId ? { ...item, quantity } : item

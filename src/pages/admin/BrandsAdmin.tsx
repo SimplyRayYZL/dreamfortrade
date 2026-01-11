@@ -1,15 +1,16 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import {
-    Plus, Trash2, Edit, Save, X, Package,
-    ArrowRight, Image as ImageIcon, ToggleLeft, ToggleRight, Upload, Loader2
+    Plus, Trash2, Edit, Package,
+    ArrowRight, Image as ImageIcon, ToggleLeft, ToggleRight, Loader2, Search, Grid, List
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
     Table,
     TableBody,
@@ -55,6 +56,8 @@ const BrandsAdmin = () => {
     const queryClient = useQueryClient();
     const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
     const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
     const [formData, setFormData] = useState({
         name: "",
         name_ar: "",
@@ -115,6 +118,20 @@ const BrandsAdmin = () => {
             return brandsWithCount as Brand[];
         },
     });
+
+    // Filter brands
+    const filteredBrands = brands?.filter(brand =>
+        brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        brand.name_ar.includes(searchTerm)
+    );
+
+    // Stats
+    const stats = {
+        total: brands?.length || 0,
+        active: brands?.filter(b => b.is_active).length || 0,
+        inactive: brands?.filter(b => !b.is_active).length || 0,
+        totalProducts: brands?.reduce((acc, b) => acc + (b.product_count || 0), 0) || 0
+    };
 
     // Add brand mutation
     const addBrandMutation = useMutation({
@@ -241,28 +258,77 @@ const BrandsAdmin = () => {
         });
     };
 
+    const BrandForm = () => (
+        <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label>اسم الماركة (إنجليزي) *</Label>
+                    <Input
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Sharp"
+                        dir="ltr"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label>اسم الماركة (عربي) *</Label>
+                    <Input
+                        value={formData.name_ar}
+                        onChange={(e) => setFormData({ ...formData, name_ar: e.target.value })}
+                        placeholder="شارب"
+                    />
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Label>شعار الماركة</Label>
+                <div className="flex items-center gap-3">
+                    {(formData.logo_url || selectedFile) && (
+                        <div className="w-16 h-16 rounded-lg border bg-muted flex items-center justify-center overflow-hidden">
+                            <img
+                                src={selectedFile ? URL.createObjectURL(selectedFile) : formData.logo_url}
+                                alt="Preview"
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
+                    )}
+                    <div className="flex-1">
+                        <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">أو أدخل رابط الصورة مباشرة</p>
+                    </div>
+                </div>
+                <Input
+                    value={formData.logo_url}
+                    onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
+                    placeholder="https://example.com/logo.png"
+                    dir="ltr"
+                    className="mt-2"
+                />
+            </div>
+        </div>
+    );
+
     return (
         <>
             <Helmet>
-                <title>إدارة الماركات | تارجت لأعمال التكييف</title>
+                <title>إدارة الماركات | دريم للتجارة والتوريدات</title>
             </Helmet>
 
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-muted/30">
                 {/* Header */}
-                <div className="bg-primary text-primary-foreground py-6">
-                    <div className="container mx-auto px-4">
+                <div className="bg-card border-b sticky top-0 z-40">
+                    <div className="container mx-auto px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <Link to="/admin/orders">
-                                    <Button variant="ghost" size="icon" className="text-primary-foreground">
-                                        <ArrowRight className="h-5 w-5" />
-                                    </Button>
+                                <Link to="/admin" className="p-2 rounded-lg hover:bg-muted transition-colors">
+                                    <ArrowRight className="h-5 w-5" />
                                 </Link>
                                 <div>
-                                    <h1 className="text-2xl font-bold">إدارة الماركات</h1>
-                                    <p className="text-primary-foreground/70 text-sm">
-                                        إضافة وتعديل وحذف الماركات
-                                    </p>
+                                    <h1 className="text-xl font-bold">إدارة الماركات</h1>
+                                    <p className="text-sm text-muted-foreground">إضافة وتعديل وحذف الماركات</p>
                                 </div>
                             </div>
                             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -272,50 +338,11 @@ const BrandsAdmin = () => {
                                         إضافة ماركة
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="max-w-lg">
                                     <DialogHeader>
                                         <DialogTitle>إضافة ماركة جديدة</DialogTitle>
                                     </DialogHeader>
-                                    <div className="space-y-4 py-4">
-                                        <div className="space-y-2">
-                                            <Label>اسم الماركة (إنجليزي) *</Label>
-                                            <Input
-                                                value={formData.name}
-                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                placeholder="Sharp"
-                                                dir="ltr"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>اسم الماركة (عربي) *</Label>
-                                            <Input
-                                                value={formData.name_ar}
-                                                onChange={(e) => setFormData({ ...formData, name_ar: e.target.value })}
-                                                placeholder="شارب"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>رفع شعار الماركة</Label>
-                                            <div className="flex items-center gap-2">
-                                                <Input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                                                    className="flex-1"
-                                                />
-                                                {selectedFile && (
-                                                    <span className="text-sm text-green-600">✓ {selectedFile.name}</span>
-                                                )}
-                                            </div>
-                                            <p className="text-xs text-muted-foreground">أو أدخل رابط الصورة:</p>
-                                            <Input
-                                                value={formData.logo_url}
-                                                onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                                                placeholder="https://example.com/logo.png"
-                                                dir="ltr"
-                                            />
-                                        </div>
-                                    </div>
+                                    <BrandForm />
                                     <DialogFooter>
                                         <DialogClose asChild>
                                             <Button variant="outline">إلغاء</Button>
@@ -337,24 +364,228 @@ const BrandsAdmin = () => {
                 </div>
 
                 {/* Content */}
-                <div className="container mx-auto px-4 py-8">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Package className="h-5 w-5" />
-                                الماركات ({brands?.length || 0})
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoading ? (
-                                <div className="flex justify-center py-8">
-                                    <div className="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" />
+                <div className="container mx-auto px-4 py-6">
+                    {/* Enhanced Stats */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
+                            <CardContent className="pt-4 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-blue-500 rounded-xl">
+                                        <Package className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                                        <p className="text-xs text-muted-foreground">إجمالي الماركات</p>
+                                    </div>
                                 </div>
-                            ) : brands?.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    لا توجد ماركات بعد
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-green-500/10 to-green-600/5 border-green-500/20">
+                            <CardContent className="pt-4 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-green-500 rounded-xl">
+                                        <ToggleRight className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                                        <p className="text-xs text-muted-foreground">ماركات مفعّلة</p>
+                                    </div>
                                 </div>
-                            ) : (
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-gray-500/10 to-gray-600/5 border-gray-500/20">
+                            <CardContent className="pt-4 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-gray-500 rounded-xl">
+                                        <ToggleLeft className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-gray-600">{stats.inactive}</p>
+                                        <p className="text-xs text-muted-foreground">ماركات موقفة</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-500/20">
+                            <CardContent className="pt-4 pb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-purple-500 rounded-xl">
+                                        <Package className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold text-purple-600">{stats.totalProducts}</p>
+                                        <p className="text-xs text-muted-foreground">إجمالي المنتجات</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Filters */}
+                    <Card className="mb-6">
+                        <CardContent className="pt-4">
+                            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                                <div className="relative flex-1 w-full">
+                                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="بحث عن ماركة..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="pr-10"
+                                    />
+                                </div>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant={viewMode === 'grid' ? 'default' : 'outline'}
+                                        size="icon"
+                                        onClick={() => setViewMode('grid')}
+                                    >
+                                        <Grid className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        variant={viewMode === 'table' ? 'default' : 'outline'}
+                                        size="icon"
+                                        onClick={() => setViewMode('table')}
+                                    >
+                                        <List className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Brands Display */}
+                    {isLoading ? (
+                        <div className="flex justify-center py-12">
+                            <Loader2 className="h-8 w-8 animate-spin text-secondary" />
+                        </div>
+                    ) : filteredBrands?.length === 0 ? (
+                        <div className="text-center py-12 text-muted-foreground">
+                            <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                            <p>لا توجد ماركات</p>
+                        </div>
+                    ) : viewMode === 'grid' ? (
+                        // Grid View
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {filteredBrands?.map((brand) => (
+                                <Card key={brand.id} className={`group hover:shadow-lg transition-all ${!brand.is_active ? 'opacity-60' : ''}`}>
+                                    <CardContent className="p-4">
+                                        <div className="relative">
+                                            {/* Logo */}
+                                            <div className="aspect-square rounded-xl bg-muted flex items-center justify-center mb-3 overflow-hidden">
+                                                {brand.logo_url ? (
+                                                    <img
+                                                        src={brand.logo_url}
+                                                        alt={brand.name}
+                                                        className="w-full h-full object-contain p-4"
+                                                    />
+                                                ) : (
+                                                    <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                                                )}
+                                            </div>
+                                            {/* Status Badge */}
+                                            <Badge
+                                                className={`absolute top-2 right-2 text-[10px] ${brand.is_active ? 'bg-green-500' : 'bg-red-500'}`}
+                                            >
+                                                {brand.is_active ? 'مفعّل' : 'موقف'}
+                                            </Badge>
+                                        </div>
+
+                                        {/* Info */}
+                                        <h3 className="font-bold text-center">{brand.name_ar}</h3>
+                                        <p className="text-sm text-muted-foreground text-center">{brand.name}</p>
+                                        <p className="text-xs text-center mt-1">
+                                            <Badge variant="outline">{brand.product_count} منتج</Badge>
+                                        </p>
+
+                                        {/* Actions */}
+                                        <div className="flex gap-2 mt-4">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="flex-1"
+                                                onClick={() => toggleActiveMutation.mutate({
+                                                    id: brand.id,
+                                                    is_active: !brand.is_active
+                                                })}
+                                            >
+                                                {brand.is_active ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
+                                            </Button>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="flex-1"
+                                                        onClick={() => startEditing(brand)}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-lg">
+                                                    <DialogHeader>
+                                                        <DialogTitle>تعديل الماركة</DialogTitle>
+                                                    </DialogHeader>
+                                                    <BrandForm />
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">إلغاء</Button>
+                                                        </DialogClose>
+                                                        <Button
+                                                            onClick={handleSubmit}
+                                                            disabled={updateBrandMutation.isPending || uploading}
+                                                            className="bg-secondary hover:bg-secondary/90"
+                                                        >
+                                                            {uploading ? (
+                                                                <><Loader2 className="h-4 w-4 animate-spin ml-2" />جاري الرفع...</>
+                                                            ) : updateBrandMutation.isPending ? "جاري الحفظ..." : "حفظ"}
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="destructive" size="sm" className="flex-1">
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>حذف الماركة</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            هل أنت متأكد من حذف ماركة "{brand.name_ar}"؟
+                                                            <br />
+                                                            <strong className="text-destructive">
+                                                                سيتم حذف جميع المنتجات ({brand.product_count}) المرتبطة بها!
+                                                            </strong>
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() => deleteBrandMutation.mutate(brand.id)}
+                                                            className="bg-destructive hover:bg-destructive/90"
+                                                        >
+                                                            حذف
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    ) : (
+                        // Table View
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Package className="h-5 w-5" />
+                                    الماركات ({filteredBrands?.length || 0})
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -367,8 +598,8 @@ const BrandsAdmin = () => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {brands?.map((brand) => (
-                                            <TableRow key={brand.id}>
+                                        {filteredBrands?.map((brand) => (
+                                            <TableRow key={brand.id} className={!brand.is_active ? 'opacity-60' : ''}>
                                                 <TableCell>
                                                     {brand.logo_url ? (
                                                         <img
@@ -385,9 +616,7 @@ const BrandsAdmin = () => {
                                                 <TableCell className="font-medium">{brand.name}</TableCell>
                                                 <TableCell>{brand.name_ar}</TableCell>
                                                 <TableCell>
-                                                    <span className="bg-primary/10 text-primary px-2 py-1 rounded-full text-sm">
-                                                        {brand.product_count} منتج
-                                                    </span>
+                                                    <Badge variant="outline">{brand.product_count} منتج</Badge>
                                                 </TableCell>
                                                 <TableCell>
                                                     <Button
@@ -400,15 +629,9 @@ const BrandsAdmin = () => {
                                                         className={brand.is_active ? "text-green-600" : "text-red-600"}
                                                     >
                                                         {brand.is_active ? (
-                                                            <>
-                                                                <ToggleRight className="h-5 w-5 ml-1" />
-                                                                مفعّل
-                                                            </>
+                                                            <><ToggleRight className="h-5 w-5 ml-1" />مفعّل</>
                                                         ) : (
-                                                            <>
-                                                                <ToggleLeft className="h-5 w-5 ml-1" />
-                                                                موقف
-                                                            </>
+                                                            <><ToggleLeft className="h-5 w-5 ml-1" />موقف</>
                                                         )}
                                                     </Button>
                                                 </TableCell>
@@ -424,47 +647,11 @@ const BrandsAdmin = () => {
                                                                     <Edit className="h-4 w-4" />
                                                                 </Button>
                                                             </DialogTrigger>
-                                                            <DialogContent>
+                                                            <DialogContent className="max-w-lg">
                                                                 <DialogHeader>
                                                                     <DialogTitle>تعديل الماركة</DialogTitle>
                                                                 </DialogHeader>
-                                                                <div className="space-y-4 py-4">
-                                                                    <div className="space-y-2">
-                                                                        <Label>اسم الماركة (إنجليزي) *</Label>
-                                                                        <Input
-                                                                            value={formData.name}
-                                                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                                            dir="ltr"
-                                                                        />
-                                                                    </div>
-                                                                    <div className="space-y-2">
-                                                                        <Label>اسم الماركة (عربي) *</Label>
-                                                                        <Input
-                                                                            value={formData.name_ar}
-                                                                            onChange={(e) => setFormData({ ...formData, name_ar: e.target.value })}
-                                                                        />
-                                                                    </div>
-                                                                    <div className="space-y-2">
-                                                                        <Label>رفع شعار جديد</Label>
-                                                                        <div className="flex items-center gap-2">
-                                                                            <Input
-                                                                                type="file"
-                                                                                accept="image/*"
-                                                                                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                                                                                className="flex-1"
-                                                                            />
-                                                                            {selectedFile && (
-                                                                                <span className="text-sm text-green-600">✓ {selectedFile.name}</span>
-                                                                            )}
-                                                                        </div>
-                                                                        <p className="text-xs text-muted-foreground">أو أدخل رابط الصورة:</p>
-                                                                        <Input
-                                                                            value={formData.logo_url}
-                                                                            onChange={(e) => setFormData({ ...formData, logo_url: e.target.value })}
-                                                                            dir="ltr"
-                                                                        />
-                                                                    </div>
-                                                                </div>
+                                                                <BrandForm />
                                                                 <DialogFooter>
                                                                     <DialogClose asChild>
                                                                         <Button variant="outline">إلغاء</Button>
@@ -474,9 +661,7 @@ const BrandsAdmin = () => {
                                                                         disabled={updateBrandMutation.isPending || uploading}
                                                                         className="bg-secondary hover:bg-secondary/90"
                                                                     >
-                                                                        {uploading ? (
-                                                                            <><Loader2 className="h-4 w-4 animate-spin ml-2" />جاري الرفع...</>
-                                                                        ) : updateBrandMutation.isPending ? "جاري الحفظ..." : "حفظ"}
+                                                                        {uploading ? "جاري الرفع..." : "حفظ"}
                                                                     </Button>
                                                                 </DialogFooter>
                                                             </DialogContent>
@@ -492,10 +677,9 @@ const BrandsAdmin = () => {
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>حذف الماركة</AlertDialogTitle>
                                                                     <AlertDialogDescription>
-                                                                        هل أنت متأكد من حذف ماركة "{brand.name_ar}"؟
-                                                                        <br />
-                                                                        <strong className="text-destructive">
-                                                                            سيتم حذف جميع المنتجات ({brand.product_count}) المرتبطة بها!
+                                                                        هل أنت متأكد من حذف "{brand.name_ar}"؟
+                                                                        <strong className="text-destructive block mt-2">
+                                                                            سيتم حذف {brand.product_count} منتج!
                                                                         </strong>
                                                                     </AlertDialogDescription>
                                                                 </AlertDialogHeader>
@@ -503,7 +687,7 @@ const BrandsAdmin = () => {
                                                                     <AlertDialogCancel>إلغاء</AlertDialogCancel>
                                                                     <AlertDialogAction
                                                                         onClick={() => deleteBrandMutation.mutate(brand.id)}
-                                                                        className="bg-destructive hover:bg-destructive/90"
+                                                                        className="bg-destructive"
                                                                     >
                                                                         حذف
                                                                     </AlertDialogAction>
@@ -516,19 +700,9 @@ const BrandsAdmin = () => {
                                         ))}
                                     </TableBody>
                                 </Table>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Quick Links */}
-                    <div className="mt-6 flex gap-4">
-                        <Link to="/admin/orders">
-                            <Button variant="outline">إدارة الطلبات</Button>
-                        </Link>
-                        <Link to="/admin/products">
-                            <Button variant="outline">إدارة المنتجات</Button>
-                        </Link>
-                    </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
         </>
@@ -536,4 +710,3 @@ const BrandsAdmin = () => {
 };
 
 export default BrandsAdmin;
-

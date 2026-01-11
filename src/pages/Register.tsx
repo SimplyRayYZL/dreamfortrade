@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Mail, Phone, Lock, UserPlus, User, CheckCircle } from "lucide-react";
@@ -76,7 +76,7 @@ const Register = () => {
         return (
             <>
                 <Helmet>
-                    <title>تأكيد البريد الإلكتروني | تارجت لأعمال التكييف</title>
+                    <title>تأكيد البريد الإلكتروني | دريم للتجارة والتوريدات</title>
                 </Helmet>
 
                 <Navbar />
@@ -118,7 +118,7 @@ const Register = () => {
     return (
         <>
             <Helmet>
-                <title>إنشاء حساب | تارجت لأعمال التكييف</title>
+                <title>إنشاء حساب | دريم للتجارة والتوريدات</title>
                 <meta name="description" content="أنشئ حسابك في ????? ?????? ??????? للاستمتاع بتجربة تسوق مميزة" />
             </Helmet>
 

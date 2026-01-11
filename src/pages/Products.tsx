@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+﻿import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
@@ -8,6 +8,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts, useBrands } from "@/hooks/useProducts";
 import ProductCard from "@/components/products/ProductCard";
+import { usePageBanner, defaultPageBanners } from "@/hooks/usePageBanner";
 import productsBanner from "@/assets/banners/products-banner.jpg";
 
 const capacities = ["1.5 حصان", "2.25 حصان", "3 حصان", "4 حصان", "5 حصان"];
@@ -16,6 +17,9 @@ const inverterOptions = ["عادي", "انفرتر"];
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // Fetch dynamic page banner
+  const { data: pageBanner } = usePageBanner("products");
 
   // Read all filters from URL
   const brandFromUrl = searchParams.get("brand") || "الكل";
@@ -115,10 +119,10 @@ const Products = () => {
   return (
     <>
       <Helmet>
-        <title>منتجاتنا | تارجت لأعمال التكييف - أفضل تكييفات كاريير، هاير، ميديا</title>
+        <title>منتجاتنا | دريم للتجارة والتوريدات - أفضل تكييفات كاريير، هاير، ميديا</title>
         <meta name="description" content="تصفح مجموعتنا الواسعة من التكييفات من أشهر الماركات العالمية في مصر. كاريير، هاير، ميديا بأسعار تبدأ من 15,000 جنيه. توصيل وتركيب مجاني." />
         <meta name="keywords" content="تكييفات, تكييف كاريير, تكييف هاير, تكييف ميديا, تكييف انفرتر, اسعار التكييفات في مصر 2025" />
-        <link rel="canonical" href="https://targetaircool.com/products" />
+        <link rel="canonical" href="https://dreamfortrade.com/products" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col">
@@ -126,9 +130,9 @@ const Products = () => {
         <main className="flex-grow">
           {/* Page Banner */}
           <PageBanner
-            title={selectedBrand !== "الكل" ? `تكييفات ${selectedBrand}` : "منتجاتنا"}
-            subtitle="اكتشف مجموعتنا الواسعة من التكييفات العصرية بأفضل الأسعار"
-            backgroundImage={productsBanner}
+            title={selectedBrand !== "الكل" ? `تكييفات ${selectedBrand}` : (pageBanner?.title || defaultPageBanners.products.title)}
+            subtitle={pageBanner?.subtitle || defaultPageBanners.products.subtitle}
+            backgroundImage={pageBanner?.image_url || productsBanner}
             showCTA={false}
           />
 

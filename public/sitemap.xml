@@ -4,56 +4,56 @@
   
   <!-- الصفحة الرئيسية -->
   <url>
-    <loc>https://targetaircool.com/</loc>
+    <loc>https://dreamfortrade.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <!-- المنتجات -->
   <url>
-    <loc>https://targetaircool.com/products</loc>
+    <loc>https://dreamfortrade.com/products</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   
   <!-- من نحن -->
   <url>
-    <loc>https://targetaircool.com/about</loc>
+    <loc>https://dreamfortrade.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <!-- اتصل بنا -->
   <url>
-    <loc>https://targetaircool.com/contact</loc>
+    <loc>https://dreamfortrade.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <!-- المدونة -->
   <url>
-    <loc>https://targetaircool.com/blog</loc>
+    <loc>https://dreamfortrade.com/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- تكييفات هاير -->
   <url>
-    <loc>https://targetaircool.com/products?brand=Haier</loc>
+    <loc>https://dreamfortrade.com/products?brand=Haier</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- تكييفات كاريير -->
   <url>
-    <loc>https://targetaircool.com/products?brand=Carrier</loc>
+    <loc>https://dreamfortrade.com/products?brand=Carrier</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- تكييفات ميديا -->
   <url>
-    <loc>https://targetaircool.com/products?brand=Midea</loc>
+    <loc>https://dreamfortrade.com/products?brand=Midea</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

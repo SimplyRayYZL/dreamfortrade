@@ -1,3 +1,4 @@
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Scale, Star } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,7 +29,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
   const { data: settings } = useSiteSettings();
-  const whatsappNumber = settings?.store_whatsapp || "201208000550";
+  const whatsappNumber = settings?.store_whatsapp || "201289006310";
 
   const getProductImage = () => {
     if (product.image_url) {
@@ -37,12 +38,24 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
     return fallbackImages[index % fallbackImages.length];
   };
 
+  const [isAnimating, setIsAnimating] = useState(false);
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addToCart(product);
-    toast.success("تمت الإضافة إلى السلة");
-    navigate("/cart");
+
+    // Trigger animation
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 300);
+
+    const result = addToCart(product);
+    if (result === 'added') {
+      toast.success("تمت الإضافة إلى السلة");
+      navigate("/cart");
+    } else if (result === 'exists') {
+      // Already shows toast in addToCart, just navigate to cart
+      navigate("/cart");
+    }
   };
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
@@ -185,9 +198,9 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
           </a>
           <Button
             onClick={handleAddToCart}
-            className="w-full bg-secondary hover:bg-accent text-secondary-foreground gap-1.5 transition-all duration-300 hover:scale-[1.02] h-8 md:h-10 text-xs md:text-sm font-semibold"
+            className={`w-full bg-secondary hover:bg-accent text-secondary-foreground gap-1.5 transition-all duration-300 h-8 md:h-10 text-xs md:text-sm font-semibold ${isAnimating ? 'scale-95 opacity-80' : 'hover:scale-[1.02]'}`}
           >
-            <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
+            <ShoppingCart className={`h-4 w-4 md:h-5 md:w-5 transition-transform ${isAnimating ? 'animate-bounce' : ''}`} />
             <span className="hidden sm:inline">أضف للسلة</span>
             <span className="sm:hidden">سلة</span>
           </Button>

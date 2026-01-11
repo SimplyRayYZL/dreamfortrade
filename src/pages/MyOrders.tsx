@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
@@ -169,7 +169,7 @@ const MyOrders = () => {
     return (
         <>
             <Helmet>
-                <title>طلباتي | تارجت لأعمال التكييف</title>
+                <title>طلباتي | دريم للتجارة والتوريدات</title>
                 <meta name="description" content="عرض وإدارة طلباتك" />
             </Helmet>
 

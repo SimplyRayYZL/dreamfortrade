@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Mail, ArrowRight, CheckCircle } from "lucide-react";
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
         return (
             <>
                 <Helmet>
-                    <title>تم إرسال الرابط | تارجت لأعمال التكييف</title>
+                    <title>تم إرسال الرابط | دريم للتجارة والتوريدات</title>
                 </Helmet>
 
                 <Navbar />
@@ -81,7 +81,7 @@ const ForgotPassword = () => {
     return (
         <>
             <Helmet>
-                <title>نسيت كلمة المرور | تارجت لأعمال التكييف</title>
+                <title>نسيت كلمة المرور | دريم للتجارة والتوريدات</title>
                 <meta name="description" content="استعد كلمة المرور الخاصة بك" />
             </Helmet>
 

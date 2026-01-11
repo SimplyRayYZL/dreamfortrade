@@ -1,4 +1,4 @@
-// Shared blog articles data
+﻿// Shared blog articles data
 export interface BlogArticle {
     id: string;
     title: string;

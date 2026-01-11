@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { X, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompare } from "@/contexts/CompareContext";

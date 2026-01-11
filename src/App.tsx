@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+﻿import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,7 +32,15 @@ const ProductsAdmin = lazy(() => import("./pages/admin/ProductsAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/admin/OrdersAdmin"));
 const BrandsAdmin = lazy(() => import("./pages/admin/BrandsAdmin"));
 const BannersAdmin = lazy(() => import("./pages/admin/BannersAdmin"));
+const HeroBannersAdmin = lazy(() => import("./pages/admin/HeroBannersAdmin"));
+const PromoBannersAdmin = lazy(() => import("./pages/admin/PromoBannersAdmin"));
+const DeliverySettingsAdmin = lazy(() => import("./pages/admin/DeliverySettingsAdmin"));
 const SettingsAdmin = lazy(() => import("./pages/admin/SettingsAdmin"));
+const PageBannersAdmin = lazy(() => import("./pages/admin/PageBannersAdmin"));
+const StoreSettingsAdmin = lazy(() => import("./pages/admin/StoreSettingsAdmin"));
+const SocialSettingsAdmin = lazy(() => import("./pages/admin/SocialSettingsAdmin"));
+const AnalyticsSettingsAdmin = lazy(() => import("./pages/admin/AnalyticsSettingsAdmin"));
+const SEOSettingsAdmin = lazy(() => import("./pages/admin/SEOSettingsAdmin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const Login = lazy(() => import("./pages/Login"));
@@ -105,7 +113,15 @@ const App = () => (
                           <Route path="/admin/orders" element={<ProtectedAdminRoute><OrdersAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/brands" element={<ProtectedAdminRoute><BrandsAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/banners" element={<ProtectedAdminRoute><BannersAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/hero-banners" element={<ProtectedAdminRoute><HeroBannersAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/promo-banners" element={<ProtectedAdminRoute><PromoBannersAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/delivery" element={<ProtectedAdminRoute><DeliverySettingsAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/settings" element={<ProtectedAdminRoute><SettingsAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/page-banners" element={<ProtectedAdminRoute><PageBannersAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/settings/store" element={<ProtectedAdminRoute><StoreSettingsAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/settings/social" element={<ProtectedAdminRoute><SocialSettingsAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/settings/analytics" element={<ProtectedAdminRoute><AnalyticsSettingsAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/settings/seo" element={<ProtectedAdminRoute><SEOSettingsAdmin /></ProtectedAdminRoute>} />
                           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                           {/* Blog Routes */}
                           <Route path="/blog" element={<Blog />} />

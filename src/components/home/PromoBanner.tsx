@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Star, MessageCircle, Phone, Truck, Shield, Wrench, Headphones, Package, Snowflake, Facebook, Instagram, Mail } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSettings";
@@ -10,12 +10,12 @@ interface PromoBannerProps {
 
 const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
     const { data: settings } = useSiteSettings();
-    const whatsappNumber = settings?.store_whatsapp || "201208000550";
-    const phoneNumber = settings?.store_phone || "01208000550";
+    const whatsappNumber = settings?.store_whatsapp || "201289006310";
+    const phoneNumber = settings?.store_phone || "01289006310";
     if (variant === "features") {
         // Features section with cyan/blue snowflakes
         const features = [
-            { icon: Truck, title: "توصيل سريع", desc: "توصيل مجاني لجميع أنحاء الجمهورية" },
+            { icon: Truck, title: "توصيل سريع", desc: "توصيل سريع لجميع أنحاء الجمهورية" },
             { icon: Shield, title: "ضمان شامل", desc: "ضمان حتى 5 سنوات على جميع المنتجات" },
             { icon: Wrench, title: "تركيب مجاني", desc: "فريق متخصص للتركيب والصيانة" },
             { icon: Headphones, title: "دعم فني 24/7", desc: "فريق دعم متواجد على مدار الساعة" },
@@ -66,7 +66,7 @@ const PromoBanner = ({ variant = "features" }: PromoBannerProps) => {
                     {/* Title */}
                     <div className="text-center mb-12 md:mb-16">
                         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4">
-                            ليه تختار <span className="text-secondary">تارجت</span>؟
+                            ليه تختار <span className="text-secondary">دريم</span>؟
                         </h2>
                         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                             نقدم لك تجربة شراء مميزة مع أفضل الخدمات والضمانات

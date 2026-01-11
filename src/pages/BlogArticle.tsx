@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+﻿import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -15,7 +15,7 @@ const BlogArticle = () => {
         return (
             <>
                 <Helmet>
-                    <title>المقال غير موجود | مدونة تارجت</title>
+                    <title>المقال غير موجود | مدونة دريم</title>
                 </Helmet>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
@@ -33,12 +33,12 @@ const BlogArticle = () => {
         );
     }
 
-    const shareUrl = `https://targetaircool.com/blog/${slug}`;
+    const shareUrl = `https://dreamfortrade.com/blog/${slug}`;
 
     return (
         <>
             <Helmet>
-                <title>{article.title} | مدونة تارجت</title>
+                <title>{article.title} | مدونة دريم</title>
                 <meta name="description" content={article.excerpt} />
                 <meta name="keywords" content={article.tags.join(", ")} />
                 <link rel="canonical" href={shareUrl} />
@@ -47,7 +47,7 @@ const BlogArticle = () => {
                 <meta property="og:description" content={article.excerpt} />
                 <meta property="og:type" content="article" />
                 <meta property="og:url" content={shareUrl} />
-                <meta property="og:image" content={`https://targetaircool.com${article.image}`} />
+                <meta property="og:image" content={`https://dreamfortrade.com${article.image}`} />
                 <meta property="article:published_time" content={article.date} />
                 <meta property="article:tag" content={article.tags.join(", ")} />
 
@@ -61,18 +61,18 @@ const BlogArticle = () => {
                         "@type": "BlogPosting",
                         "headline": article.title,
                         "description": article.excerpt,
-                        "image": `https://targetaircool.com${article.image}`,
+                        "image": `https://dreamfortrade.com${article.image}`,
                         "datePublished": article.date,
                         "author": {
                             "@type": "Organization",
-                            "name": "تارجت لأعمال التكييف"
+                            "name": "دريم للتجارة والتوريدات"
                         },
                         "publisher": {
                             "@type": "Organization",
-                            "name": "تارجت لأعمال التكييف",
+                            "name": "دريم للتجارة والتوريدات",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://targetaircool.com/logo.png"
+                                "url": "https://dreamfortrade.com/logo.png"
                             }
                         },
                         "mainEntityOfPage": {
