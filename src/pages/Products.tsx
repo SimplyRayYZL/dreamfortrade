@@ -3,13 +3,21 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PageBanner from "@/components/common/PageBanner";
 import { Button } from "@/components/ui/button";
-import { Filter, ChevronDown, Loader2, X } from "lucide-react";
+import { Filter, ChevronDown, Loader2, X, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts, useBrands } from "@/hooks/useProducts";
 import ProductCard from "@/components/products/ProductCard";
 import { usePageBanner, defaultPageBanners } from "@/hooks/usePageBanner";
 import productsBanner from "@/assets/banners/products-banner.jpg";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const capacities = ["1.5 حصان", "2.25 حصان", "3 حصان", "4 حصان", "5 حصان"];
 const types = ["بارد فقط", "بارد ساخن"];
@@ -136,18 +144,133 @@ const Products = () => {
             showCTA={false}
           />
 
-          {/* Filters */}
+          {/* Filters Bar (Desktop & Mobile Trigger) */}
           <div className="bg-gradient-to-r from-card to-card/80 border-b border-border shadow-sm sticky top-[72px] md:top-[136px] z-40 backdrop-blur-sm">
-            <div className="container mx-auto px-4 py-5">
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="flex items-center gap-2 text-secondary">
-                  <div className="w-9 h-9 bg-secondary/10 rounded-lg flex items-center justify-center">
-                    <Filter className="h-5 w-5" />
+            <div className="container mx-auto px-4 py-3 md:py-5">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+
+                {/* Mobile: Filter Sheet Trigger */}
+                <div className="md:hidden w-full flex gap-2">
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" className="flex-1 gap-2 h-12 text-base font-medium border-secondary/20 bg-secondary/5 hover:bg-secondary/10 hover:border-secondary">
+                        <SlidersHorizontal className="h-5 w-5 text-secondary" />
+                        تصفية متقدمة
+                        {hasActiveFilters && (
+                          <span className="bg-secondary text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full mr-1">
+                            !
+                          </span>
+                        )}
+                      </Button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-[85vh] rounded-t-[20px] px-0">
+                      <SheetHeader className="px-6 pb-4 border-b">
+                        <SheetTitle className="text-xl font-bold flex items-center gap-2">
+                          <Filter className="h-5 w-5 text-secondary" />
+                          تصفية المنتجات
+                        </SheetTitle>
+                        <SheetDescription>
+                          قم باختيار المواصفات التي تناسب احتياجاتك
+                        </SheetDescription>
+                      </SheetHeader>
+                      <div className="px-6 py-6 space-y-6 overflow-y-auto max-h-[calc(85vh-120px)]">
+                        {/* Mobile Filters Content */}
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">الماركة</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {brandOptions.map(brand => (
+                                <button
+                                  key={brand}
+                                  onClick={() => handleBrandChange(brand)}
+                                  className={`p-3 rounded-xl border text-sm font-medium transition-all ${selectedBrand === brand ? 'border-secondary bg-secondary/10 text-secondary' : 'border-border hover:border-secondary/50'}`}
+                                >
+                                  {brand === "الكل" ? "جميع الماركات" : brand}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">القدرة</label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {capacityOptions.map(cap => (
+                                <button
+                                  key={cap}
+                                  onClick={() => handleCapacityChange(cap)}
+                                  className={`p-3 rounded-xl border text-sm font-medium transition-all ${selectedCapacity === cap ? 'border-secondary bg-secondary/10 text-secondary' : 'border-border hover:border-secondary/50'}`}
+                                >
+                                  {cap === "الكل" ? "كل القدرات" : cap}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">النوع</label>
+                            <div className="flex gap-2">
+                              {typeOptions.map(type => (
+                                <button
+                                  key={type}
+                                  onClick={() => handleTypeChange(type)}
+                                  className={`flex-1 p-3 rounded-xl border text-sm font-medium transition-all ${selectedType === type ? 'border-secondary bg-secondary/10 text-secondary' : 'border-border hover:border-secondary/50'}`}
+                                >
+                                  {type === "الكل" ? "الكل" : type}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">التقنية</label>
+                            <div className="flex gap-2">
+                              {inverterFilterOptions.map(tech => (
+                                <button
+                                  key={tech}
+                                  onClick={() => handleInverterChange(tech)}
+                                  className={`flex-1 p-3 rounded-xl border text-sm font-medium transition-all ${selectedInverter === tech ? 'border-secondary bg-secondary/10 text-secondary' : 'border-border hover:border-secondary/50'}`}
+                                >
+                                  {tech === "الكل" ? "الكل" : tech}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Mobile Reset Button */}
+                        {hasActiveFilters && (
+                          <Button
+                            variant="destructive"
+                            className="w-full gap-2 mt-4"
+                            onClick={() => {
+                              resetFilters();
+                              // Optional: Close sheet logic if controlled
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                            مسح جميع الفلاتر
+                          </Button>
+                        )}
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+
+                  {/* Result Count Mobile */}
+                  <div className="flex items-center justify-center bg-secondary/10 rounded-xl px-4 min-w-[100px]">
+                    <span className="font-bold text-secondary">{filteredProducts.length}</span>
+                    <span className="text-xs text-muted-foreground mr-1">منتج</span>
                   </div>
-                  <span className="font-bold text-foreground">تصفية المنتجات</span>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 flex-1">
+                {/* Desktop Filters (Hidden on Mobile) */}
+                <div className="hidden md:flex flex-wrap items-center gap-3 flex-1">
+                  <div className="flex items-center gap-2 text-secondary ml-4">
+                    <div className="w-9 h-9 bg-secondary/10 rounded-lg flex items-center justify-center">
+                      <Filter className="h-5 w-5" />
+                    </div>
+                    <span className="font-bold text-foreground">تصفية المنتجات</span>
+                  </div>
+
                   {/* Brand Filter */}
                   <div className="relative group">
                     <select
@@ -216,12 +339,14 @@ const Products = () => {
                       مسح الكل
                     </Button>
                   )}
+
+                  {/* Desktop Count */}
+                  <div className="mr-auto flex items-center gap-2 bg-secondary/10 rounded-full px-4 py-2">
+                    <span className="text-xl font-bold text-secondary">{filteredProducts.length}</span>
+                    <span className="text-sm text-muted-foreground">منتج</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-secondary/10 rounded-full px-4 py-2">
-                  <span className="text-xl font-bold text-secondary">{filteredProducts.length}</span>
-                  <span className="text-sm text-muted-foreground">منتج</span>
-                </div>
               </div>
             </div>
           </div>

@@ -72,13 +72,12 @@ const PromoSection = ({ group }: PromoSectionProps) => {
                         >
                             {banner.image_url ? (
                                 <>
-                                    <div className="aspect-square overflow-hidden">
+                                    <div className="aspect-square overflow-hidden bg-muted relative">
                                         <img
                                             src={banner.image_url}
                                             alt={banner.title || "بانر ترويجي"}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                             loading="lazy"
-                                            decoding="async"
                                             width="800"
                                             height="800"
                                         />
