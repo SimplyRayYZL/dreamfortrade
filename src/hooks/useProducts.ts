@@ -37,7 +37,19 @@ export const useProducts = () => {
       const { data, error } = await supabase
         .from("products")
         .select(`
-          *,
+          id,
+          name,
+          price,
+          old_price,
+          rating,
+          image_url,
+          is_active,
+          created_at,
+          capacity,
+          type,
+          features,
+          brand_id,
+          description,
           brands (
             id,
             name,

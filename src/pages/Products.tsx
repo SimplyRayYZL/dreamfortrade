@@ -83,6 +83,9 @@ const Products = () => {
     updateUrlParam("inverter", inverter);
   };
 
+  // Pagination State
+  const [visibleCount, setVisibleCount] = useState(12);
+
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const brandMatch = selectedBrand === "الكل" || product.brand === selectedBrand;
@@ -102,6 +105,15 @@ const Products = () => {
       return brandMatch && capacityMatch && typeMatch && inverterMatch;
     });
   }, [products, selectedBrand, selectedCapacity, selectedType, selectedInverter]);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(12);
+  }, [selectedBrand, selectedCapacity, selectedType, selectedInverter]);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 12);
+  };
 
   const brandOptions = useMemo(() => {
     return ["الكل", ...brands.map(b => b.name)];
@@ -354,30 +366,48 @@ const Products = () => {
           {/* Products Grid */}
           <section className="py-12 bg-background">
             <div className="container mx-auto px-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="h-10 w-10 animate-spin text-secondary" />
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                  {filteredProducts.map((product, index) => (
-                    <ProductCard key={product.id} product={product} index={index} />
-                  ))}
-                </div>
-              )}
+              <div className="flex flex-col gap-8">
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-20">
+                    <Loader2 className="h-10 w-10 animate-spin text-secondary" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                      {filteredProducts.slice(0, visibleCount).map((product, index) => (
+                        <ProductCard key={product.id} product={product} index={index} />
+                      ))}
+                    </div>
 
-              {!isLoading && filteredProducts.length === 0 && (
-                <div className="text-center py-16">
-                  <p className="text-xl text-muted-foreground">لا توجد منتجات تطابق معايير البحث</p>
-                  <Button
-                    variant="outline"
-                    className="mt-4"
-                    onClick={resetFilters}
-                  >
-                    إعادة تعيين الفلاتر
-                  </Button>
-                </div>
-              )}
+                    {/* Load More Button */}
+                    {visibleCount < filteredProducts.length && (
+                      <div className="flex justify-center mt-8">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          onClick={handleLoadMore}
+                          className="min-w-[200px] border-secondary text-secondary hover:bg-secondary hover:text-white transition-all transform hover:scale-105"
+                        >
+                          عرض المزيد من المنتجات ({filteredProducts.length - visibleCount})
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {!isLoading && filteredProducts.length === 0 && (
+                  <div className="text-center py-16">
+                    <p className="text-xl text-muted-foreground">لا توجد منتجات تطابق معايير البحث</p>
+                    <Button
+                      variant="outline"
+                      className="mt-4"
+                      onClick={resetFilters}
+                    >
+                      إعادة تعيين الفلاتر
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </section>
         </main>
