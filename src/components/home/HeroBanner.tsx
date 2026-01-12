@@ -39,7 +39,8 @@ const HeroBanner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch hero banners from database
-  const { data: banners } = useQuery({
+  // Fetch hero banners from database
+  const { data: banners, isLoading } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
@@ -54,6 +55,7 @@ const HeroBanner = () => {
       }
       return (data || []) as HeroBannerData[];
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   // Auto-play carousel
@@ -78,6 +80,15 @@ const HeroBanner = () => {
       setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
     }
   };
+
+  // Loading Skeleton
+  if (isLoading) {
+    return (
+      <div className="w-full aspect-[16/7] md:aspect-[16/5] lg:aspect-[16/4] bg-muted/20 animate-pulse" />
+    );
+  }
+
+  // Default banner logic continues below...
 
   // Default banner if no banners in database - Enhanced design
   if (!banners || banners.length === 0) {
@@ -191,8 +202,8 @@ const HeroBanner = () => {
               </div>
             )}
 
-            {/* Overlay for better text readability */}
-            <div className="absolute inset-0 bg-black/20" />
+            {/* Overlay for better text readability - REMOVED per user request */}
+            {/* <div className="absolute inset-0 bg-black/20" /> */}
           </div>
         ))}
       </div>
