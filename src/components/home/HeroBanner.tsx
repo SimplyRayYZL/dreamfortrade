@@ -14,6 +14,27 @@ interface HeroBannerData {
   is_active: boolean;
 }
 
+// Helper component for responsive image rendering
+const BannerImage = ({ banner, index }: { banner: HeroBannerData, index: number }) => (
+  <picture className="w-full h-full block">
+    {banner.mobile_image_url && (
+      <source
+        media="(max-width: 768px)"
+        srcSet={banner.mobile_image_url}
+      />
+    )}
+    <img
+      src={banner.image_url}
+      alt="Hero Banner"
+      className="w-full h-full object-cover"
+      loading={index === 0 ? "eager" : "lazy"}
+      decoding={index === 0 ? "sync" : "async"}
+      width="1920"
+      height="1080"
+    />
+  </picture>
+);
+
 const HeroBanner = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -156,44 +177,22 @@ const HeroBanner = () => {
         {banners.map((banner, index) => (
           <div
             key={banner.id}
-            className={`w-full transition-all duration-700 ${index === currentIndex ? "block opacity-100" : "hidden opacity-0"
+            className={`w-full h-full transition-opacity duration-700 ${index === currentIndex ? "opacity-100 relative z-10" : "opacity-0 absolute inset-0 z-0"
               }`}
           >
+            {/* Wrap content in Link if url exists, otherwise div */}
             {banner.link_url ? (
-              <Link to={banner.link_url} className="block w-full">
-                <picture>
-                  {/* Mobile image if exists */}
-                  {banner.mobile_image_url && (
-                    <source
-                      media="(max-width: 768px)"
-                      srcSet={banner.mobile_image_url}
-                    />
-                  )}
-                  {/* Desktop/default image */}
-                  <img
-                    src={banner.image_url}
-                    alt="Banner"
-                    className="w-full h-auto block"
-                  />
-                </picture>
+              <Link to={banner.link_url} className="block w-full h-full">
+                <BannerImage banner={banner} index={index} />
               </Link>
             ) : (
-              <picture>
-                {banner.mobile_image_url && (
-                  <source
-                    media="(max-width: 768px)"
-                    srcSet={banner.mobile_image_url}
-                  />
-                )}
-                <img
-                  src={banner.image_url}
-                  alt="Banner"
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding={index === 0 ? "sync" : "async"}
-                />
-              </picture>
+              <div className="w-full h-full">
+                <BannerImage banner={banner} index={index} />
+              </div>
             )}
+
+            {/* Overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/20" />
           </div>
         ))}
       </div>

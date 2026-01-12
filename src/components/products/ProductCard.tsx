@@ -119,6 +119,10 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
             src={getProductImage()}
             alt={product.name}
             className="absolute inset-0 w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
+            loading="lazy"
+            decoding="async"
+            width="300"
+            height="300"
             onError={(e) => {
               e.currentTarget.src = fallbackImages[index % fallbackImages.length];
             }}
