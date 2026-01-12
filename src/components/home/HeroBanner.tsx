@@ -188,7 +188,9 @@ const HeroBanner = () => {
                 <img
                   src={banner.image_url}
                   alt="Banner"
-                  className="w-full h-auto block"
+                  className="w-full h-full object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
                 />
               </picture>
             )}

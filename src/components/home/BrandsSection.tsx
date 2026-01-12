@@ -22,13 +22,8 @@ const fallbackLogos: Record<string, string> = {
 const BrandsSection = () => {
   const { data: brands = [], isLoading } = useBrands();
 
-  // Filter out Fresh, FreeAir, and General brands
-  const filteredBrands = brands.filter(brand =>
-    !brand.name.toLowerCase().includes('fresh') &&
-    !brand.name.toLowerCase().includes('freeair') &&
-    !brand.name.toLowerCase().includes('free air') &&
-    !brand.name.toLowerCase().includes('general')
-  );
+  // No client-side filtering needed, useBrands already filters by is_active=true
+  const filteredBrands = brands;
 
   const getBrandLogo = (brand: typeof brands[0]) => {
     // Use logo_url from database if it exists (supports http, https, or relative paths)

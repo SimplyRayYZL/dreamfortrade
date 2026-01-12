@@ -146,6 +146,7 @@ const BrandsAdmin = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-brands"] });
+            queryClient.invalidateQueries({ queryKey: ["brands"] });
             toast.success("تم إضافة الماركة بنجاح");
             setIsAddDialogOpen(false);
             resetForm();
@@ -170,6 +171,7 @@ const BrandsAdmin = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-brands"] });
+            queryClient.invalidateQueries({ queryKey: ["brands"] });
             toast.success("تم تحديث الماركة بنجاح");
             setEditingBrand(null);
             resetForm();
@@ -196,6 +198,7 @@ const BrandsAdmin = () => {
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["admin-brands"] });
+            queryClient.invalidateQueries({ queryKey: ["brands"] });
             toast.success(variables.is_active ? "تم تفعيل الماركة" : "تم إيقاف الماركة ومنتجاتها");
         },
         onError: (error) => {
@@ -214,6 +217,7 @@ const BrandsAdmin = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin-brands"] });
+            queryClient.invalidateQueries({ queryKey: ["brands"] });
             toast.success("تم حذف الماركة ومنتجاتها");
         },
         onError: (error) => {
