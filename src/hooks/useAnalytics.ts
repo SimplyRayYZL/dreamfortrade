@@ -60,18 +60,30 @@ export const useAnalyticsWithPeriod = (period: TimePeriod = 'today') => {
             try {
                 const { start, end } = getDateRange(period);
 
+                console.log("[Analytics] Fetching for period:", period, "from", start, "to", end);
+
                 const { data, error } = await (supabase
                     .from("analytics_events") as any)
-                    .select("event_type, order_total, visitor_id")
-                    .gte("created_at", start)
-                    .lte("created_at", end);
+                    .select("event_type, order_total, visitor_id, created_at");
 
                 if (error) {
                     console.error("[Analytics] Error fetching stats:", error);
                     return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
                 }
 
-                const events = data || [];
+                console.log("[Analytics] Raw data count:", data?.length || 0);
+
+                // Filter by date in JS to avoid timezone issues
+                const startDate = new Date(start);
+                const endDate = new Date(end);
+
+                const events = (data || []).filter((e: any) => {
+                    const eventDate = new Date(e.created_at);
+                    return eventDate >= startDate && eventDate <= endDate;
+                });
+
+                console.log("[Analytics] Filtered events count:", events.length);
+
                 const uniqueVisitors = new Set(events.map((e: any) => e.visitor_id)).size;
                 const addToCart = events.filter((e: any) => e.event_type === "add_to_cart").length;
                 const checkout = events.filter((e: any) => e.event_type === "start_checkout").length;
@@ -80,7 +92,10 @@ export const useAnalyticsWithPeriod = (period: TimePeriod = 'today') => {
                     .filter((e: any) => e.event_type === "complete_purchase")
                     .reduce((sum: number, e: any) => sum + (e.order_total || 0), 0);
 
-                return { visitors: uniqueVisitors, addToCart, checkout, purchases, revenue };
+                const result = { visitors: uniqueVisitors, addToCart, checkout, purchases, revenue };
+                console.log("[Analytics] Result:", result);
+
+                return result;
             } catch (e) {
                 console.error("[Analytics] Exception:", e);
                 return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
