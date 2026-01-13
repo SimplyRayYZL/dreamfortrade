@@ -50,6 +50,7 @@ export const useProducts = () => {
           features,
           brand_id,
           description,
+          stock,
           brands (
             id,
             name,
