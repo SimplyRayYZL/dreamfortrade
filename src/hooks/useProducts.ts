@@ -17,7 +17,7 @@ export interface Product {
   description: string | null;
   image_url: string | null;
   is_active: boolean;
-  stock: number;
+  stock: number | null; // null means unlimited stock
 }
 
 export interface Brand {
@@ -80,7 +80,7 @@ export const useProducts = () => {
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,
-        stock: (item as any).stock || 0,
+        stock: (item as any).stock ?? null, // null means unlimited stock
       }));
     },
   });
