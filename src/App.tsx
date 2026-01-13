@@ -66,16 +66,20 @@ const queryClient = new QueryClient({
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 
-// Initialize AOS - FASTER settings
+// Initialize AOS - Disabled on mobile for faster perceived loading
 if (typeof window !== 'undefined') {
+  // Check if mobile device
+  const isMobile = window.innerWidth < 768;
+
   AOS.init({
-    duration: 600,
+    duration: isMobile ? 0 : 400, // No animation on mobile, faster on desktop
     easing: 'ease-out-quart',
     once: true,
-    offset: 50,
+    offset: isMobile ? 0 : 50,
     delay: 0,
     mirror: false,
     anchorPlacement: 'top-bottom',
+    disable: isMobile, // Completely disable on mobile
   });
 }
 

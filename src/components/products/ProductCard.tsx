@@ -41,6 +41,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
   };
 
   const [isAnimating, setIsAnimating] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -120,13 +121,15 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
           <img
             src={getProductImage()}
             alt={product.name}
-            className="absolute inset-0 w-full h-full object-contain transition-all duration-500 group-hover:scale-110"
+            className={`absolute inset-0 w-full h-full object-contain transition-all duration-300 group-hover:scale-110 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading="lazy"
             decoding="async"
             width="300"
             height="300"
+            onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               e.currentTarget.src = fallbackImages[index % fallbackImages.length];
+              setImageLoaded(true);
             }}
           />
           <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-card/90 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-medium z-10">
