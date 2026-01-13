@@ -39,8 +39,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addToCart = (product: Product, quantity: number = 1): 'added' | 'exists' | false => {
-    // If stock is explicitly set to 0 or negative, block the add
-    if (typeof product.stock === 'number' && product.stock <= 0) {
+    // Only block if stock is EXPLICITLY set to 0 or negative (null = unlimited)
+    if (product.stock !== null && product.stock <= 0) {
       toast.error("المنتج غير متوفر حالياً");
       return false;
     }
@@ -56,7 +56,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return 'exists';
     }
 
-    if (typeof product.stock === 'number' && newTotalQty > product.stock) {
+    // Only check stock limit if stock is set (not null = unlimited)
+    if (product.stock !== null && newTotalQty > product.stock) {
       const available = product.stock - currentQty;
       if (available <= 0) {
         toast.error(`وصلت للحد الأقصى المتاح من هذا المنتج`);
