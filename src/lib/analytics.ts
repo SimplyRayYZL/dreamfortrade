@@ -15,13 +15,13 @@ interface TrackEventParams {
     productName?: string;
     orderId?: string;
     orderTotal?: number;
-    metadata?: Record<string, any>;
+
 }
 
 // Track an event and save to database
 export const trackEvent = async (params: TrackEventParams) => {
     try {
-        const { event, page, productId, productName, orderId, orderTotal, metadata } = params;
+        const { event, page, productId, productName, orderId, orderTotal } = params;
 
         // Get session ID from localStorage or create new one
         let sessionId = localStorage.getItem("analytics_session_id");
@@ -45,11 +45,9 @@ export const trackEvent = async (params: TrackEventParams) => {
             product_id: productId || null,
             product_name: productName || null,
             order_id: orderId || null,
-            order_total: orderTotal || null,
-            metadata: metadata || {},
+            order_total: orderTotal || 0,
             user_agent: navigator.userAgent,
-            referrer: document.referrer || null,
-            created_at: new Date().toISOString(),
+            device_type: window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop',
         };
 
         // Save to Supabase
