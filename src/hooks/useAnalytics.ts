@@ -21,6 +21,76 @@ export interface TodayStats {
     revenue: number;
 }
 
+export type TimePeriod = 'today' | 'week' | 'month' | 'year';
+
+// Helper to get date range based on period
+const getDateRange = (period: TimePeriod): { start: string; end: string } => {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    const endDate = `${today}T23:59:59`;
+
+    switch (period) {
+        case 'today':
+            return { start: `${today}T00:00:00`, end: endDate };
+        case 'week': {
+            const weekAgo = new Date(now);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return { start: `${weekAgo.toISOString().split("T")[0]}T00:00:00`, end: endDate };
+        }
+        case 'month': {
+            const monthAgo = new Date(now);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            return { start: `${monthAgo.toISOString().split("T")[0]}T00:00:00`, end: endDate };
+        }
+        case 'year': {
+            const yearAgo = new Date(now);
+            yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+            return { start: `${yearAgo.toISOString().split("T")[0]}T00:00:00`, end: endDate };
+        }
+        default:
+            return { start: `${today}T00:00:00`, end: endDate };
+    }
+};
+
+// Fetch analytics for a specific time period
+export const useAnalyticsWithPeriod = (period: TimePeriod = 'today') => {
+    return useQuery({
+        queryKey: ["analytics-period", period],
+        queryFn: async (): Promise<TodayStats> => {
+            try {
+                const { start, end } = getDateRange(period);
+
+                const { data, error } = await (supabase
+                    .from("analytics_events") as any)
+                    .select("event_type, order_total, visitor_id")
+                    .gte("created_at", start)
+                    .lte("created_at", end);
+
+                if (error) {
+                    console.error("[Analytics] Error fetching stats:", error);
+                    return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
+                }
+
+                const events = data || [];
+                const uniqueVisitors = new Set(events.map((e: any) => e.visitor_id)).size;
+                const addToCart = events.filter((e: any) => e.event_type === "add_to_cart").length;
+                const checkout = events.filter((e: any) => e.event_type === "start_checkout").length;
+                const purchases = events.filter((e: any) => e.event_type === "complete_purchase").length;
+                const revenue = events
+                    .filter((e: any) => e.event_type === "complete_purchase")
+                    .reduce((sum: number, e: any) => sum + (e.order_total || 0), 0);
+
+                return { visitors: uniqueVisitors, addToCart, checkout, purchases, revenue };
+            } catch (e) {
+                console.error("[Analytics] Exception:", e);
+                return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
+            }
+        },
+        staleTime: 1000 * 60, // 1 minute
+        refetchInterval: 1000 * 60 * 5, // Auto-refresh every 5 minutes
+    });
+};
+
 // Fetch analytics summary for the last N days
 export const useAnalyticsSummary = (days: number = 30) => {
     return useQuery({
@@ -47,41 +117,8 @@ export const useAnalyticsSummary = (days: number = 30) => {
     });
 };
 
-// Fetch today's stats
+// Fetch today's stats (kept for backward compatibility)
 export const useTodayStats = () => {
-    return useQuery({
-        queryKey: ["analytics-today"],
-        queryFn: async (): Promise<TodayStats> => {
-            try {
-                const today = new Date().toISOString().split("T")[0];
-
-                const { data, error } = await (supabase
-                    .from("analytics_events") as any)
-                    .select("event_type, order_total, visitor_id")
-                    .gte("created_at", `${today}T00:00:00`)
-                    .lte("created_at", `${today}T23:59:59`);
-
-                if (error) {
-                    console.error("[Analytics] Error fetching today stats:", error);
-                    return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
-                }
-
-                const events = data || [];
-                const uniqueVisitors = new Set(events.map((e: any) => e.visitor_id)).size;
-                const addToCart = events.filter((e: any) => e.event_type === "add_to_cart").length;
-                const checkout = events.filter((e: any) => e.event_type === "start_checkout").length;
-                const purchases = events.filter((e: any) => e.event_type === "complete_purchase").length;
-                const revenue = events
-                    .filter((e: any) => e.event_type === "complete_purchase")
-                    .reduce((sum: number, e: any) => sum + (e.order_total || 0), 0);
-
-                return { visitors: uniqueVisitors, addToCart, checkout, purchases, revenue };
-            } catch (e) {
-                console.error("[Analytics] Exception:", e);
-                return { visitors: 0, addToCart: 0, checkout: 0, purchases: 0, revenue: 0 };
-            }
-        },
-        staleTime: 1000 * 60, // 1 minute
-        refetchInterval: 1000 * 60, // Auto-refresh every minute
-    });
+    return useAnalyticsWithPeriod('today');
 };
+

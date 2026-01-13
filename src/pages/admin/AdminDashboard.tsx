@@ -1,5 +1,6 @@
 ﻿import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
     Package,
     ShoppingCart,
@@ -18,18 +19,35 @@ import {
     Clock,
     ArrowUpRight,
     Sparkles,
+    Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useTodayStats } from "@/hooks/useAnalytics";
+import { useAnalyticsWithPeriod, TimePeriod } from "@/hooks/useAnalytics";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const AdminDashboard = () => {
     const { logout, username, role, canAccessSettings } = useAdminAuth();
     const navigate = useNavigate();
-    const { data: todayStats, isLoading: statsLoading } = useTodayStats();
+    const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('today');
+    const { data: stats, isLoading: statsLoading } = useAnalyticsWithPeriod(selectedPeriod);
+
+    // Period labels in Arabic
+    const periodLabels: Record<TimePeriod, string> = {
+        today: 'اليوم',
+        week: 'آخر أسبوع',
+        month: 'آخر شهر',
+        year: 'آخر سنة',
+    };
 
     // Get current time greeting
     const getGreeting = () => {
@@ -108,11 +126,11 @@ const AdminDashboard = () => {
 
     // Quick stats cards data
     const statsCards = [
-        { icon: Eye, label: "زائر", value: todayStats?.visitors || 0, color: "text-blue-500", bg: "bg-blue-500/10" },
-        { icon: ShoppingCart, label: "أضاف للسلة", value: todayStats?.addToCart || 0, color: "text-orange-500", bg: "bg-orange-500/10" },
-        { icon: CreditCard, label: "بدأ الدفع", value: todayStats?.checkout || 0, color: "text-purple-500", bg: "bg-purple-500/10" },
-        { icon: TrendingUp, label: "أتم الشراء", value: todayStats?.purchases || 0, color: "text-green-500", bg: "bg-green-500/10" },
-        { icon: BarChart3, label: "الإيرادات (ج.م)", value: (todayStats?.revenue || 0).toLocaleString(), color: "text-secondary", bg: "bg-secondary/10" },
+        { icon: Eye, label: "زائر", value: stats?.visitors || 0, color: "text-blue-500", bg: "bg-blue-500/10" },
+        { icon: ShoppingCart, label: "أضاف للسلة", value: stats?.addToCart || 0, color: "text-orange-500", bg: "bg-orange-500/10" },
+        { icon: CreditCard, label: "بدأ الدفع", value: stats?.checkout || 0, color: "text-purple-500", bg: "bg-purple-500/10" },
+        { icon: TrendingUp, label: "أتم الشراء", value: stats?.purchases || 0, color: "text-green-500", bg: "bg-green-500/10" },
+        { icon: BarChart3, label: "الإيرادات (ج.م)", value: (stats?.revenue || 0).toLocaleString(), color: "text-secondary", bg: "bg-secondary/10" },
     ];
 
     return (
@@ -183,16 +201,33 @@ const AdminDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Today's Stats - Enhanced */}
+                    {/* Stats Section with Period Filter */}
                     <div className="mb-6 md:mb-8">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                             <h3 className="text-lg font-bold flex items-center gap-2">
                                 <Clock className="h-5 w-5 text-secondary" />
-                                إحصائيات اليوم
+                                إحصائيات {periodLabels[selectedPeriod]}
                             </h3>
-                            <span className="text-xs text-muted-foreground">
-                                {new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                            </span>
+                            <div className="flex items-center gap-3">
+                                <Select
+                                    value={selectedPeriod}
+                                    onValueChange={(value) => setSelectedPeriod(value as TimePeriod)}
+                                >
+                                    <SelectTrigger className="w-[140px] h-9">
+                                        <Calendar className="h-4 w-4 ml-2" />
+                                        <SelectValue placeholder="اختر الفترة" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="today">اليوم</SelectItem>
+                                        <SelectItem value="week">آخر أسبوع</SelectItem>
+                                        <SelectItem value="month">آخر شهر</SelectItem>
+                                        <SelectItem value="year">آخر سنة</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <span className="text-xs text-muted-foreground hidden md:inline">
+                                    {new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </span>
+                            </div>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
                             {statsCards.map((stat, index) => (
