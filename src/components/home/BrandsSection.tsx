@@ -3,6 +3,7 @@ import { Loader2, Sparkles } from "lucide-react";
 import { useBrands } from "@/hooks/useProducts";
 import { AnimatedParticles } from "@/components/ui/AnimatedElements";
 import { motion } from "framer-motion";
+import { getBrandLogo as getOptimizedBrandLogo } from "@/lib/imageUtils";
 
 // Fallback logos
 import sharpLogo from "@/assets/brands/sharp.png";
@@ -25,10 +26,11 @@ const BrandsSection = () => {
   // No client-side filtering needed, useBrands already filters by is_active=true
   const filteredBrands = brands;
 
-  const getBrandLogo = (brand: typeof brands[0]) => {
+  const getBrandLogoUrl = (brand: typeof brands[0]) => {
     // Use logo_url from database if it exists (supports http, https, or relative paths)
     if (brand.logo_url && brand.logo_url.trim() !== '') {
-      return brand.logo_url;
+      // Use optimized version for faster mobile loading
+      return getOptimizedBrandLogo(brand.logo_url);
     }
     // Fallback to local logos
     return fallbackLogos[brand.name] || sharpLogo;
@@ -81,9 +83,10 @@ const BrandsSection = () => {
                   {/* Brand Logo */}
                   <div className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 flex items-center justify-center mb-3 transition-transform duration-500 group-hover:scale-110 relative z-10">
                     <img
-                      src={getBrandLogo(brand)}
+                      src={getBrandLogoUrl(brand)}
                       alt={`${brand.name_ar} logo`}
                       className="max-w-full max-h-full object-contain filter group-hover:drop-shadow-lg"
+                      loading="lazy"
                     />
                   </div>
                   <span className="text-sm md:text-base font-bold text-muted-foreground group-hover:text-secondary transition-colors text-center relative z-10">

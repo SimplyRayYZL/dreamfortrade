@@ -8,6 +8,7 @@ import { useCompare } from "@/contexts/CompareContext";
 import { useSiteSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 import type { Product } from "@/hooks/useProducts";
+import { getProductThumbnail } from "@/lib/imageUtils";
 
 // Fallback images
 import acProduct1 from "@/assets/products/ac-white-1.png";
@@ -33,7 +34,8 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
 
   const getProductImage = () => {
     if (product.image_url) {
-      return product.image_url;
+      // Use optimized thumbnail for faster mobile loading
+      return getProductThumbnail(product.image_url);
     }
     return fallbackImages[index % fallbackImages.length];
   };

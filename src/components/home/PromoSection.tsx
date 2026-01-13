@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft } from "lucide-react";
+import { getBannerImage } from "@/lib/imageUtils";
 
 interface PromoBannerData {
     id: string;
@@ -55,6 +56,9 @@ const PromoSection = ({ group }: PromoSectionProps) => {
 
     const isFourBanners = banners.length >= 4;
 
+    // Check if we're on mobile (simple check)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
     return (
         <section className={isFourBanners ? "py-6 md:py-10 bg-gradient-to-b from-muted/20 to-background" : "py-10 md:py-16 bg-gradient-to-b from-muted/20 to-background"}>
             <div className={isFourBanners ? "w-full px-2 md:px-4" : "container mx-auto px-4"}>
@@ -74,7 +78,7 @@ const PromoSection = ({ group }: PromoSectionProps) => {
                                 <>
                                     <div className="aspect-square overflow-hidden bg-muted relative">
                                         <img
-                                            src={banner.image_url}
+                                            src={getBannerImage(banner.image_url, isMobile)}
                                             alt={banner.title || "بانر ترويجي"}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                                             loading="lazy"

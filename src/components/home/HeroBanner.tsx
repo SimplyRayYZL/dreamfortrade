@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { getBannerImage } from "@/lib/imageUtils";
 
 interface HeroBannerData {
   id: string;
@@ -14,17 +15,24 @@ interface HeroBannerData {
   is_active: boolean;
 }
 
-// Helper component for responsive image rendering
+// Helper component for responsive image rendering with optimization
 const BannerImage = ({ banner, index }: { banner: HeroBannerData, index: number }) => (
   <picture className="w-full h-full block">
     {banner.mobile_image_url && (
       <source
         media="(max-width: 768px)"
-        srcSet={banner.mobile_image_url}
+        srcSet={getBannerImage(banner.mobile_image_url, true)}
+      />
+    )}
+    {/* Fallback to optimized desktop image on mobile if no mobile_image_url */}
+    {!banner.mobile_image_url && (
+      <source
+        media="(max-width: 768px)"
+        srcSet={getBannerImage(banner.image_url, true)}
       />
     )}
     <img
-      src={banner.image_url}
+      src={getBannerImage(banner.image_url, false)}
       alt="Hero Banner"
       className="w-full h-full object-cover"
       loading={index === 0 ? "eager" : "lazy"}
