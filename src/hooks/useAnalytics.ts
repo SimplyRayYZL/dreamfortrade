@@ -60,8 +60,8 @@ export const useAnalyticsWithPeriod = (period: TimePeriod = 'today') => {
             try {
                 const { start, end } = getDateRange(period);
 
-                const { data, error } = await (supabase
-                    .from("analytics_events") as any)
+                const { data, error } = await (supabase as any)
+                    .from("analytics_events")
                     .select("event_type, order_total, visitor_id, created_at");
 
                 if (error) {
@@ -103,8 +103,8 @@ export const useAnalyticsSummary = (days: number = 30) => {
         queryKey: ["analytics-summary", days],
         queryFn: async (): Promise<AnalyticsSummary[]> => {
             try {
-                const { data, error } = await (supabase
-                    .from("analytics_daily_summary") as any)
+                const { data, error } = await (supabase as any)
+                    .from("analytics_daily_summary")
                     .select("*")
                     .limit(days);
 

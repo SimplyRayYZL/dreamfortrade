@@ -34,7 +34,7 @@ export const useProducts = () => {
   return useQuery({
     queryKey: ["products"],
     queryFn: async (): Promise<Product[]> => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("products")
         .select(`
           id,
@@ -92,7 +92,7 @@ export const useProduct = (id: string) => {
   return useQuery({
     queryKey: ["product", id],
     queryFn: async (): Promise<Product | null> => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("products")
         .select(`
           *,
@@ -140,7 +140,7 @@ export const useBrands = () => {
   return useQuery({
     queryKey: ["brands"],
     queryFn: async (): Promise<Brand[]> => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("brands")
         .select("*")
         .eq("is_active", true)
@@ -168,7 +168,7 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
   return useQuery({
     queryKey: ["related-products", brandId, excludeProductId],
     queryFn: async (): Promise<Product[]> => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("products")
         .select(`
           *,
@@ -188,7 +188,7 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
@@ -216,7 +216,7 @@ export const useAllProducts = () => {
   return useQuery({
     queryKey: ["all-products"],
     queryFn: async (): Promise<Product[]> => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("products")
         .select(`
           *,

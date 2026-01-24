@@ -51,8 +51,8 @@ export const trackEvent = async (params: TrackEventParams) => {
         };
 
         // Save to Supabase
-        const { error } = await (supabase
-            .from("analytics_events") as any)
+        const { error } = await (supabase as any)
+            .from("analytics_events")
             .insert(eventData);
 
         if (error) {

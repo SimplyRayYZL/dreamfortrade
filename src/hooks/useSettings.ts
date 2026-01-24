@@ -393,6 +393,11 @@ export const useSiteSettings = () => {
                         }
                     }
 
+                    // Force remove 'about' section if it exists (per user request)
+                    if (mergedSettings.homepage_sections) {
+                        mergedSettings.homepage_sections = mergedSettings.homepage_sections.filter((s: any) => s.id !== 'about');
+                    }
+
                     const dbSettings = mergedSettings;
                     cacheSettings(dbSettings);
                     return dbSettings;
