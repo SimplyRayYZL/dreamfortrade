@@ -374,7 +374,27 @@ export const useSiteSettings = () => {
                 if (data && data.settings && Object.keys(data.settings).length > 0) {
                     console.log("[Settings] Using DB settings:", data.settings);
                     console.log("[Settings] Banners from DB:", data.settings.banners);
-                    const dbSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+                    // Merge logic:
+                    // 1. Shallow merge top-level fields
+                    // 2. Intelligent merge for arrays that need to retain defaults (like homepage_sections)
+                    const mergedSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+
+                    // Smart merge for homepage_sections
+                    if (data.settings.homepage_sections && Array.isArray(data.settings.homepage_sections)) {
+                        const savedSections = data.settings.homepage_sections;
+                        const savedIds = new Set(savedSections.map((s: any) => s.id));
+
+                        // Find sections in DEFAULT that are missing in Saved
+                        const missingSections = DEFAULT_SETTINGS.homepage_sections.filter(def => !savedIds.has(def.id));
+
+                        // Combine and sort
+                        if (missingSections.length > 0) {
+                            console.log("[Settings] Found missing sections, merging:", missingSections);
+                            mergedSettings.homepage_sections = [...savedSections, ...missingSections];
+                        }
+                    }
+
+                    const dbSettings = mergedSettings;
                     cacheSettings(dbSettings);
                     return dbSettings;
                 } else {
