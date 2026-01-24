@@ -293,7 +293,6 @@ const DEFAULT_SETTINGS: SiteSettings = {
         { id: 'promo2', type: 'custom', title: 'بانر عريض 2', isEnabled: true, order: 6, content: { image: '/promo2.jpg' } },
         { id: 'testimonials', type: 'testimonials', title: 'آراء العملاء', isEnabled: true, order: 7 },
         { id: 'stats', type: 'stats', title: 'الإحصائيات', isEnabled: true, order: 8 },
-        { id: 'about', type: 'about', title: 'من نحن', isEnabled: true, order: 9 },
         { id: 'contact', type: 'contact', title: 'تواصل معنا (CTA)', isEnabled: true, order: 10 },
     ],
 
@@ -392,6 +391,11 @@ export const useSiteSettings = () => {
                             console.log("[Settings] Found missing sections, merging:", missingSections);
                             mergedSettings.homepage_sections = [...savedSections, ...missingSections];
                         }
+                    }
+
+                    // Force remove 'about' section if it exists (per user request)
+                    if (mergedSettings.homepage_sections) {
+                        mergedSettings.homepage_sections = mergedSettings.homepage_sections.filter((s: any) => s.id !== 'about');
                     }
 
                     const dbSettings = mergedSettings;
