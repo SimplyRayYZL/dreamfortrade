@@ -241,30 +241,45 @@ const DEFAULT_SETTINGS: SiteSettings = {
     },
 };
 
+// Robust merge utility
+const mergeSettings = (stored: any): SiteSettings => {
+    const finalSettings = { ...DEFAULT_SETTINGS, ...stored };
+
+    // Intelligent section merge
+    let sections = Array.isArray(stored?.homepage_sections)
+        ? [...stored.homepage_sections]
+        : [...DEFAULT_SETTINGS.homepage_sections];
+
+    const currentIds = new Set(sections.map((s: any) => s.id));
+    DEFAULT_SETTINGS.homepage_sections.forEach(def => {
+        if (!currentIds.has(def.id)) {
+            sections.push(def);
+        }
+    });
+
+    // Force remove 'about' and sort
+    finalSettings.homepage_sections = sections
+        .filter((s: any) => s.id !== 'about' && s.type !== 'about')
+        .sort((a, b) => (a.order || 99) - (b.order || 99));
+
+    return finalSettings;
+};
+
 // Get settings from localStorage as fallback
 const getLocalSettings = (): SiteSettings => {
     try {
         const stored = localStorage.getItem(SETTINGS_KEY);
         if (stored) {
-            const parsed = JSON.parse(stored);
-            // Apply aggressive filtering even to local storage
-            if (parsed.homepage_sections && Array.isArray(parsed.homepage_sections)) {
-                parsed.homepage_sections = parsed.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
-            }
-            return { ...DEFAULT_SETTINGS, ...parsed };
+            return mergeSettings(JSON.parse(stored));
         }
-        return DEFAULT_SETTINGS;
+        return mergeSettings(null);
     } catch {
-        return DEFAULT_SETTINGS;
+        return mergeSettings(null);
     }
 };
 
 // Save settings to localStorage as cache
 const cacheSettings = (settings: SiteSettings) => {
-    // Filter before caching
-    if (settings.homepage_sections) {
-        settings.homepage_sections = settings.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
-    }
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 };
 
@@ -286,23 +301,7 @@ export const useSiteSettings = () => {
                 }
 
                 if (data && data.settings && Object.keys(data.settings).length > 0) {
-                    // Robust merge logic
-                    const finalSettings = { ...DEFAULT_SETTINGS, ...data.settings };
-
-                    let sections = Array.isArray(data.settings.homepage_sections)
-                        ? [...data.settings.homepage_sections]
-                        : [...DEFAULT_SETTINGS.homepage_sections];
-
-                    // Add missing default sections
-                    const currentIds = new Set(sections.map((s: any) => s.id));
-                    DEFAULT_SETTINGS.homepage_sections.forEach(def => {
-                        if (!currentIds.has(def.id)) sections.push(def);
-                    });
-
-                    // ABSOLUTELY filter out 'about' (user request) - Aggressive check
-                    finalSettings.homepage_sections = sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
-
-                    const dbSettings = finalSettings;
+                    const dbSettings = mergeSettings(data.settings);
                     cacheSettings(dbSettings);
                     return dbSettings;
                 } else {
@@ -325,16 +324,14 @@ export const useUpdateSettings = () => {
 
     return useMutation({
         mutationFn: async (settings: SiteSettings): Promise<SiteSettings> => {
-            // Apply filter before saving to DB
-            if (settings.homepage_sections) {
-                settings.homepage_sections = settings.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
-            }
+            // Apply merge one last time to ensure clean data
+            const cleanSettings = mergeSettings(settings);
 
-            cacheSettings(settings);
+            cacheSettings(cleanSettings);
             const { error } = await (supabase as any)
                 .from("site_settings")
                 .update({
-                    settings: settings,
+                    settings: cleanSettings,
                     updated_at: new Date().toISOString()
                 })
                 .eq("id", "main");
@@ -344,13 +341,13 @@ export const useUpdateSettings = () => {
                     .from("site_settings")
                     .upsert({
                         id: "main",
-                        settings: settings,
+                        settings: cleanSettings,
                         updated_at: new Date().toISOString()
                     });
             }
 
             toast.success("تم حفظ الإعدادات بنجاح");
-            return settings;
+            return cleanSettings;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["site-settings"] });
