@@ -55,7 +55,6 @@ const Footer = () => {
                   { name: "الرئيسية", href: "/" },
                   { name: "منتجاتنا", href: "/products" },
                   { name: "المدونة", href: "/blog" },
-                  { name: "من نحن", href: "/about" },
                   { name: "تواصل معنا", href: "/contact" },
                 ].map((link) => (
                   <li key={link.name}>

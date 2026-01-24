@@ -207,8 +207,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
     ],
 
     seo_title: "دريم للتجارة والتوريدات - تكييفات بأفضل الأسعار",
-    seo_description: "شركة دريم للتجارة والتوريدات في مصر. كاريير، ميديا، شارب، فريش وأكثر.",
-    seo_keywords: "تكييف، تكييفات، كاريير، ميديا، شارب، فريش، مصر، دريم",
+    seo_description: "شركة دريم للتجارة والتوريدات in مصر. Carrier, Media, Sharp, Fresh and more.",
+    seo_keywords: "air conditioner, Egypt, Dream",
     og_image: "/og-image.jpg",
     seo_robots: "index, follow",
     seo_canonical_url: "",
@@ -246,7 +246,12 @@ const getLocalSettings = (): SiteSettings => {
     try {
         const stored = localStorage.getItem(SETTINGS_KEY);
         if (stored) {
-            return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+            const parsed = JSON.parse(stored);
+            // Apply aggressive filtering even to local storage
+            if (parsed.homepage_sections && Array.isArray(parsed.homepage_sections)) {
+                parsed.homepage_sections = parsed.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
+            }
+            return { ...DEFAULT_SETTINGS, ...parsed };
         }
         return DEFAULT_SETTINGS;
     } catch {
@@ -256,6 +261,10 @@ const getLocalSettings = (): SiteSettings => {
 
 // Save settings to localStorage as cache
 const cacheSettings = (settings: SiteSettings) => {
+    // Filter before caching
+    if (settings.homepage_sections) {
+        settings.homepage_sections = settings.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
+    }
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 };
 
@@ -290,8 +299,8 @@ export const useSiteSettings = () => {
                         if (!currentIds.has(def.id)) sections.push(def);
                     });
 
-                    // ABSOLUTELY filter out 'about' (user request)
-                    finalSettings.homepage_sections = sections.filter((s: any) => s.id !== 'about');
+                    // ABSOLUTELY filter out 'about' (user request) - Aggressive check
+                    finalSettings.homepage_sections = sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
 
                     const dbSettings = finalSettings;
                     cacheSettings(dbSettings);
@@ -316,6 +325,11 @@ export const useUpdateSettings = () => {
 
     return useMutation({
         mutationFn: async (settings: SiteSettings): Promise<SiteSettings> => {
+            // Apply filter before saving to DB
+            if (settings.homepage_sections) {
+                settings.homepage_sections = settings.homepage_sections.filter((s: any) => s.id !== 'about' && s.type !== 'about');
+            }
+
             cacheSettings(settings);
             const { error } = await (supabase as any)
                 .from("site_settings")

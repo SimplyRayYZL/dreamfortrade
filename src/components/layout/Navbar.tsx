@@ -57,7 +57,6 @@ const Navbar = () => {
         { href: "/", label: "الرئيسية" },
         { href: "/products", label: "منتجاتنا" },
         { href: "/blog", label: "المدونة" },
-        { href: "/about", label: "من نحن" },
         { href: "/contact", label: "تواصل معنا" },
     ];
 
