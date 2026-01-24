@@ -229,63 +229,6 @@ const SectionsAdmin = () => {
                                                             />
                                                         </div>
                                                     </div>
-                                                ) : editingSection?.type === 'about' ? (
-                                                    <div className="space-y-6">
-                                                        {/* Badge Text */}
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="about-badge">نص الشارة (Badge)</Label>
-                                                            <Input
-                                                                id="about-badge"
-                                                                value={typeof editingSection.content === 'object' ? (editingSection.content?.badge || 'من نحن') : 'من نحن'}
-                                                                onChange={(e) => setEditingSection(prev => prev ? {
-                                                                    ...prev,
-                                                                    content: { ...(typeof prev.content === 'object' ? prev.content : {}), badge: e.target.value }
-                                                                } : null)}
-                                                                placeholder="من نحن"
-                                                            />
-                                                        </div>
-
-                                                        {/* Description */}
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="about-description">وصف الشركة</Label>
-                                                            <Textarea
-                                                                id="about-description"
-                                                                value={typeof editingSection.content === 'object' ? (editingSection.content?.description || '') : ''}
-                                                                onChange={(e) => setEditingSection(prev => prev ? {
-                                                                    ...prev,
-                                                                    content: { ...(typeof prev.content === 'object' ? prev.content : {}), description: e.target.value }
-                                                                } : null)}
-                                                                placeholder="اكتب نبذة عن الشركة..."
-                                                                rows={4}
-                                                            />
-                                                        </div>
-
-                                                        {/* Button Settings */}
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="about-btn-text">نص الزر</Label>
-                                                                <Input
-                                                                    id="about-btn-text"
-                                                                    value={typeof editingSection.content === 'object' ? (editingSection.content?.buttonText || 'اعرف المزيد عنا') : 'اعرف المزيد عنا'}
-                                                                    onChange={(e) => setEditingSection(prev => prev ? {
-                                                                        ...prev,
-                                                                        content: { ...(typeof prev.content === 'object' ? prev.content : {}), buttonText: e.target.value }
-                                                                    } : null)}
-                                                                />
-                                                            </div>
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="about-btn-link">رابط الزر</Label>
-                                                                <Input
-                                                                    id="about-btn-link"
-                                                                    value={typeof editingSection.content === 'object' ? (editingSection.content?.buttonLink || '/about') : '/about'}
-                                                                    onChange={(e) => setEditingSection(prev => prev ? {
-                                                                        ...prev,
-                                                                        content: { ...(typeof prev.content === 'object' ? prev.content : {}), buttonLink: e.target.value }
-                                                                    } : null)}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 ) : (
                                                     <div className="space-y-2">
                                                         <Label className="text-xs text-muted-foreground">JSON Metadata</Label>
