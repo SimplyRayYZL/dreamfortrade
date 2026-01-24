@@ -113,6 +113,111 @@ export interface SiteSettings {
     database_config: DatabaseConfig;
 }
 
+const SETTINGS_KEY = "site_settings";
+
+export interface HomepageSection {
+    id: string;
+    type: 'hero' | 'features' | 'about' | 'products' | 'brands' | 'testimonials' | 'blog' | 'contact' | 'stats' | 'custom' | string;
+    title: string;
+    subtitle?: string;
+    isEnabled: boolean;
+    order: number;
+    content?: any; // Flexible content for specific section settings
+}
+
+// Update SiteSettings interface
+export interface SiteSettings {
+    id?: string;
+    // ... (previous fields remain the same) ...
+    // Store Info
+    store_name: string;
+    store_name_en: string;
+    store_logo: string;
+    store_description: string;
+    store_slogan: string;
+    store_address: string;
+    store_map_embed: string;
+    store_phone: string;
+    store_phone_alt: string;
+    store_email: string;
+    store_whatsapp: string;
+    whatsapp_message: string;
+    working_hours_from: string;
+    working_hours_to: string;
+    working_days: string;
+
+    // Social Media
+    facebook_url: string;
+    instagram_url: string;
+    tiktok_url: string;
+    twitter_url: string;
+    youtube_url: string;
+    linkedin_url: string;
+    snapchat_url: string;
+    telegram_url: string;
+
+    // Google & Analytics
+    google_analytics_id: string;
+    google_tag_manager_id: string;
+    google_search_console: string;
+    google_merchant_id: string;
+    facebook_pixel_id: string;
+    tiktok_pixel_id: string;
+    snapchat_pixel_id: string;
+    hotjar_id: string;
+    clarity_id: string;
+
+    // Shipping
+    shipping_areas: ShippingArea[];
+    free_shipping_threshold: number;
+    delivery_message: string;
+    installation_fee: number;
+
+    // Delivery Options (admin toggles)
+    pickup_enabled: boolean;
+    delivery_only_enabled: boolean;
+    delivery_with_installation_enabled: boolean;
+    free_delivery_installation_enabled: boolean;
+
+    // Banners
+    banners: Banner[];
+
+    // Homepage Layout
+    homepage_sections: HomepageSection[];
+
+    // SEO
+    seo_title: string;
+    seo_description: string;
+    seo_keywords: string;
+    og_image: string;
+    seo_robots: string;
+    seo_canonical_url: string;
+    seo_language: string;
+    seo_author: string;
+    structured_data_enabled: boolean;
+    sitemap_enabled: boolean;
+    google_verification_file_name: string;
+    google_verification_file_content: string;
+
+    // Content
+    homepage_hero_title: string;
+    homepage_hero_subtitle: string;
+    homepage_features_title: string;
+    homepage_products_title: string;
+    homepage_brands_title: string;
+    about_title: string;
+    about_content: string;
+    about_mission: string;
+    about_vision: string;
+    contact_title: string;
+    contact_subtitle: string;
+    footer_text: string;
+    footer_copyright: string;
+
+    // Database
+    database_config: DatabaseConfig;
+}
+
 const DEFAULT_SETTINGS: SiteSettings = {
     store_name: "دريم للتجارة والتوريدات",
     store_name_en: "Dream Trade & Supplies",
@@ -178,6 +283,17 @@ const DEFAULT_SETTINGS: SiteSettings = {
         },
     ],
 
+    // Default Homepage Sections
+    homepage_sections: [
+        { id: 'hero', type: 'hero', title: 'الرئيسية (Hero)', isEnabled: true, order: 1 },
+        { id: 'features', type: 'features', title: 'مميزاتنا', isEnabled: true, order: 2 },
+        { id: 'products', type: 'products', title: 'منتجاتنا', isEnabled: true, order: 3 },
+        { id: 'promo1', type: 'custom', title: 'بانر عريض 1', isEnabled: true, order: 4, content: { image: '/promo1.jpg' } },
+        { id: 'brands', type: 'brands', title: 'ماركاتنا', isEnabled: true, order: 5 },
+        { id: 'about', type: 'about', title: 'من نحن', isEnabled: true, order: 6 },
+        { id: 'contact', type: 'contact', title: 'تواصل معنا', isEnabled: true, order: 7 },
+    ],
+
     seo_title: "دريم للتجارة والتوريدات - تكييفات بأفضل الأسعار",
     seo_description: "شركة دريم للتجارة والتوريدات في مصر. كاريير، ميديا، شارب، فريش وأكثر.",
     seo_keywords: "تكييف، تكييفات، كاريير، ميديا، شارب، فريش، مصر، دريم",
@@ -212,8 +328,6 @@ const DEFAULT_SETTINGS: SiteSettings = {
         supabase_anon_key: "",
     },
 };
-
-const SETTINGS_KEY = "site_settings";
 
 // Get settings from localStorage as fallback
 const getLocalSettings = (): SiteSettings => {

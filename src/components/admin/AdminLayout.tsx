@@ -16,6 +16,7 @@ import {
     Home,
     Menu,
     X,
+    LayoutTemplate,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,7 @@ const AdminLayout = ({ children, title, description }: AdminLayoutProps) => {
 
     const navItems = [
         { title: "الرئيسية", icon: Home, href: "/admin", allowed: true },
+        { title: "تنسيق الرئيسية", icon: LayoutTemplate, href: "/admin/sections", allowed: canAccessSettings() },
         { title: "المنتجات", icon: Package, href: "/admin/products", allowed: true },
         { title: "الطلبات", icon: ShoppingCart, href: "/admin/orders", allowed: true },
         { title: "الماركات", icon: Tags, href: "/admin/brands", allowed: true },
@@ -105,8 +107,8 @@ const AdminLayout = ({ children, title, description }: AdminLayoutProps) => {
                             to={item.href}
                             onClick={() => setSidebarOpen(false)}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive(item.href)
-                                    ? 'bg-secondary text-white'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                ? 'bg-secondary text-white'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }`}
                         >
                             <item.icon className="h-5 w-5" />

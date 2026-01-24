@@ -41,6 +41,7 @@ const StoreSettingsAdmin = lazy(() => import("./pages/admin/StoreSettingsAdmin")
 const SocialSettingsAdmin = lazy(() => import("./pages/admin/SocialSettingsAdmin"));
 const AnalyticsSettingsAdmin = lazy(() => import("./pages/admin/AnalyticsSettingsAdmin"));
 const SEOSettingsAdmin = lazy(() => import("./pages/admin/SEOSettingsAdmin"));
+const SectionsAdmin = lazy(() => import("./pages/admin/SectionsAdmin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const Login = lazy(() => import("./pages/Login"));
@@ -138,6 +139,7 @@ const App = () => (
                           <Route path="/admin/settings/social" element={<ProtectedAdminRoute><SocialSettingsAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/settings/analytics" element={<ProtectedAdminRoute><AnalyticsSettingsAdmin /></ProtectedAdminRoute>} />
                           <Route path="/admin/settings/seo" element={<ProtectedAdminRoute><SEOSettingsAdmin /></ProtectedAdminRoute>} />
+                          <Route path="/admin/sections" element={<ProtectedAdminRoute><SectionsAdmin /></ProtectedAdminRoute>} />
                           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                           {/* Blog Routes */}
                           <Route path="/blog" element={<Blog />} />
