@@ -127,4 +127,3 @@ export const useAnalyticsSummary = (days: number = 30) => {
 export const useTodayStats = () => {
     return useAnalyticsWithPeriod('today');
 };
-

@@ -65,7 +65,7 @@ export const useProducts = () => {
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
@@ -81,7 +81,7 @@ export const useProducts = () => {
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,
-        stock: (item as any).stock ?? null, // null means unlimited stock
+        stock: item.stock ?? null, // null means unlimited stock
       }));
     },
   });
@@ -128,7 +128,7 @@ export const useProduct = (id: string) => {
         description: data.description,
         image_url: data.image_url,
         is_active: data.is_active || true,
-        stock: (data as any).stock || 0,
+        stock: data.stock || 0,
       };
     },
     enabled: !!id,
@@ -151,7 +151,7 @@ export const useBrands = () => {
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         name_ar: item.name_ar,
@@ -204,7 +204,7 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active || true,
-        stock: (item as any).stock || 0,
+        stock: item.stock || 0,
       }));
     },
     enabled: !!brandId,
@@ -233,7 +233,7 @@ export const useAllProducts = () => {
         throw error;
       }
 
-      return (data || []).map((item) => ({
+      return (data || []).map((item: any) => ({
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
@@ -249,7 +249,7 @@ export const useAllProducts = () => {
         description: item.description,
         image_url: item.image_url,
         is_active: item.is_active ?? true,
-        stock: (item as any).stock || 0,
+        stock: item.stock || 0,
       }));
     },
   });

@@ -80,6 +80,9 @@ export interface SiteSettings {
     // Banners
     banners: Banner[];
 
+    // Homepage Layout
+    homepage_sections: HomepageSection[];
+
     // SEO
     seo_title: string;
     seo_description: string;
@@ -123,99 +126,6 @@ export interface HomepageSection {
     isEnabled: boolean;
     order: number;
     content?: any; // Flexible content for specific section settings
-}
-
-// Update SiteSettings interface
-export interface SiteSettings {
-    id?: string;
-    // ... (previous fields remain the same) ...
-    // Store Info
-    store_name: string;
-    store_name_en: string;
-    store_logo: string;
-    store_description: string;
-    store_slogan: string;
-    store_address: string;
-    store_map_embed: string;
-    store_phone: string;
-    store_phone_alt: string;
-    store_email: string;
-    store_whatsapp: string;
-    whatsapp_message: string;
-    working_hours_from: string;
-    working_hours_to: string;
-    working_days: string;
-
-    // Social Media
-    facebook_url: string;
-    instagram_url: string;
-    tiktok_url: string;
-    twitter_url: string;
-    youtube_url: string;
-    linkedin_url: string;
-    snapchat_url: string;
-    telegram_url: string;
-
-    // Google & Analytics
-    google_analytics_id: string;
-    google_tag_manager_id: string;
-    google_search_console: string;
-    google_merchant_id: string;
-    facebook_pixel_id: string;
-    tiktok_pixel_id: string;
-    snapchat_pixel_id: string;
-    hotjar_id: string;
-    clarity_id: string;
-
-    // Shipping
-    shipping_areas: ShippingArea[];
-    free_shipping_threshold: number;
-    delivery_message: string;
-    installation_fee: number;
-
-    // Delivery Options (admin toggles)
-    pickup_enabled: boolean;
-    delivery_only_enabled: boolean;
-    delivery_with_installation_enabled: boolean;
-    free_delivery_installation_enabled: boolean;
-
-    // Banners
-    banners: Banner[];
-
-    // Homepage Layout
-    homepage_sections: HomepageSection[];
-
-    // SEO
-    seo_title: string;
-    seo_description: string;
-    seo_keywords: string;
-    og_image: string;
-    seo_robots: string;
-    seo_canonical_url: string;
-    seo_language: string;
-    seo_author: string;
-    structured_data_enabled: boolean;
-    sitemap_enabled: boolean;
-    google_verification_file_name: string;
-    google_verification_file_content: string;
-
-    // Content
-    homepage_hero_title: string;
-    homepage_hero_subtitle: string;
-    homepage_features_title: string;
-    homepage_products_title: string;
-    homepage_brands_title: string;
-    about_title: string;
-    about_content: string;
-    about_mission: string;
-    about_vision: string;
-    contact_title: string;
-    contact_subtitle: string;
-    footer_text: string;
-    footer_copyright: string;
-
-    // Database
-    database_config: DatabaseConfig;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -355,54 +265,38 @@ export const useSiteSettings = () => {
         queryKey: ["site-settings"],
         queryFn: async (): Promise<SiteSettings> => {
             try {
-                console.log("[Settings] Fetching settings from Supabase...");
                 const { data, error } = await (supabase as any)
                     .from("site_settings")
                     .select("settings")
                     .eq("id", "main")
                     .single();
 
-                console.log("[Settings] Supabase response:", { data, error });
-
                 if (error) {
                     console.error("[Settings] Supabase error:", error);
                     return getLocalSettings();
                 }
 
-                // Check if data.settings exists and has content
                 if (data && data.settings && Object.keys(data.settings).length > 0) {
-                    console.log("[Settings] Using DB settings:", data.settings);
-                    console.log("[Settings] Banners from DB:", data.settings.banners);
-                    // Merge logic:
-                    // 1. Shallow merge top-level fields
-                    // 2. Intelligent merge for arrays that need to retain defaults (like homepage_sections)
-                    const mergedSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+                    // Robust merge logic
+                    const finalSettings = { ...DEFAULT_SETTINGS, ...data.settings };
 
-                    // Smart merge for homepage_sections
-                    if (data.settings.homepage_sections && Array.isArray(data.settings.homepage_sections)) {
-                        const savedSections = data.settings.homepage_sections;
-                        const savedIds = new Set(savedSections.map((s: any) => s.id));
+                    let sections = Array.isArray(data.settings.homepage_sections)
+                        ? [...data.settings.homepage_sections]
+                        : [...DEFAULT_SETTINGS.homepage_sections];
 
-                        // Find sections in DEFAULT that are missing in Saved
-                        const missingSections = DEFAULT_SETTINGS.homepage_sections.filter(def => !savedIds.has(def.id));
+                    // Add missing default sections
+                    const currentIds = new Set(sections.map((s: any) => s.id));
+                    DEFAULT_SETTINGS.homepage_sections.forEach(def => {
+                        if (!currentIds.has(def.id)) sections.push(def);
+                    });
 
-                        // Combine and sort
-                        if (missingSections.length > 0) {
-                            console.log("[Settings] Found missing sections, merging:", missingSections);
-                            mergedSettings.homepage_sections = [...savedSections, ...missingSections];
-                        }
-                    }
+                    // ABSOLUTELY filter out 'about' (user request)
+                    finalSettings.homepage_sections = sections.filter((s: any) => s.id !== 'about');
 
-                    // Force remove 'about' section if it exists (per user request)
-                    if (mergedSettings.homepage_sections) {
-                        mergedSettings.homepage_sections = mergedSettings.homepage_sections.filter((s: any) => s.id !== 'about');
-                    }
-
-                    const dbSettings = mergedSettings;
+                    const dbSettings = finalSettings;
                     cacheSettings(dbSettings);
                     return dbSettings;
                 } else {
-                    console.log("[Settings] DB settings empty, using localStorage/defaults");
                     return getLocalSettings();
                 }
             } catch (e) {
@@ -410,7 +304,7 @@ export const useSiteSettings = () => {
                 return getLocalSettings();
             }
         },
-        staleTime: 0, // Always fetch fresh data
+        staleTime: 0,
         refetchOnWindowFocus: true,
         refetchOnMount: true,
     });
@@ -422,13 +316,7 @@ export const useUpdateSettings = () => {
 
     return useMutation({
         mutationFn: async (settings: SiteSettings): Promise<SiteSettings> => {
-            // Save to localStorage as cache
             cacheSettings(settings);
-
-            console.log("[Settings] Saving to Supabase (update)...");
-            console.log("[Settings] Banners being saved:", settings.banners);
-
-            // Save to Supabase using UPDATE (row must exist)
             const { error } = await (supabase as any)
                 .from("site_settings")
                 .update({
@@ -438,23 +326,13 @@ export const useUpdateSettings = () => {
                 .eq("id", "main");
 
             if (error) {
-                console.error("[Settings] DB Save Error:", error);
-
-                // If update fails, try upsert as fallback
-                console.log("[Settings] Update failed, trying upsert...");
-                const { error: upsertError } = await (supabase as any)
+                await (supabase as any)
                     .from("site_settings")
                     .upsert({
                         id: "main",
                         settings: settings,
                         updated_at: new Date().toISOString()
                     });
-
-                if (upsertError) {
-                    console.error("[Settings] DB Upsert Error:", upsertError);
-                    toast.error("فشل حفظ الإعدادات في قاعدة البيانات");
-                    throw upsertError;
-                }
             }
 
             toast.success("تم حفظ الإعدادات بنجاح");
@@ -463,9 +341,6 @@ export const useUpdateSettings = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["site-settings"] });
         },
-        onError: () => {
-            toast.error("حدث خطأ أثناء حفظ الإعدادات");
-        }
     });
 };
 
@@ -483,4 +358,3 @@ export const getActiveBanners = (): Banner[] => {
 
 // Export default settings for initial use
 export { DEFAULT_SETTINGS };
-
