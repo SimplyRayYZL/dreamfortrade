@@ -59,11 +59,6 @@ const AdminDashboard = () => {
     };
 
     // Filter pages based on role
-    import {
-        LayoutTemplate,
-    } from "lucide-react";
-
-    // ... imports
 
     const adminPages = [
         {
