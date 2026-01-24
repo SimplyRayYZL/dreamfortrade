@@ -354,8 +354,8 @@ export const useSiteSettings = () => {
         queryFn: async (): Promise<SiteSettings> => {
             try {
                 console.log("[Settings] Fetching settings from Supabase...");
-                const { data, error } = await (supabase
-                    .from("site_settings") as any)
+                const { data, error } = await (supabase as any)
+                    .from("site_settings")
                     .select("settings")
                     .eq("id", "main")
                     .single();
@@ -402,8 +402,8 @@ export const useUpdateSettings = () => {
             console.log("[Settings] Banners being saved:", settings.banners);
 
             // Save to Supabase using UPDATE (row must exist)
-            const { error } = await (supabase
-                .from("site_settings") as any)
+            const { error } = await (supabase as any)
+                .from("site_settings")
                 .update({
                     settings: settings,
                     updated_at: new Date().toISOString()
@@ -415,8 +415,8 @@ export const useUpdateSettings = () => {
 
                 // If update fails, try upsert as fallback
                 console.log("[Settings] Update failed, trying upsert...");
-                const { error: upsertError } = await (supabase
-                    .from("site_settings") as any)
+                const { error: upsertError } = await (supabase as any)
+                    .from("site_settings")
                     .upsert({
                         id: "main",
                         settings: settings,
