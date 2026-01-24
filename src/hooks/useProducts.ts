@@ -5,6 +5,7 @@ export interface Product {
   id: string;
   name: string;
   brand: string;
+  brand_logo: string | null;
   brand_id: string;
   price: number;
   oldPrice: number | null;
@@ -54,7 +55,8 @@ export const useProducts = () => {
           brands (
             id,
             name,
-            name_ar
+            name_ar,
+            logo_url
           )
         `)
         .eq("is_active", true)
@@ -69,6 +71,7 @@ export const useProducts = () => {
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
+        brand_logo: (item.brands as any)?.logo_url || null,
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,
@@ -99,7 +102,8 @@ export const useProduct = (id: string) => {
           brands (
             id,
             name,
-            name_ar
+            name_ar,
+            logo_url
           )
         `)
         .eq("id", id)
@@ -116,6 +120,7 @@ export const useProduct = (id: string) => {
         id: data.id,
         name: data.name,
         brand: (data.brands as any)?.name || "غير محدد",
+        brand_logo: (data.brands as any)?.logo_url || null,
         brand_id: data.brand_id || "",
         price: data.price,
         oldPrice: data.old_price,
@@ -175,7 +180,8 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
           brands (
             id,
             name,
-            name_ar
+            name_ar,
+            logo_url
           )
         `)
         .eq("brand_id", brandId)
@@ -192,6 +198,7 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
+        brand_logo: (item.brands as any)?.logo_url || null,
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,
@@ -223,7 +230,8 @@ export const useAllProducts = () => {
           brands (
             id,
             name,
-            name_ar
+            name_ar,
+            logo_url
           )
         `)
         .order("created_at", { ascending: false });
@@ -237,6 +245,7 @@ export const useAllProducts = () => {
         id: item.id,
         name: item.name,
         brand: (item.brands as any)?.name || "غير محدد",
+        brand_logo: (item.brands as any)?.logo_url || null,
         brand_id: item.brand_id || "",
         price: item.price,
         oldPrice: item.old_price,

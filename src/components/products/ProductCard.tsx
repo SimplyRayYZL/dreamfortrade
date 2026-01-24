@@ -8,7 +8,7 @@ import { useCompare } from "@/contexts/CompareContext";
 import { useSiteSettings } from "@/hooks/useSettings";
 import { toast } from "sonner";
 import type { Product } from "@/hooks/useProducts";
-import { getProductThumbnail } from "@/lib/imageUtils";
+import { getProductThumbnail, getBrandLogo } from "@/lib/imageUtils";
 
 // Fallback images
 import acProduct1 from "@/assets/products/ac-white-1.png";
@@ -80,7 +80,7 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
       removeFromCompare(product.id);
       toast.success("تمت الإزالة من المقارنة");
     } else {
-      addToCompare(product);
+      addToCompare(product.id);
     }
   };
 
@@ -132,8 +132,18 @@ const ProductCard = ({ product, index = 0, showCompare = true }: ProductCardProp
               setImageLoaded(true);
             }}
           />
-          <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-card/90 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-medium z-10">
-            {product.brand}
+
+          {/* Brand Logo Badge */}
+          <div className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 bg-white/90 backdrop-blur-sm p-1 sm:p-1.5 rounded-lg shadow-sm z-10 min-w-[40px] flex items-center justify-center">
+            {product.brand_logo ? (
+              <img
+                src={getBrandLogo(product.brand_logo)}
+                alt={product.brand}
+                className="h-4 sm:h-6 w-auto object-contain"
+              />
+            ) : (
+              <span className="text-[9px] sm:text-[10px] font-bold text-primary">{product.brand}</span>
+            )}
           </div>
         </div>
       </Link>
