@@ -20,6 +20,7 @@ import {
     ArrowUpRight,
     Sparkles,
     Calendar,
+    LayoutTemplate,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,22 @@ const AdminDashboard = () => {
     };
 
     // Filter pages based on role
+    import {
+        LayoutTemplate,
+    } from "lucide-react";
+
+    // ... imports
+
     const adminPages = [
+        {
+            title: "تنسيق الرئيسية",
+            description: "ترتيب وإخفاء أقسام الصفحة الرئيسية",
+            icon: LayoutTemplate,
+            href: "/admin/sections",
+            color: "from-indigo-500 to-indigo-600",
+            allowed: canAccessSettings(),
+            badge: "جديد",
+        },
         {
             title: "إدارة المنتجات",
             description: "إضافة، تعديل، وحذف المنتجات",
