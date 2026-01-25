@@ -1,4 +1,6 @@
-﻿import { useState } from "react";
+﻿
+import { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useAllProducts, useBrands, Product } from "@/hooks/useProducts";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -65,6 +67,9 @@ interface ProductFormData {
   features: string;
   is_active: boolean;
   stock: string;
+  cooling_type: "cold" | "cold_hot";
+  is_inverter: boolean;
+  scrape_url?: string;
 }
 
 const initialFormData: ProductFormData = {
@@ -79,6 +84,9 @@ const initialFormData: ProductFormData = {
   features: "",
   is_active: true,
   stock: "10",
+  cooling_type: "cold",
+  is_inverter: false,
+  scrape_url: "",
 };
 
 const ProductsAdmin = () => {
@@ -97,6 +105,42 @@ const ProductsAdmin = () => {
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
+
+  const handleScrape = async () => {
+    if (!formData.scrape_url) {
+      toast.error("الرجاء إدخال رابط للسحب منه");
+      return;
+    }
+
+    setIsScraping(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('scrape-product', {
+        body: { url: formData.scrape_url }
+      });
+
+      if (error) throw error;
+
+      setFormData(prev => ({
+        ...prev,
+        name: data.name || prev.name,
+        description: data.description || prev.description,
+        price: data.price ? data.price.toString() : prev.price,
+      }));
+
+      // if (data.image_url) {
+      //   we could potentially start an upload here or just set a preview
+      //   setPreviewUrl(data.image_url); 
+      // }
+
+      toast.success("تم سحب البيانات بنجاح! راجع البيانات وأكمل الناقص.");
+    } catch (error) {
+      console.error("Scrape error:", error);
+      toast.error("فشل سحب البيانات من الرابط");
+    } finally {
+      setIsScraping(false);
+    }
+  };
 
   const filteredProducts = products?.filter((product) => {
     const matchesSearch = product.name
@@ -129,6 +173,8 @@ const ProductsAdmin = () => {
       features: product.features?.join("\n") || "",
       is_active: product.is_active,
       stock: product.stock?.toString() || "0",
+      cooling_type: (product.cooling_type as "cold" | "cold_hot") || "cold",
+      is_inverter: product.is_inverter || false,
     });
     setPreviewUrl(product.image_url || "");
     setSelectedImage(null);
@@ -149,8 +195,8 @@ const ProductsAdmin = () => {
     setUploadingImage(true);
     try {
       const fileExt = selectedImage.name.split(".").pop();
-      const fileName = `${productId}.${fileExt}`;
-      const filePath = `products/${fileName}`;
+      const fileName = productId + "." + fileExt;
+      const filePath = "products/" + fileName;
 
       const { error: uploadError } = await supabase.storage
         .from("product-images")
@@ -194,6 +240,8 @@ const ProductsAdmin = () => {
         features: featuresArray.length > 0 ? featuresArray : null,
         is_active: formData.is_active,
         stock: parseInt(formData.stock) || 0,
+        cooling_type: formData.cooling_type,
+        is_inverter: formData.is_inverter,
       };
 
       if (editingProduct) {
@@ -324,7 +372,7 @@ const ProductsAdmin = () => {
 
   const bulkDelete = async () => {
     if (selectedProducts.length === 0) return;
-    if (!confirm(`هل أنت متأكد من حذف ${selectedProducts.length} منتج؟ (سيتم حذف بيانات الطلبات المرتبطة أيضاً)`)) return;
+    if (!confirm("هل أنت متأكد من حذف " + selectedProducts.length + " منتج؟ (سيتم حذف بيانات الطلبات المرتبطة أيضاً)")) return;
 
     setBulkActionLoading(true);
     try {
@@ -342,7 +390,7 @@ const ProductsAdmin = () => {
 
       if (error) throw error;
 
-      toast.success(`تم حذف ${selectedProducts.length} منتج بنجاح`);
+      toast.success("تم حذف " + selectedProducts.length + " منتج بنجاح");
       setSelectedProducts([]);
       refetch();
     } catch (error: any) {
@@ -368,7 +416,7 @@ const ProductsAdmin = () => {
 
       if (error) throw error;
 
-      toast.success(`تم تفعيل ${selectedProducts.length} منتج`);
+      toast.success("تم تفعيل " + selectedProducts.length + " منتج");
       setSelectedProducts([]);
       refetch();
     } catch (error) {
@@ -390,7 +438,7 @@ const ProductsAdmin = () => {
 
       if (error) throw error;
 
-      toast.success(`تم إخفاء ${selectedProducts.length} منتج`);
+      toast.success("تم إخفاء " + selectedProducts.length + " منتج");
       setSelectedProducts([]);
       refetch();
     } catch (error) {
@@ -475,192 +523,256 @@ const ProductsAdmin = () => {
                           </div>
                         </div>
                       </div>
+                      <div className="grid gap-4 py-4">
 
-                      {/* Name */}
-                      <div className="space-y-2">
-                        <Label htmlFor="name">اسم المنتج *</Label>
-                        <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) =>
-                            setFormData({ ...formData, name: e.target.value })
-                          }
-                          required
-                        />
-                      </div>
+                        {/* URL Scraper Section */}
+                        {!editingProduct && (
+                          <div className="bg-muted/30 p-4 rounded-lg border border-dashed mb-4">
+                            <h4 className="font-medium mb-3 flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download-cloud"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" /><path d="M12 12v9" /><path d="m8 17 4 4 4-4" /></svg>
+                              استيراد من رابط خارجي (تجريبي)
+                            </h4>
+                            <div className="flex gap-2">
+                              <Input
+                                placeholder="ضع رابط المنتج هنا (B.TECH, Amazon, etc...)"
+                                value={formData.scrape_url || ""}
+                                onChange={(e) => setFormData({ ...formData, scrape_url: e.target.value })}
+                                className="text-left"
+                                dir="ltr"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleScrape}
+                                disabled={isScraping || !formData.scrape_url}
+                              >
+                                {isScraping ? "جاري السحب..." : "سحب"}
+                              </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              سيقوم النظام بمحاولة جلب الاسم، الوصف، والسعر من الرابط.
+                            </p>
+                          </div>
+                        )}
 
-                      {/* Brand */}
-                      <div className="space-y-2">
-                        <Label htmlFor="brand">العلامة التجارية</Label>
-                        <Select
-                          value={formData.brand_id}
-                          onValueChange={(value) =>
-                            setFormData({ ...formData, brand_id: value })
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="اختر العلامة التجارية" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {brands?.map((brand) => (
-                              <SelectItem key={brand.id} value={brand.id}>
-                                {brand.name_ar || brand.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="name">اسم المنتج</Label>
+                            <Input
+                              id="name"
+                              value={formData.name}
+                              onChange={(e) =>
+                                setFormData({ ...formData, name: e.target.value })
+                              }
+                              placeholder="اسم المنتج"
+                              required
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="brand">الماركة</Label>
+                            <Select
+                              value={formData.brand_id}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, brand_id: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="اختر الماركة" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {brands?.map((brand) => (
+                                  <SelectItem key={brand.id} value={brand.id}>
+                                    {brand.name_ar || brand.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
 
-                      {/* Price */}
-                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="cooling_type">نوع التبريد</Label>
+                            <Select
+                              value={formData.cooling_type}
+                              onValueChange={(value: "cold" | "cold_hot") =>
+                                setFormData({ ...formData, cooling_type: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="اختر نوع التبريد" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="cold">بارد فقط</SelectItem>
+                                <SelectItem value="cold_hot">بارد ساخن</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2 flex flex-col justify-end pb-2">
+                            <div className="flex items-center space-x-2 space-x-reverse">
+                              <input
+                                type="checkbox"
+                                id="is_inverter"
+                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                checked={formData.is_inverter}
+                                onChange={(e) => setFormData({ ...formData, is_inverter: e.target.checked })}
+                              />
+                              <Label htmlFor="is_inverter" className="cursor-pointer">تكنولوجيا إنفرتر (Inverter)</Label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="price">السعر (جنيه) *</Label>
+                            <Input
+                              id="price"
+                              type="number"
+                              step="0.01"
+                              value={formData.price}
+                              onChange={(e) =>
+                                setFormData({ ...formData, price: e.target.value })
+                              }
+                              required
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="old_price">السعر القديم</Label>
+                            <Input
+                              id="old_price"
+                              type="number"
+                              step="0.01"
+                              value={formData.old_price}
+                              onChange={(e) =>
+                                setFormData({ ...formData, old_price: e.target.value })
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        {/* Capacity & Type */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="capacity">السعة (حصان)</Label>
+                            <Input
+                              id="capacity"
+                              value={formData.capacity}
+                              onChange={(e) =>
+                                setFormData({ ...formData, capacity: e.target.value })
+                              }
+                              placeholder="مثال: 1.5 حصان"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="type">النوع</Label>
+                            <Select
+                              value={formData.type}
+                              onValueChange={(value) =>
+                                setFormData({ ...formData, type: value })
+                              }
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="اختر النوع" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="split">سبليت</SelectItem>
+                                <SelectItem value="window">شباك</SelectItem>
+                                <SelectItem value="portable">متنقل</SelectItem>
+                                <SelectItem value="central">مركزي</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        {/* Model */}
                         <div className="space-y-2">
-                          <Label htmlFor="price">السعر (جنيه) *</Label>
+                          <Label htmlFor="model">الموديل</Label>
                           <Input
-                            id="price"
+                            id="model"
+                            value={formData.model}
+                            onChange={(e) =>
+                              setFormData({ ...formData, model: e.target.value })
+                            }
+                          />
+                        </div>
+
+                        {/* Stock */}
+                        <div className="space-y-2">
+                          <Label htmlFor="stock">المخزون المتاح</Label>
+                          <Input
+                            id="stock"
                             type="number"
-                            step="0.01"
-                            value={formData.price}
+                            min="0"
+                            value={formData.stock}
                             onChange={(e) =>
-                              setFormData({ ...formData, price: e.target.value })
+                              setFormData({ ...formData, stock: e.target.value })
                             }
-                            required
+                            placeholder="0"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="old_price">السعر القديم</Label>
-                          <Input
-                            id="old_price"
-                            type="number"
-                            step="0.01"
-                            value={formData.old_price}
-                            onChange={(e) =>
-                              setFormData({ ...formData, old_price: e.target.value })
-                            }
-                          />
-                        </div>
-                      </div>
 
-                      {/* Capacity & Type */}
-                      <div className="grid grid-cols-2 gap-4">
+                        {/* Description */}
                         <div className="space-y-2">
-                          <Label htmlFor="capacity">السعة (حصان)</Label>
-                          <Input
-                            id="capacity"
-                            value={formData.capacity}
+                          <Label htmlFor="description">الوصف</Label>
+                          <Textarea
+                            id="description"
+                            value={formData.description}
                             onChange={(e) =>
-                              setFormData({ ...formData, capacity: e.target.value })
+                              setFormData({ ...formData, description: e.target.value })
                             }
-                            placeholder="مثال: 1.5 حصان"
+                            rows={3}
                           />
                         </div>
+
+                        {/* Features */}
                         <div className="space-y-2">
-                          <Label htmlFor="type">النوع</Label>
-                          <Select
-                            value={formData.type}
-                            onValueChange={(value) =>
-                              setFormData({ ...formData, type: value })
+                          <Label htmlFor="features">المميزات (سطر لكل ميزة)</Label>
+                          <Textarea
+                            id="features"
+                            value={formData.features}
+                            onChange={(e) =>
+                              setFormData({ ...formData, features: e.target.value })
                             }
+                            rows={4}
+                            placeholder="تبريد سريع&#10;توفير الطاقة&#10;ضمان 5 سنوات"
+                          />
+                        </div>
+
+                        {/* Active Status */}
+                        <div className="flex items-center gap-3">
+                          <Button
+                            type="button"
+                            variant={formData.is_active ? "default" : "outline"}
+                            size="sm"
+                            className={"min-w-[80px] " + (formData.is_active ? "bg-green-600 hover:bg-green-700" : "")}
+                            onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="اختر النوع" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="split">سبليت</SelectItem>
-                              <SelectItem value="window">شباك</SelectItem>
-                              <SelectItem value="portable">متنقل</SelectItem>
-                              <SelectItem value="central">مركزي</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            {formData.is_active ? "نشط" : "مخفي"}
+                          </Button>
+                          <Label>المنتج نشط ومرئي</Label>
                         </div>
-                      </div>
 
-                      {/* Model */}
-                      <div className="space-y-2">
-                        <Label htmlFor="model">الموديل</Label>
-                        <Input
-                          id="model"
-                          value={formData.model}
-                          onChange={(e) =>
-                            setFormData({ ...formData, model: e.target.value })
-                          }
-                        />
-                      </div>
-
-                      {/* Stock */}
-                      <div className="space-y-2">
-                        <Label htmlFor="stock">المخزون المتاح</Label>
-                        <Input
-                          id="stock"
-                          type="number"
-                          min="0"
-                          value={formData.stock}
-                          onChange={(e) =>
-                            setFormData({ ...formData, stock: e.target.value })
-                          }
-                          placeholder="0"
-                        />
-                      </div>
-
-                      {/* Description */}
-                      <div className="space-y-2">
-                        <Label htmlFor="description">الوصف</Label>
-                        <Textarea
-                          id="description"
-                          value={formData.description}
-                          onChange={(e) =>
-                            setFormData({ ...formData, description: e.target.value })
-                          }
-                          rows={3}
-                        />
-                      </div>
-
-                      {/* Features */}
-                      <div className="space-y-2">
-                        <Label htmlFor="features">المميزات (سطر لكل ميزة)</Label>
-                        <Textarea
-                          id="features"
-                          value={formData.features}
-                          onChange={(e) =>
-                            setFormData({ ...formData, features: e.target.value })
-                          }
-                          rows={4}
-                          placeholder="تبريد سريع&#10;توفير الطاقة&#10;ضمان 5 سنوات"
-                        />
-                      </div>
-
-                      {/* Active Status */}
-                      <div className="flex items-center gap-3">
-                        <Button
-                          type="button"
-                          variant={formData.is_active ? "default" : "outline"}
-                          size="sm"
-                          className={`min-w-[80px] ${formData.is_active ? 'bg-green-600 hover:bg-green-700' : ''}`}
-                          onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-                        >
-                          {formData.is_active ? "نشط" : "مخفي"}
-                        </Button>
-                        <Label>المنتج نشط ومرئي</Label>
-                      </div>
-
-                      {/* Submit */}
-                      <div className="flex gap-2 pt-4">
-                        <Button
-                          type="submit"
-                          disabled={saving || uploadingImage}
-                          className="flex-1"
-                        >
-                          {saving || uploadingImage ? (
-                            <Loader2 className="w-4 h-4 animate-spin ml-2" />
-                          ) : null}
-                          {editingProduct ? "حفظ التغييرات" : "إضافة المنتج"}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setIsDialogOpen(false)}
-                        >
-                          إلغاء
-                        </Button>
+                        {/* Submit */}
+                        <div className="flex gap-2 pt-4">
+                          <Button
+                            type="submit"
+                            disabled={saving || uploadingImage}
+                            className="flex-1"
+                          >
+                            {saving || uploadingImage ? (
+                              <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                            ) : null}
+                            {editingProduct ? "حفظ التغييرات" : "إضافة المنتج"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setIsDialogOpen(false)}
+                          >
+                            إلغاء
+                          </Button>
+                        </div>
                       </div>
                     </form>
                   </DialogContent>
@@ -959,7 +1071,7 @@ const ProductsAdmin = () => {
                             <Button
                               variant={product.is_active ? "default" : "outline"}
                               size="sm"
-                              className={`min-w-[65px] ${product.is_active ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                              className={"min-w-[65px] " + (product.is_active ? "bg-green-600 hover:bg-green-700" : "")}
                               onClick={() => toggleProductStatus(product)}
                             >
                               {product.is_active ? "نشط" : "مخفي"}
@@ -1009,8 +1121,7 @@ const ProductsAdmin = () => {
                 {filteredProducts?.map((product) => (
                   <div
                     key={product.id}
-                    className={`relative border rounded-xl overflow-hidden bg-card hover:shadow-lg transition-shadow ${!product.is_active ? "opacity-60" : ""
-                      }`}
+                    className={"relative border rounded-xl overflow-hidden bg-card hover:shadow-lg transition-shadow " + (!product.is_active ? "opacity-60" : "")}
                   >
                     {/* Product Image */}
                     <div className="aspect-square bg-muted relative">

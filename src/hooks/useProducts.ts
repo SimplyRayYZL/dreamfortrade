@@ -13,6 +13,8 @@ export interface Product {
   reviews: number;
   capacity: string | null;
   type: string | null;
+  cooling_type: 'cold' | 'cold_hot' | null;
+  is_inverter: boolean;
   features: string[];
   model: string | null;
   description: string | null;
@@ -57,7 +59,9 @@ export const useProducts = () => {
             name,
             name_ar,
             logo_url
-          )
+          ),
+          cooling_type,
+          is_inverter
         `)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
@@ -85,6 +89,8 @@ export const useProducts = () => {
         image_url: item.image_url,
         is_active: item.is_active || true,
         stock: item.stock ?? null, // null means unlimited stock
+        cooling_type: item.cooling_type,
+        is_inverter: item.is_inverter
       }));
     },
   });
@@ -134,6 +140,8 @@ export const useProduct = (id: string) => {
         image_url: data.image_url,
         is_active: data.is_active || true,
         stock: data.stock || 0,
+        cooling_type: data.cooling_type,
+        is_inverter: data.is_inverter
       };
     },
     enabled: !!id,
@@ -212,6 +220,8 @@ export const useRelatedProducts = (brandId: string, excludeProductId: string) =>
         image_url: item.image_url,
         is_active: item.is_active || true,
         stock: item.stock || 0,
+        cooling_type: item.cooling_type,
+        is_inverter: item.is_inverter
       }));
     },
     enabled: !!brandId,
@@ -259,6 +269,8 @@ export const useAllProducts = () => {
         image_url: item.image_url,
         is_active: item.is_active ?? true,
         stock: item.stock || 0,
+        cooling_type: item.cooling_type,
+        is_inverter: item.is_inverter
       }));
     },
   });
