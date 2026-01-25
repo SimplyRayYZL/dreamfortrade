@@ -63,13 +63,24 @@ async function run() {
                 }
                 product.scrape_url = link;
                 products.push(product);
+                // small delay
                 await new Promise(r => setTimeout(r, 1000));
             } catch (e) {
                 console.error(`Failed to scrape ${link}:`, e.message);
             }
         }
 
-        console.log(JSON.stringify(products, null, 2));
+        console.error(`Scraped ${products.length} products. Importing to DB...`);
+
+        try {
+            const result = await invoke('import-products', {
+                products: products,
+                brand_name: "Haier"
+            });
+            console.log("Import Result:", JSON.stringify(result, null, 2));
+        } catch (err) {
+            console.error("Import failed:", err.message);
+        }
 
     } catch (e) {
         console.error("Script failed:", e);
