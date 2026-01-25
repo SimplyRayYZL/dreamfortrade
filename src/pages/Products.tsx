@@ -90,19 +90,24 @@ const Products = () => {
     return products.filter((product) => {
       const brandMatch = selectedBrand === "الكل" || product.brand === selectedBrand;
       const capacityMatch = selectedCapacity === "الكل" || product.capacity === selectedCapacity;
-      const typeMatch = selectedType === "الكل" || product.type === selectedType;
 
-      // Inverter filter logic - check if product name contains "انفرتر" or "Inverter"
-      let inverterMatch = true;
-      if (selectedInverter === "انفرتر") {
-        inverterMatch = product.name?.toLowerCase().includes("انفرتر") ||
-          product.name?.toLowerCase().includes("inverter");
-      } else if (selectedInverter === "عادي") {
-        inverterMatch = !product.name?.toLowerCase().includes("انفرتر") &&
-          !product.name?.toLowerCase().includes("inverter");
+      // Cooling Type Logic (mapped from Arabic UI options)
+      let coolingMatch = true;
+      if (selectedType === "بارد فقط") {
+        coolingMatch = product.cooling_type === "cold";
+      } else if (selectedType === "بارد ساخن") {
+        coolingMatch = product.cooling_type === "cold_hot";
       }
 
-      return brandMatch && capacityMatch && typeMatch && inverterMatch;
+      // Inverter Logic (using new is_inverter column)
+      let inverterMatch = true;
+      if (selectedInverter === "انفرتر") {
+        inverterMatch = product.is_inverter === true;
+      } else if (selectedInverter === "عادي") {
+        inverterMatch = product.is_inverter === false;
+      }
+
+      return brandMatch && capacityMatch && coolingMatch && inverterMatch;
     });
   }, [products, selectedBrand, selectedCapacity, selectedType, selectedInverter]);
 
