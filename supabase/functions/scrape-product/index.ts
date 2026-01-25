@@ -29,6 +29,7 @@ serve(async (req: Request) => {
         const response = await fetch(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
             },
         });
 
@@ -43,39 +44,145 @@ serve(async (req: Request) => {
             throw new Error("Failed to parse HTML");
         }
 
-        // Extract Metadata (OpenGraph & Schema.org preference)
-        const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content');
-        const twitterTitle = doc.querySelector('meta[name="twitter:title"]')?.getAttribute('content');
-        const titleTag = doc.querySelector('title')?.textContent;
-        const h1 = doc.querySelector('h1')?.textContent;
+        // Helper to get content from multiple selectors
+        const getContent = (selectors: string[]) => {
+            for (const selector of selectors) {
+                const element = doc.querySelector(selector);
+                if (element) {
+                    if (element.tagName === 'META') {
+                        const content = element.getAttribute('content');
+                        if (content) return content.trim();
+                    }
+                    const text = element.textContent;
+                    if (text && text.trim().length > 0) return text.trim();
+                }
+            }
+            return null;
+        };
 
-        const ogDescription = doc.querySelector('meta[property="og:description"]')?.getAttribute('content');
-        const twitterDescription = doc.querySelector('meta[name="twitter:description"]')?.getAttribute('content');
-        const descriptionTag = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+        // Helper to get image URL
+        const getImage = (selectors: string[]) => {
+            for (const selector of selectors) {
+                const element = doc.querySelector(selector);
+                if (element) {
+                    if (element.tagName === 'META') {
+                        return element.getAttribute('content');
+                    }
+                    if (element.tagName === 'IMG') {
+                        return element.getAttribute('src') || element.getAttribute('data-src');
+                    }
+                }
+            }
+            return null;
+        };
 
-        const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content');
-        const twitterImage = doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content');
+        // 1. Title Extraction
+        const name = getContent([
+            'meta[property="og:title"]',
+            'meta[name="twitter:title"]',
+            'h1.product_title',
+            'h1.product-title',
+            'h1.entry-title',
+            'h1',
+            'title'
+        ]) || "";
 
-        // Attempt to find price (heuristic)
+        // 2. Description Extraction
+        const description = getContent([
+            'meta[property="og:description"]',
+            'meta[name="twitter:description"]',
+            'meta[name="description"]',
+            '.product-short-description',
+            '.woocommerce-product-details__short-description',
+            '.description',
+            '#description'
+        ]) || "";
+
+        // 3. Image Extraction
+        let image_url = getImage([
+            'meta[property="og:image"]',
+            'meta[name="twitter:image"]',
+            '.woocommerce-product-gallery__image img',
+            '.product-image img',
+            '.images img',
+            'img[itemprop="image"]'
+        ]) || "";
+
+        // Handle relative URLs
+        if (image_url && !image_url.startsWith('http')) {
+            try {
+                image_url = new URL(image_url, url).toString();
+            } catch (e) {
+                console.warn("Failed to resolve relative image URL", e);
+            }
+        }
+
+        // 4. Price Extraction (The tricky part)
         let price = 0;
-        const priceMeta = doc.querySelector('meta[property="product:price:amount"]')?.getAttribute('content');
+
+        // Strategy A: Meta tags (most reliable)
+        const priceMeta = getContent([
+            'meta[property="product:price:amount"]',
+            'meta[itemprop="price"]',
+            'meta[name="price"]'
+        ]);
 
         if (priceMeta) {
             price = parseFloat(priceMeta);
-        } else {
-            const bodyText = doc.body?.innerText || "";
-            const priceMatch = bodyText.match(/(\d{1,3}(,\d{3})*(\.\d+)?)(\s?ج\.م|\s?EGP|\s?LE)/);
+        }
+
+        // Strategy B: Common E-commerce classes
+        if (!price || isNaN(price)) {
+            const priceSelectors = [
+                '.price .amount', // WooCommerce
+                '.product-price',
+                '.offer-price',
+                '.price',
+                '[itemprop="price"]'
+            ];
+
+            for (const selector of priceSelectors) {
+                const el = doc.querySelector(selector);
+                if (el) {
+                    // Get only the first text node usually, or clean the whole string
+                    const rawPrice = el.textContent || "";
+                    // Regex to extract the first valid number group (allowing for commas as thousands separators)
+                    const match = rawPrice.match(/(\d{1,3}(?:[,\s]\d{3})*(?:\.\d+)?)/);
+                    if (match) {
+                        // Remove commas and spaces before parsing
+                        const cleanNum = match[0].replace(/[,\s]/g, '');
+                        const parsed = parseFloat(cleanNum);
+                        if (!isNaN(parsed) && parsed > 0) {
+                            price = parsed;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Strategy C: Regex Search in Body (Last Resort)
+        if (!price || isNaN(price)) {
+            const bodyText = doc.body?.textContent || "";
+            // Search for "EGP 15,000" or "15000 ج.م" patterns near the top of the body (first 5000 chars)
+            const snippet = bodyText.substring(0, 10000);
+            const priceMatch = snippet.match(/(\d{1,3}(?:,\d{3})*(?:\.\d+)?)\s*(?:ج\.م|L\.E|EGP|جنيه)/i) ||
+                snippet.match(/(?:ج\.م|L\.E|EGP|جنيه)\s*(\d{1,3}(?:,\d{3})*(?:\.\d+)?)/i);
+
             if (priceMatch) {
-                price = parseFloat(priceMatch[1].replace(/,/g, ''));
+                const cleanNum = priceMatch[1].replace(/,/g, '');
+                price = parseFloat(cleanNum);
             }
         }
 
         const data = {
-            name: ogTitle || twitterTitle || h1 || titleTag || "",
-            description: ogDescription || twitterDescription || descriptionTag || "",
-            image_url: ogImage || twitterImage || "",
+            name: name.trim(),
+            description: description.trim(),
+            image_url: image_url,
             price: price || 0,
         };
+
+        console.log(`Scraped Data:`, data);
 
         return new Response(JSON.stringify(data), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
